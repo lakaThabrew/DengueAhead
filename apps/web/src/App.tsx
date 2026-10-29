@@ -1,47 +1,44 @@
-import React, { useEffect, useState } from 'react';
-import { ShieldAlert, Activity, CheckCircle2, Server, Database, BrainCircuit } from 'lucide-react';
-import type { HealthResponse } from '@dengueahead/contracts';
+import React from 'react';
+import { ShieldAlert, CheckCircle2, Server, Database, BrainCircuit } from 'lucide-react';
+import { HealthBadge } from './features/health/HealthBadge.js';
+
+const API_BASE_URL: string | undefined = (
+  import.meta as unknown as { env?: Record<string, string | undefined> }
+).env?.['VITE_API_BASE_URL'];
 
 export const App: React.FC = () => {
-  const [apiHealth, setApiHealth] = useState<HealthResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const apiBaseUrl = (import.meta as any).env?.VITE_API_BASE_URL || 'http://localhost:4000/api/v1';
-
-  useEffect(() => {
-    let isMounted = true;
-    async function checkHealth() {
-      try {
-        const res = await fetch(`${apiBaseUrl}/health`);
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
-        }
-        const data: HealthResponse = await res.json();
-        if (isMounted) {
-          setApiHealth(data);
-          setError(null);
-        }
-      } catch (err: any) {
-        if (isMounted) {
-          setError(err.message || 'API connection failed');
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    }
-    checkHealth();
-    return () => {
-      isMounted = false;
-    };
-  }, [apiBaseUrl]);
-
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      {/* Skip navigation link for keyboard users */}
+      <a
+        href="#main-content"
+        style={{
+          position: 'absolute',
+          left: '-9999px',
+          top: 'auto',
+          width: '1px',
+          height: '1px',
+          overflow: 'hidden'
+        }}
+        onFocus={(e) => {
+          e.currentTarget.style.left = '8px';
+          e.currentTarget.style.top = '8px';
+          e.currentTarget.style.width = 'auto';
+          e.currentTarget.style.height = 'auto';
+          e.currentTarget.style.zIndex = '9999';
+        }}
+        onBlur={(e) => {
+          e.currentTarget.style.left = '-9999px';
+          e.currentTarget.style.width = '1px';
+          e.currentTarget.style.height = '1px';
+        }}
+      >
+        Skip to main content
+      </a>
+
       {/* Non-clinical safety advisory banner */}
       <div
+        role="banner"
         style={{
           backgroundColor: '#0B1730',
           color: '#E2E8F0',
@@ -53,10 +50,11 @@ export const App: React.FC = () => {
           gap: '8px'
         }}
       >
-        <ShieldAlert size={16} color="#D97706" />
+        <ShieldAlert size={16} color="#D97706" aria-hidden="true" />
         <span>
-          <strong>DengueAhead Research & Public Health Intelligence:</strong> Non-clinical decision-support system.
-          Does not diagnose, prescribe, or autonomously direct medical interventions.
+          <strong>DengueAhead Research &amp; Public Health Intelligence:</strong> Non-clinical
+          decision-support system. Does not diagnose, prescribe, or autonomously direct medical
+          interventions.
         </span>
       </div>
 
@@ -85,32 +83,13 @@ export const App: React.FC = () => {
           >
             DengueAhead
           </div>
-          <div>
-            <span style={{ fontSize: '14px', color: '#64748B', fontWeight: 500 }}>
-              Early Warning for Emerging Dengue Hotspots in Sri Lanka
-            </span>
-          </div>
+          <span style={{ fontSize: '14px', color: '#64748B', fontWeight: 500 }}>
+            Early Warning for Emerging Dengue Hotspots in Sri Lanka
+          </span>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              fontSize: '13px',
-              padding: '4px 10px',
-              borderRadius: '20px',
-              backgroundColor: loading ? '#F1F5F9' : error ? '#FEE2E2' : '#CCFBF1',
-              color: loading ? '#64748B' : error ? '#DC4754' : '#0D9488',
-              fontWeight: 600
-            }}
-          >
-            <Activity size={14} />
-            <span>
-              API: {loading ? 'Checking...' : error ? `Offline (${error})` : 'Connected'}
-            </span>
-          </div>
+          <HealthBadge apiBaseUrl={API_BASE_URL ?? 'http://localhost:4000/api/v1'} />
           <span
             style={{
               fontSize: '12px',
@@ -126,15 +105,25 @@ export const App: React.FC = () => {
         </div>
       </header>
 
-      {/* Hero / Overview Content */}
-      <main style={{ flex: 1, padding: '40px 32px', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
+      {/* Main content */}
+      <main
+        id="main-content"
+        style={{
+          flex: 1,
+          padding: '40px 32px',
+          maxWidth: '1200px',
+          margin: '0 auto',
+          width: '100%'
+        }}
+      >
         <div style={{ marginBottom: '32px' }}>
           <h1 style={{ fontSize: '28px', color: '#0B1730', fontWeight: 800, marginBottom: '8px' }}>
-            System Foundation & Monorepo Readiness
+            System Foundation &amp; Monorepo Readiness
           </h1>
           <p style={{ color: '#475569', fontSize: '16px', maxWidth: '800px' }}>
-            Phase 0 sets up the foundational contracts, Express API, Vite frontend, and Python ML CLI.
-            All components communicate through strictly typed contracts with real-time provenance tracking.
+            Phase 0 sets up the foundational contracts, Express API, Vite frontend, and Python ML
+            CLI. All components communicate through strictly typed contracts with real-time
+            provenance tracking.
           </p>
         </div>
 
@@ -147,121 +136,30 @@ export const App: React.FC = () => {
             marginBottom: '32px'
           }}
         >
-          {/* Contracts */}
-          <div
-            style={{
-              backgroundColor: '#FFFFFF',
-              border: '1px solid #E2E8F0',
-              borderRadius: '12px',
-              padding: '24px',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-              <CheckCircle2 color="#0D9488" size={20} />
-              <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#0B1730' }}>@dengueahead/contracts</h3>
-            </div>
-            <p style={{ fontSize: '14px', color: '#64748B', marginBottom: '16px' }}>
-              Runtime Zod validation and strict TypeScript schemas for Areas, Observations, Predictions, and Evaluation Metrics.
-            </p>
-            <div style={{ fontSize: '12px', color: '#2563EB', fontWeight: 600 }}>Status: Tested & Verified</div>
-          </div>
-
-          {/* Express API */}
-          <div
-            style={{
-              backgroundColor: '#FFFFFF',
-              border: '1px solid #E2E8F0',
-              borderRadius: '12px',
-              padding: '24px',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-              <Server color="#2563EB" size={20} />
-              <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#0B1730' }}>@dengueahead/api</h3>
-            </div>
-            <p style={{ fontSize: '14px', color: '#64748B', marginBottom: '16px' }}>
-              Node.js Express backend with correlation IDs, error handlers, and <code>/api/v1/health</code> route.
-            </p>
-            <div style={{ fontSize: '12px', color: '#2563EB', fontWeight: 600 }}>Status: Ready on port 4000</div>
-          </div>
-
-          {/* Web Frontend */}
-          <div
-            style={{
-              backgroundColor: '#FFFFFF',
-              border: '1px solid #E2E8F0',
-              borderRadius: '12px',
-              padding: '24px',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-              <Database color="#D97706" size={20} />
-              <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#0B1730' }}>@dengueahead/web</h3>
-            </div>
-            <p style={{ fontSize: '14px', color: '#64748B', marginBottom: '16px' }}>
-              Vite + React frontend with high-contrast public health design system and responsive layout.
-            </p>
-            <div style={{ fontSize: '12px', color: '#2563EB', fontWeight: 600 }}>Status: Active (Vite)</div>
-          </div>
-
-          {/* Python ML */}
-          <div
-            style={{
-              backgroundColor: '#FFFFFF',
-              border: '1px solid #E2E8F0',
-              borderRadius: '12px',
-              padding: '24px',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-              <BrainCircuit color="#9333EA" size={20} />
-              <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#0B1730' }}>services/ml</h3>
-            </div>
-            <p style={{ fontSize: '14px', color: '#64748B', marginBottom: '16px' }}>
-              Python 3.12 ML package featuring <code>dengueahead</code> CLI for source ingestion, baselines, and model training.
-            </p>
-            <div style={{ fontSize: '12px', color: '#2563EB', fontWeight: 600 }}>Status: CLI Scaffolding Complete</div>
-          </div>
-        </div>
-
-        {/* Live Connectivity Diagnostic */}
-        <div
-          style={{
-            backgroundColor: '#FFFFFF',
-            border: '1px solid #E2E8F0',
-            borderRadius: '12px',
-            padding: '24px',
-            marginBottom: '32px'
-          }}
-        >
-          <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '12px', color: '#0B1730' }}>
-            Live System Health Check
-          </h3>
-          <div
-            style={{
-              backgroundColor: '#F8FAFC',
-              borderRadius: '8px',
-              padding: '16px',
-              fontFamily: 'monospace',
-              fontSize: '13px',
-              color: '#334155',
-              overflowX: 'auto'
-            }}
-          >
-            {loading && <div>Querying backend service at {apiBaseUrl}/health...</div>}
-            {!loading && apiHealth && (
-              <pre style={{ margin: 0 }}>{JSON.stringify(apiHealth, null, 2)}</pre>
-            )}
-            {!loading && error && (
-              <div style={{ color: '#DC4754' }}>
-                Note: Backend not connected at {apiBaseUrl}. Start the API server via <code>npm run dev:api</code>.
-              </div>
-            )}
-          </div>
+          <PillarCard
+            icon={<CheckCircle2 color="#0D9488" size={20} aria-hidden="true" />}
+            title="@dengueahead/contracts"
+            description="Runtime Zod validation and strict TypeScript schemas for Areas, Observations, Predictions, and Evaluation Metrics."
+            status="Tested & Verified"
+          />
+          <PillarCard
+            icon={<Server color="#2563EB" size={20} aria-hidden="true" />}
+            title="@dengueahead/api"
+            description="Node.js Express backend with correlation IDs, error handlers, and /api/v1/health route."
+            status="Ready on port 4000"
+          />
+          <PillarCard
+            icon={<Database color="#D97706" size={20} aria-hidden="true" />}
+            title="@dengueahead/web"
+            description="Vite + React frontend with high-contrast public health design system and responsive layout."
+            status="Active (Vite)"
+          />
+          <PillarCard
+            icon={<BrainCircuit color="#9333EA" size={20} aria-hidden="true" />}
+            title="services/ml"
+            description="Python 3.12 ML package featuring the dengueahead CLI for source ingestion, baselines, and model training."
+            status="CLI Scaffolding Complete"
+          />
         </div>
       </main>
 
@@ -281,11 +179,34 @@ export const App: React.FC = () => {
         <div>
           <strong>DengueAhead</strong> — EchoBinary (ModelX 2.0 Competition)
         </div>
-        <div style={{ display: 'flex', gap: '16px' }}>
-          <span>Phase 0 Implementation Complete</span>
-        </div>
+        <div>Phase 0 Implementation Complete</div>
       </footer>
     </div>
   );
 };
 
+interface PillarCardProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  status: string;
+}
+
+const PillarCard: React.FC<PillarCardProps> = ({ icon, title, description, status }) => (
+  <div
+    style={{
+      backgroundColor: '#FFFFFF',
+      border: '1px solid #E2E8F0',
+      borderRadius: '12px',
+      padding: '24px',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+    }}
+  >
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+      {icon}
+      <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#0B1730', margin: 0 }}>{title}</h3>
+    </div>
+    <p style={{ fontSize: '14px', color: '#64748B', marginBottom: '16px' }}>{description}</p>
+    <div style={{ fontSize: '12px', color: '#2563EB', fontWeight: 600 }}>Status: {status}</div>
+  </div>
+);
