@@ -1,4 +1,5 @@
 """DengueAhead ML & Data CLI — Phase 0 scaffolding."""
+
 import re
 import sys
 
@@ -34,6 +35,7 @@ def _validate_date(ctx: click.Context, param: click.Parameter, value: str | None
 
 # ── Phase 1 stubs ─────────────────────────────────────────────────────────────
 
+
 @cli.command("audit-sources")
 @click.option(
     "--config",
@@ -66,6 +68,7 @@ def validate_data() -> None:
 
 # ── Phase 2 stubs ─────────────────────────────────────────────────────────────
 
+
 @cli.command("build-features")
 @click.option(
     "--as-of",
@@ -80,6 +83,7 @@ def build_features(as_of: str | None) -> None:
 
 
 # ── Phase 3 stubs ─────────────────────────────────────────────────────────────
+
 
 @cli.command("train")
 @click.option(
@@ -106,6 +110,7 @@ def backtest(config: str) -> None:
 
 
 # ── Phase 4 stubs ─────────────────────────────────────────────────────────────
+
 
 @cli.command("predict")
 @click.option(

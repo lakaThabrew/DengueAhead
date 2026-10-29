@@ -1,4 +1,5 @@
 """Contract parity tests: Pydantic Prediction model must accept/reject the same fixtures as Zod."""
+
 from __future__ import annotations
 
 import json

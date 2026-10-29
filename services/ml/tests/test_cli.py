@@ -1,4 +1,5 @@
 """Unit tests for the dengueahead CLI (click-based)."""
+
 import pytest
 from click.testing import CliRunner
 
@@ -34,24 +35,27 @@ def test_cli_help(runner: CliRunner) -> None:
         assert cmd in result.output
 
 
-@pytest.mark.parametrize("subcommand", [
-    ["audit-sources"],
-    ["ingest"],
-    ["validate-data"],
-    ["build-features"],
-    ["train"],
-    ["backtest"],
-    ["predict"],
-])
+@pytest.mark.parametrize(
+    "subcommand",
+    [
+        ["audit-sources"],
+        ["ingest"],
+        ["validate-data"],
+        ["build-features"],
+        ["train"],
+        ["backtest"],
+        ["predict"],
+    ],
+)
 def test_stubs_exit_3_with_not_implemented(runner: CliRunner, subcommand: list[str]) -> None:
     """Every stub must exit 3 and print 'not implemented' somewhere in its output."""
     result = runner.invoke(cli, subcommand)
-    assert result.exit_code == 3, (
-        f"{subcommand[0]} should exit 3, got {result.exit_code}\nOutput: {result.output}"
-    )
-    assert "not implemented" in result.output.lower(), (
-        f"{subcommand[0]} output should mention 'not implemented', got: {result.output!r}"
-    )
+    assert (
+        result.exit_code == 3
+    ), f"{subcommand[0]} should exit 3, got {result.exit_code}\nOutput: {result.output}"
+    assert (
+        "not implemented" in result.output.lower()
+    ), f"{subcommand[0]} output should mention 'not implemented', got: {result.output!r}"
 
 
 @pytest.mark.parametrize("subcommand", ["build-features", "predict"])

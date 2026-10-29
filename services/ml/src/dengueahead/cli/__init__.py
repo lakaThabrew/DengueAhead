@@ -1,4 +1,3 @@
 """
 CLI package for DengueAhead
 """
-

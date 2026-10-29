@@ -1,4 +1,5 @@
 """Structured JSON-line logging helper for dengueahead CLI and pipeline steps."""
+
 from __future__ import annotations
 
 import json

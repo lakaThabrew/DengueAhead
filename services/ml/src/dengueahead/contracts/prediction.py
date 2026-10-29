@@ -1,4 +1,5 @@
 """Pydantic Prediction model — parity with the Zod PredictionSchema in packages/contracts."""
+
 from __future__ import annotations
 
 from typing import Literal
