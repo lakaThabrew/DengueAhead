@@ -6,6 +6,7 @@ export default defineConfig({
       MONGODB_URI: process.env['MONGODB_URI'] ?? 'mongodb://localhost:27017/dengueahead_test',
       NODE_ENV: 'test'
     },
-    include: ['src/test/**/*.integration.test.ts']
+    include: ['src/test/**/*.integration.test.ts'],
+    passWithNoTests: true
   }
 });
