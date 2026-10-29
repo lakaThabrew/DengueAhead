@@ -10,23 +10,24 @@
 
 ## 1. Executed Commands & Status Summary
 
-| Step | Command | Result | Notes |
-| :--- | :--- | :--- | :--- |
-| **Git Initialization** | `git init -b main` | **Exit 0** | Main branch initialized, `.gitignore`, `.editorconfig`, `.nvmrc` |
-| **TypeScript Build** | `npm run build` | **Exit 0** | All packages & apps (`@dengueahead/contracts`, `@dengueahead/api`, `@dengueahead/web`) build cleanly |
-| **Typecheck** | `npm run typecheck` | **Exit 0** | Zero type errors across all workspaces in TypeScript strict mode |
-| **Lint & Formatting** | `npm run lint` | **Exit 0** | ESLint 9 flat config + Prettier formatting checks clean |
-| **Contracts Tests** | `vitest run` in contracts | **Exit 0** | 16/16 tests passed |
-| **API Unit Tests** | `vitest run` in api | **Exit 0** | 8/8 tests passed |
-| **Web UI Tests** | `vitest run` in web | **Exit 0** | 14/14 tests passed |
-| **Python ML Tests** | `pytest services/ml/tests` | **Exit 0** | 17/17 tests passed (CLI + cross-language contract parity) |
-| **CLI Verification** | `dengueahead --help` | **Exit 0** | Click-based CLI with clean exits and argument validation |
+| Step                   | Command                    | Result     | Notes                                                                                                |
+| :--------------------- | :------------------------- | :--------- | :--------------------------------------------------------------------------------------------------- |
+| **Git Initialization** | `git init -b main`         | **Exit 0** | Main branch initialized, `.gitignore`, `.editorconfig`, `.nvmrc`                                     |
+| **TypeScript Build**   | `npm run build`            | **Exit 0** | All packages & apps (`@dengueahead/contracts`, `@dengueahead/api`, `@dengueahead/web`) build cleanly |
+| **Typecheck**          | `npm run typecheck`        | **Exit 0** | Zero type errors across all workspaces in TypeScript strict mode                                     |
+| **Lint & Formatting**  | `npm run lint`             | **Exit 0** | ESLint 9 flat config + Prettier formatting checks clean                                              |
+| **Contracts Tests**    | `vitest run` in contracts  | **Exit 0** | 16/16 tests passed                                                                                   |
+| **API Unit Tests**     | `vitest run` in api        | **Exit 0** | 8/8 tests passed                                                                                     |
+| **Web UI Tests**       | `vitest run` in web        | **Exit 0** | 14/14 tests passed                                                                                   |
+| **Python ML Tests**    | `pytest services/ml/tests` | **Exit 0** | 17/17 tests passed (CLI + cross-language contract parity)                                            |
+| **CLI Verification**   | `dengueahead --help`       | **Exit 0** | Click-based CLI with clean exits and argument validation                                             |
 
 ---
 
 ## 2. Test Execution Details
 
 ### A. `@dengueahead/contracts` (Vitest: 16/16)
+
 ```text
  ✓ src/test/contracts.test.ts (16 tests)
    - validates a valid Area
@@ -40,6 +41,7 @@
 ```
 
 ### B. `@dengueahead/api` (Vitest: 8/8)
+
 ```text
  ✓ src/test/health.test.ts (8 tests)
    - GET /api/v1/health returns 200 with service health schema
@@ -52,6 +54,7 @@
 ```
 
 ### C. `@dengueahead/web` (Vitest + RTL: 14/14)
+
 ```text
  ✓ src/test/App.test.tsx (14 tests)
    - renders DengueAhead header and non-clinical banner
@@ -68,6 +71,7 @@
 ```
 
 ### D. `services/ml` (Pytest: 17/17)
+
 ```text
 services/ml/tests/test_cli.py ............. (13 tests)
 services/ml/tests/test_contract_parity.py .... (4 tests)
