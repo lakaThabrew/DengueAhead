@@ -1,10 +1,10 @@
 # DengueAhead ML Model Configuration
 model:
-  name: "dengueahead-baseline-lightgbm"
-  version: "v0.1.0"
-  target: "emerging_hotspot"
+  name: 'dengueahead-baseline-lightgbm'
+  version: 'v0.1.0'
+  target: 'emerging_hotspot'
   forecastHorizonWeeks: 1
-  geographicLevel: "district"
+  geographicLevel: 'district'
 
 features:
   caseLags: [1, 2, 3, 4]
@@ -14,6 +14,5 @@ features:
 
 training:
   minHistoricalWeeks: 52
-  splitStrategy: "temporal_rolling"
+  splitStrategy: 'temporal_rolling'
   randomSeed: 42
-

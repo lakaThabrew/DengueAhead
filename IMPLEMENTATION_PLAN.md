@@ -5,18 +5,18 @@
 > **Implementation submission:** **5 November 2026** (team-provided revised deadline)  
 > **Primary stack:** React + TypeScript, Node.js + TypeScript, MongoDB, Python ML  
 > **Document purpose:** Agent-executable specification, delivery schedule, testing contract, and submission checklist.  
-> **Naming note:** "Phase 2" in the title is the competition's implementation phase. "Phase 0–7" below are *internal* delivery phases. Detailed per-phase specs live in `plans/` (e.g. `plans/PHASE_0_IMPLEMENTATION_PLAN.md`).
+> **Naming note:** "Phase 2" in the title is the competition's implementation phase. "Phase 0–7" below are _internal_ delivery phases. Detailed per-phase specs live in `plans/` (e.g. `plans/PHASE_0_IMPLEMENTATION_PLAN.md`).
 
 ## 0. Mission and immutable rules
 
-Build a **working and honestly evaluated** decision-support application that helps Sri Lankan public-health planners identify **areas likely to become unusually high-risk for dengue 1–2 weeks ahead**. The distinctive feature is *emerging* hotspots, not a map of current cases. The application is **not** a clinical or official warning service; it does not diagnose, treat, or autonomously direct public-health interventions.
+Build a **working and honestly evaluated** decision-support application that helps Sri Lankan public-health planners identify **areas likely to become unusually high-risk for dengue 1–2 weeks ahead**. The distinctive feature is _emerging_ hotspots, not a map of current cases. The application is **not** a clinical or official warning service; it does not diagnose, treat, or autonomously direct public-health interventions.
 
 ### Non-negotiable acceptance criteria
 
 - [ ] Use **real, verifiable, properly attributed** dengue data, not AI-generated case numbers.
 - [ ] Confirm the **actual temporal and geographic coverage** before selecting the forecast geography. Prefer MOH; fall back to **district** if MOH histories are insufficient; label granularity everywhere.
 - [ ] Show source name, date of observation, date of retrieval, licence/permission status, extraction success/failure, and gaps.
-- [ ] Predict *future* dengue burden/risk using only features available **as of** the forecast date; no look-ahead leakage.
+- [ ] Predict _future_ dengue burden/risk using only features available **as of** the forecast date; no look-ahead leakage.
 - [ ] Compare against at least **last-observation, rolling-average and seasonal baselines**. Report failures and limitations plainly.
 - [ ] Provide **out-of-time backtests** and practical metrics: top-K recall, precision, recall, lead time; add MAE/Brier/calibration when supported.
 - [ ] Show genuine **uncertainty and freshness**. No made-up probabilities, confidence intervals, SHAP values, weather, dates, scores, or metrics.
@@ -29,7 +29,7 @@ Build a **working and honestly evaluated** decision-support application that hel
 
 ### Evidence and source checks (initial research, not proof of completed ingestion)
 
-- NDCU official weekly report listing: https://www.dengue.health.gov.lk/weekly-report/ — live listing of downloadable weekly reports. Determine each document's format and whether it includes consistent district/MOH *case histories*; a weekly report listing alone does not establish extractable MOH counts.
+- NDCU official weekly report listing: https://www.dengue.health.gov.lk/weekly-report/ — live listing of downloadable weekly reports. Determine each document's format and whether it includes consistent district/MOH _case histories_; a weekly report listing alone does not establish extractable MOH counts.
 - NDCU homepage: https://www.dengue.health.gov.lk/ — official dengue surveillance context.
 - Open-Meteo historical archive: https://open-meteo.com/en/docs/historical-weather-api — `https://archive-api.open-meteo.com/v1/archive`, coordinates, `start_date`, `end_date`, `daily`, `timezone=Asia/Colombo`. **Historical reanalysis may incorporate information unavailable on the historic issuance date**; document this limitation. Prefer lagged observed/published weather only, and investigate archived historical forecasts if evaluating issuance-time conditions.
 - Open-Meteo terms/licensing: https://open-meteo.com/ — attribution required; review rate limits and suitability of API tier.
@@ -57,13 +57,13 @@ Place this file at repository root as `IMPLEMENTATION_PLAN.md`. Every coding age
 
 ### Suggested parallel agent roles
 
-| Role | Responsibility | Owns |
-|---|---|---|
-| Agent A — Data | Source audit, ingestion, normalization, provenance, freshness | `services/ml/src/ingestion`, `data/manifest*`, data tests |
-| Agent B — ML | Feature/label design, baselines, model, backtesting/calibration | `services/ml/src/features`, `training`, `evaluation`, ML tests |
-| Agent C — API | Node routes, Mongo schemas/indexes, service integration | `apps/api`, API tests |
-| Agent D — UI | React screens, design system, charts/maps, Playwright | `apps/web`, UI tests |
-| Integrator (human owner) | Schema decisions, QA gates, integration, release and submission | `packages/contracts`, CI, docs, final merge |
+| Role                     | Responsibility                                                  | Owns                                                           |
+| ------------------------ | --------------------------------------------------------------- | -------------------------------------------------------------- |
+| Agent A — Data           | Source audit, ingestion, normalization, provenance, freshness   | `services/ml/src/ingestion`, `data/manifest*`, data tests      |
+| Agent B — ML             | Feature/label design, baselines, model, backtesting/calibration | `services/ml/src/features`, `training`, `evaluation`, ML tests |
+| Agent C — API            | Node routes, Mongo schemas/indexes, service integration         | `apps/api`, API tests                                          |
+| Agent D — UI             | React screens, design system, charts/maps, Playwright           | `apps/web`, UI tests                                           |
+| Integrator (human owner) | Schema decisions, QA gates, integration, release and submission | `packages/contracts`, CI, docs, final merge                    |
 
 For a three-person team, combine responsibilities as needed; the human owner accepts each phase. **No agent may mark its own work accepted without independent verification.**
 
@@ -168,16 +168,16 @@ DengueAhead/
 
 ### Data design — required MongoDB collections
 
-| Collection | Purpose | Required fields | Index |
-|---|---|---|---|
-| `source_snapshots` | immutable source audit | `sourceId`, `sourceUrl`, `observedPeriod`, `retrievedAt`, `sha256`, `licenceStatus`, `parserVersion`, `status`, `error` | unique `(sourceId, sha256)` |
-| `areas` | official geographic registry | `areaId`, `name`, `level`, `parentAreaId`, `centroid`, `geometryRef`, `population`, `populationYear` | unique `areaId`; geospatial only if actual geometry stored |
-| `dengue_weekly` | normalized aggregate counts | `areaId`, `weekStart`, `weekEnd`, `cases`, `sourceSnapshotId`, `reportedAt`, `revision`, `qualityFlags` | unique `(areaId, weekStart, revision)`; query `(areaId, weekStart)` |
-| `weather_weekly` | joined weather aggregates | `areaId`, `weekStart`, `rainMm`, `tempC`, `humidityPct`, `provider`, `availableAt`, `qualityFlags` | unique `(areaId, weekStart, provider)` |
-| `feature_snapshots` | reproducible as-of features | `areaId`, `issueDate`, `targetWeek`, `featureSetVersion`, `features`, `sourceSnapshotIds` | `(areaId, issueDate, featureSetVersion)` |
-| `model_runs` | training/evaluation evidence | `modelVersion`, `trainedAt`, `trainRange`, `testRange`, `targetDefinition`, `featureVersion`, `metrics`, `artifactSha256` | unique `modelVersion` |
-| `predictions` | published forecasts | `areaId`, `issueDate`, `targetWeek`, `modelVersion`, `pointForecast`, `interval`, `riskProbability`, `status`, `confidenceStatus`, `qualityFlags`, `asOfDate` | unique `(areaId, targetWeek, modelVersion, issueDate)` |
-| `pipeline_runs` | operations/monitoring | `runId`, `startedAt`, `endedAt`, `step`, `status`, `counts`, `errors` | unique `runId` |
+| Collection          | Purpose                      | Required fields                                                                                                                                               | Index                                                               |
+| ------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `source_snapshots`  | immutable source audit       | `sourceId`, `sourceUrl`, `observedPeriod`, `retrievedAt`, `sha256`, `licenceStatus`, `parserVersion`, `status`, `error`                                       | unique `(sourceId, sha256)`                                         |
+| `areas`             | official geographic registry | `areaId`, `name`, `level`, `parentAreaId`, `centroid`, `geometryRef`, `population`, `populationYear`                                                          | unique `areaId`; geospatial only if actual geometry stored          |
+| `dengue_weekly`     | normalized aggregate counts  | `areaId`, `weekStart`, `weekEnd`, `cases`, `sourceSnapshotId`, `reportedAt`, `revision`, `qualityFlags`                                                       | unique `(areaId, weekStart, revision)`; query `(areaId, weekStart)` |
+| `weather_weekly`    | joined weather aggregates    | `areaId`, `weekStart`, `rainMm`, `tempC`, `humidityPct`, `provider`, `availableAt`, `qualityFlags`                                                            | unique `(areaId, weekStart, provider)`                              |
+| `feature_snapshots` | reproducible as-of features  | `areaId`, `issueDate`, `targetWeek`, `featureSetVersion`, `features`, `sourceSnapshotIds`                                                                     | `(areaId, issueDate, featureSetVersion)`                            |
+| `model_runs`        | training/evaluation evidence | `modelVersion`, `trainedAt`, `trainRange`, `testRange`, `targetDefinition`, `featureVersion`, `metrics`, `artifactSha256`                                     | unique `modelVersion`                                               |
+| `predictions`       | published forecasts          | `areaId`, `issueDate`, `targetWeek`, `modelVersion`, `pointForecast`, `interval`, `riskProbability`, `status`, `confidenceStatus`, `qualityFlags`, `asOfDate` | unique `(areaId, targetWeek, modelVersion, issueDate)`              |
+| `pipeline_runs`     | operations/monitoring        | `runId`, `startedAt`, `endedAt`, `step`, `status`, `counts`, `errors`                                                                                         | unique `runId`                                                      |
 
 **Contracts:** `areaId` is a stable code, not a human-readable name; dates use ISO-8601 and explicitly stored UTC instants plus Sri Lankan local reporting week; counts are nonnegative integers or `null` with reason; probabilities are `[0, 1]` **only** if calibrated; intervals require documented method and coverage; no numeric `0` to represent missing data.
 
@@ -187,7 +187,7 @@ DengueAhead/
 - Issue time: publication-aware weekly cutoff; no features published after cutoff.
 - Horizon: **next fully unseen reporting week**; optional week +2 only after validation.
 - Regression label: `cases(area, target_week)`; optionally incidence per 100,000 if population denominator matches geography/time.
-- Emerging-event label: a **pre-registered** area-specific threshold (e.g. surpassing a rolling seasonal percentile *estimated only on training history*) **and** current week not already above threshold. Freeze this definition in `docs/EVALUATION.md` before scoring.
+- Emerging-event label: a **pre-registered** area-specific threshold (e.g. surpassing a rolling seasonal percentile _estimated only on training history_) **and** current week not already above threshold. Freeze this definition in `docs/EVALUATION.md` before scoring.
 - States: `EMERGING` (not currently high, expected to cross threshold), `PERSISTENT` (currently high, remains high), `COOLING` (currently high, predicted below threshold), `STABLE` (otherwise), `WITHHELD` (cannot make warranted forecast).
 - Withheld rules: missing required lags, unreliable geography, unverified source, stale case reports beyond configured policy, unavailable model, failed schema validation, extreme out-of-distribution inputs with no documented safe handling.
 - **Important:** do not interpret an arbitrary classifier score as a calibrated probability. Avoid causal or medical claims from SHAP correlations.
@@ -198,7 +198,7 @@ DengueAhead/
 
 ### Visual direction
 
-**Brand:** DengueAhead — *See the next hotspot before it emerges.*  
+**Brand:** DengueAhead — _See the next hotspot before it emerges._  
 **Style:** credible public-health intelligence product; modern editorial typography, clean airy grids, restrained scientific visualization, high contrast, clear attribution, professional rather than alarmist.  
 **Palette:** deep navy `#0B1730` (text), ocean blue `#2563EB` (primary), teal `#0D9488` (positive/stable), amber `#D97706` (emerging), coral `#DC4754` (persistent/high), cool gray `#F5F7FB` (surface), white `#FFFFFF`. Use icons, labels and shapes **as well as color**.  
 **Type:** Inter or another openly licensed sans-serif.  
@@ -207,19 +207,19 @@ DengueAhead/
 
 ### Navigation and routes
 
-| Route | Page | Required content | Automated/manual acceptance |
-|---|---|---|---|
-| `/` | **Landing** | Hero message + two CTAs (“Explore risk map”, “See how it works”), product problem, 3-step explanation, trustworthy sample preview **clearly labeled**, real data sources, safety caveat, team/footer | CTAs work; clear non-clinical disclaimer; no fake live metrics |
-| `/app/overview` | **Overview dashboard** | Latest issuance/status, areas covered, emerging/persistent counts, top 5 emerging, current-vs-future comparison, source freshness | Filters keep counters/cards consistent; stale/empty states |
-| `/app/map` | **Risk map** | Leaflet choropleth **only if validated boundaries**, fallback geocoded circle markers or sortable area list; zoom/filter/legend; hover/click selects area | Correct area join; color+text semantics; graceful missing geometry |
-| `/app/areas/:areaId` | **Area detail** | Historical cases, next-week forecast and interval if validated, seasonal baseline, status, drivers, neighboring context if real, timestamps, warnings | One API-backed area only; chart has no made-up intervals |
-| `/app/compare` | **Comparison** | Compare up to 3 areas with aligned weeks, incidence/case-scale caveat, trends, risk changes | Equal dates and units; direct-link/share state |
-| `/app/history` | **Historical replay** | Choose historical issue week and view model forecast **as of that time**, reveal actual next week, baseline comparisons | Strict time cutoff; actual hidden until “Reveal outcome” |
-| `/app/model` | **Model and evaluation** | Model version, training range, dataset size, target, MAE/recall/precision/top-K, baseline table, calibration and limits | All metrics match backend run artifacts |
-| `/app/data-quality` | **Data quality** | Source registry, last observed/retrieved, missing weeks, parse errors, licence status, area coverage, refresh failures | Meaningful offline/failure views; no false “live” indicator |
-| `/methodology` | **Public methodology** | What is forecast, how risk is defined, data sources, backtesting, limitations, non-clinical statement | Link from every forecast; readable on mobile |
-| `/about` | **About/team/contact** | EchoBinary, project goals, data attribution, AI-assistance disclosure, GitHub link, limitations | No invented contact details; attribution visible |
-| `*` | **404/error boundary** | Useful recovery links and retry | Test bad paths, API errors, no crash |
+| Route                | Page                     | Required content                                                                                                                                                                                     | Automated/manual acceptance                                        |
+| -------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `/`                  | **Landing**              | Hero message + two CTAs (“Explore risk map”, “See how it works”), product problem, 3-step explanation, trustworthy sample preview **clearly labeled**, real data sources, safety caveat, team/footer | CTAs work; clear non-clinical disclaimer; no fake live metrics     |
+| `/app/overview`      | **Overview dashboard**   | Latest issuance/status, areas covered, emerging/persistent counts, top 5 emerging, current-vs-future comparison, source freshness                                                                    | Filters keep counters/cards consistent; stale/empty states         |
+| `/app/map`           | **Risk map**             | Leaflet choropleth **only if validated boundaries**, fallback geocoded circle markers or sortable area list; zoom/filter/legend; hover/click selects area                                            | Correct area join; color+text semantics; graceful missing geometry |
+| `/app/areas/:areaId` | **Area detail**          | Historical cases, next-week forecast and interval if validated, seasonal baseline, status, drivers, neighboring context if real, timestamps, warnings                                                | One API-backed area only; chart has no made-up intervals           |
+| `/app/compare`       | **Comparison**           | Compare up to 3 areas with aligned weeks, incidence/case-scale caveat, trends, risk changes                                                                                                          | Equal dates and units; direct-link/share state                     |
+| `/app/history`       | **Historical replay**    | Choose historical issue week and view model forecast **as of that time**, reveal actual next week, baseline comparisons                                                                              | Strict time cutoff; actual hidden until “Reveal outcome”           |
+| `/app/model`         | **Model and evaluation** | Model version, training range, dataset size, target, MAE/recall/precision/top-K, baseline table, calibration and limits                                                                              | All metrics match backend run artifacts                            |
+| `/app/data-quality`  | **Data quality**         | Source registry, last observed/retrieved, missing weeks, parse errors, licence status, area coverage, refresh failures                                                                               | Meaningful offline/failure views; no false “live” indicator        |
+| `/methodology`       | **Public methodology**   | What is forecast, how risk is defined, data sources, backtesting, limitations, non-clinical statement                                                                                                | Link from every forecast; readable on mobile                       |
+| `/about`             | **About/team/contact**   | EchoBinary, project goals, data attribution, AI-assistance disclosure, GitHub link, limitations                                                                                                      | No invented contact details; attribution visible                   |
+| `*`                  | **404/error boundary**   | Useful recovery links and retry                                                                                                                                                                      | Test bad paths, API errors, no crash                               |
 
 ### Wireframe: landing
 
@@ -272,22 +272,22 @@ DengueAhead/
 
 All responses include a version marker and timestamps; use Zod or JSON Schema for runtime validation; TS types generated or shared from contracts. Standard error: `{ "error": { "code": "...", "message": "...", "requestId": "..." } }`.
 
-| Method/path | Purpose | Key fields / constraints |
-|---|---|---|
-| `GET /api/v1/health` | liveness | `status`, `apiVersion`, `timestamp` |
-| `GET /api/v1/readiness` | DB/data readiness | component status; 503 if unavailable |
-| `GET /api/v1/meta` | latest issue, geography, model | `level`, `issueDate`, `modelVersion`, `sourceStatus` |
-| `GET /api/v1/areas?query=&level=` | area registry | paginated list + population/geometry availability |
-| `GET /api/v1/overview?issueDate=` | national snapshot | count per status, top emerging, withheld count |
-| `GET /api/v1/predictions?issueDate=&status=&limit=&cursor=` | ranked forecasts | filters/sort, quality flags, calibrated risk only if available |
-| `GET /api/v1/areas/:areaId` | single area | name, geography, metadata |
-| `GET /api/v1/areas/:areaId/series?from=&to=` | observed history | weekly count and source completeness |
-| `GET /api/v1/areas/:areaId/forecast?issueDate=` | area forecast | point, interval nullable, status, explanation, provenance |
-| `GET /api/v1/compare?areaIds=A,B,C&issueDate=` | consistent comparison | max 3, units, timeline |
-| `GET /api/v1/backtests?modelVersion=&issueDate=` | historical predictions | predictions, optional actual after reveal action (UI only) |
-| `GET /api/v1/evaluation?modelVersion=` | evaluation | actual baseline comparison and model metadata |
-| `GET /api/v1/sources` | data audit | source and licence status, freshness, coverage, errors |
-| `GET /api/v1/methodology` | methodology metadata | target, thresholds, known limitations |
+| Method/path                                                 | Purpose                        | Key fields / constraints                                       |
+| ----------------------------------------------------------- | ------------------------------ | -------------------------------------------------------------- |
+| `GET /api/v1/health`                                        | liveness                       | `status`, `apiVersion`, `timestamp`                            |
+| `GET /api/v1/readiness`                                     | DB/data readiness              | component status; 503 if unavailable                           |
+| `GET /api/v1/meta`                                          | latest issue, geography, model | `level`, `issueDate`, `modelVersion`, `sourceStatus`           |
+| `GET /api/v1/areas?query=&level=`                           | area registry                  | paginated list + population/geometry availability              |
+| `GET /api/v1/overview?issueDate=`                           | national snapshot              | count per status, top emerging, withheld count                 |
+| `GET /api/v1/predictions?issueDate=&status=&limit=&cursor=` | ranked forecasts               | filters/sort, quality flags, calibrated risk only if available |
+| `GET /api/v1/areas/:areaId`                                 | single area                    | name, geography, metadata                                      |
+| `GET /api/v1/areas/:areaId/series?from=&to=`                | observed history               | weekly count and source completeness                           |
+| `GET /api/v1/areas/:areaId/forecast?issueDate=`             | area forecast                  | point, interval nullable, status, explanation, provenance      |
+| `GET /api/v1/compare?areaIds=A,B,C&issueDate=`              | consistent comparison          | max 3, units, timeline                                         |
+| `GET /api/v1/backtests?modelVersion=&issueDate=`            | historical predictions         | predictions, optional actual after reveal action (UI only)     |
+| `GET /api/v1/evaluation?modelVersion=`                      | evaluation                     | actual baseline comparison and model metadata                  |
+| `GET /api/v1/sources`                                       | data audit                     | source and licence status, freshness, coverage, errors         |
+| `GET /api/v1/methodology`                                   | methodology metadata           | target, thresholds, known limitations                          |
 
 **API requirements:** capped pagination, date validation, strict area ID matching, no Mongo query operator injection, structured error logging, correlation IDs, CORS allowlist, sensible read timeouts, rate limiting. Only read endpoints exposed publicly; Python jobs write to DB via an independently configured service credential. Disable arbitrary Python execution from HTTP.
 
@@ -316,16 +316,16 @@ Sample **shape only** (not a real forecast):
 
 ### Test layers and commands
 
-| Layer | Recommended tools | Required checks |
-|---|---|---|
-| Python unit | `pytest`, `ruff`, `mypy` optional | parsers, normalization, lag functions, targets, leakage, quality |
-| Python integration | `pytest` + fixture snapshots + test Mongo | extract → normalize → features → train → forecast → publish |
-| Node unit/API | Vitest/Jest + Supertest + Zod | validation, service mapping, errors, pagination, query guards |
-| Mongo integration | disposable Docker Mongo or Testcontainers | indexes, upsert idempotence, latest revision resolution |
-| React unit | Vitest + Testing Library + axe checks | UI states, sorting, filters, badges, graph labels |
-| Browser E2E | Playwright | landing → overview → map → area → history → quality; mobile |
-| Full-system | Docker Compose + seeded verified fixture | Python publishes → Mongo → Node → React end to end |
-| Reliability/security | failure injection + `npm audit`/`pip-audit` | disconnected sources, stale data, malformed API, no secrets |
+| Layer                | Recommended tools                           | Required checks                                                  |
+| -------------------- | ------------------------------------------- | ---------------------------------------------------------------- |
+| Python unit          | `pytest`, `ruff`, `mypy` optional           | parsers, normalization, lag functions, targets, leakage, quality |
+| Python integration   | `pytest` + fixture snapshots + test Mongo   | extract → normalize → features → train → forecast → publish      |
+| Node unit/API        | Vitest/Jest + Supertest + Zod               | validation, service mapping, errors, pagination, query guards    |
+| Mongo integration    | disposable Docker Mongo or Testcontainers   | indexes, upsert idempotence, latest revision resolution          |
+| React unit           | Vitest + Testing Library + axe checks       | UI states, sorting, filters, badges, graph labels                |
+| Browser E2E          | Playwright                                  | landing → overview → map → area → history → quality; mobile      |
+| Full-system          | Docker Compose + seeded verified fixture    | Python publishes → Mongo → Node → React end to end               |
+| Reliability/security | failure injection + `npm audit`/`pip-audit` | disconnected sources, stale data, malformed API, no secrets      |
 
 Use a **small deterministic test fixture** (synthetic clearly marked as test-only) for CI; use a **small verified real-data snapshot** for a separate documented integration/demo run, subject to source licence. Do not require live networks for CI.
 
@@ -364,6 +364,7 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 > Detailed specification: `plans/PHASE_0_IMPLEMENTATION_PLAN.md`.
 
 **Agent tasks (automated):**
+
 - [ ] Initialize monorepo, npm workspaces, Python project, `.editorconfig`, `.gitignore`, `.env.example`, Docker Compose Mongo.
 - [ ] Set TypeScript strict mode and shared contract schemas.
 - [ ] Scaffold Express `/health` + React shell + Python `--help` CLI.
@@ -371,6 +372,7 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 - [ ] Add `README.md`, `AGENTS.md`, issue board and phase evidence folders.
 
 **Human/manual tasks:**
+
 - [ ] Verify all team members can clone/run; decide code ownership and branch rules.
 - [ ] Confirm revised Nov 5 deadline from organizers; verify current submission upload requirements.
 - [ ] Create repository and set it public **by submission**, not necessarily immediately.
@@ -384,6 +386,7 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 ### Phase 1 — Data acquisition, rights, provenance, geographic feasibility (29–30 Oct)
 
 **Agent tasks (automated):**
+
 - [ ] Inspect official NDCU downloadable reports and find actual downloadable case counts + time/geography coverage.
 - [ ] Write a **machine-readable source manifest** (URL, owner, retrievedAt, observation period, licence, format, SHA-256, parser version).
 - [ ] Implement document fetch with bounded retries, timeout, content-type validation and raw-snapshot storage.
@@ -394,6 +397,7 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 - [ ] Implement Mongo `source_snapshots`, `areas`, `dengue_weekly` and `weather_weekly` schema and idempotent upserts.
 
 **Human/manual tasks:**
+
 - [ ] Open at least 3 reports from different dates; verify parser numbers manually against original pages.
 - [ ] Verify rights/terms/robots/attribution; record proof and restrictions.
 - [ ] **Go/no-go:** choose MOH only if enough historical area-week records; otherwise choose district and document rationale.
@@ -401,6 +405,7 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 - [ ] Inspect 10 randomly sampled area-week records for accuracy.
 
 **Unit test cases:**
+
 - `DATA-01` duplicated document hash is idempotent.
 - `DATA-02` missing week remains missing, never becomes zero.
 - `DATA-03` inconsistent area aliases resolve or get quarantined.
@@ -416,6 +421,7 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 ### Phase 2 — Labels, features and baseline forecasts (30–31 Oct)
 
 **Agent tasks (automated):**
+
 - [ ] Define prediction issue cutoff, next-week label, high-risk threshold and emerging-state criteria.
 - [ ] Construct area-wise lag 1–4 case counts, weekly growth, moving averages and seasonality.
 - [ ] Build optional weather lag 1–3 weeks, using only historically available observations.
@@ -424,11 +430,13 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 - [ ] Generate train/validation/test splits and rolling temporal folds, persist exact dates.
 
 **Human/manual tasks:**
+
 - [ ] Review one complete area's feature values by hand for two consecutive issue dates.
 - [ ] Agree whether evaluation measures raw counts or per-capita incidence; freeze threshold definition.
 - [ ] Check baseline forecast plausibility in high- and low-incidence areas.
 
 **Unit test cases:**
+
 - `FEAT-01` changing target-week cases cannot change current-week features.
 - `FEAT-02` lags never use data after issue cutoff.
 - `FEAT-03` moving average excludes target period.
@@ -444,6 +452,7 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 ### Phase 3 — ML training, backtesting, explainability, uncertainty (31 Oct–1 Nov)
 
 **Agent tasks (automated):**
+
 - [ ] Train regularized logistic classifier (if risk target) and LightGBM/XGBoost (regression and/or classification) with fixed seeds/versioned configs.
 - [ ] Tune on rolling validation only; reserve a later untouched test window.
 - [ ] Evaluate MAE (case counts), future-hotspot recall, precision, top-K recall, lead time; Brier/reliability only for risk probability.
@@ -454,11 +463,13 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 - [ ] Persist `modelVersion`, feature set hash, dataset hash, split date ranges, metrics and serialized artifact hash.
 
 **Human/manual tasks:**
+
 - [ ] Inspect confusion cases: false alarm, missed hotspot, unusual region/week.
 - [ ] Audit 3 replay examples and verify historical availability of every input.
 - [ ] Decide honest model-selection outcome; approve metrics for presentation.
 
 **Unit test cases:**
+
 - `ML-01` same version/seed/data produces acceptably reproducible metrics.
 - `ML-02` model cannot read target or future features during fitting/inference.
 - `ML-03` probabilities in `[0,1]`; invalid/uncalibrated → `null` or flagged, never fake precision.
@@ -474,6 +485,7 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 ### Phase 4 — Reliable forecast publishing and Node API (1–2 Nov)
 
 **Agent tasks (automated):**
+
 - [ ] Implement Python `predict` batch with required data-quality gating and idempotent versioned publish.
 - [ ] Implement all `/api/v1` routes with controller/service/repository separation.
 - [ ] Use Mongo indexes, projection, pagination and validated query params.
@@ -482,11 +494,13 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 - [ ] Generate OpenAPI schema and contract fixtures for frontend.
 
 **Human/manual tasks:**
+
 - [ ] Examine actual example response for every endpoint; check reported numbers against Mongo and source snapshot.
 - [ ] Confirm only public read endpoints accessible; review secret handling.
 - [ ] Verify no stale forecast is labeled current.
 
 **Unit test cases:**
+
 - `API-01` nonexistent area → 404.
 - `API-02` invalid date/status/limit → 400 with structured error.
 - `API-03` Mongo downtime → 503, not empty success.
@@ -502,6 +516,7 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 ### Phase 5 — React design system, landing and full dashboard experience (2–3 Nov)
 
 **Agent tasks (automated):**
+
 - [ ] Scaffold React/Vite TypeScript, router, TanStack Query, chart library (Recharts), Leaflet, icons, accessible component primitives and CSS/Tailwind design tokens.
 - [ ] Build landing with responsive hero, illustrative preview label, CTAs, methodology and attribution footer.
 - [ ] Build app shell with side nav, mobile nav, date/granularity selector and global data-status chip.
@@ -511,12 +526,14 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 - [ ] Use real geometric files only if legally usable and mapping to area IDs is verified.
 
 **Human/manual tasks:**
+
 - [ ] Design review across desktop/tablet/mobile; contrast and keyboard check.
 - [ ] Verify map colors and legend match status text; verify no map implies more spatial precision than source supports.
 - [ ] Verify all wording is non-clinical and cautions that outputs aid, not replace, public-health judgement.
 - [ ] Check 5 real area detail screens and source timestamps manually.
 
 **Unit test cases:**
+
 - `UI-01` landing CTAs navigate properly.
 - `UI-02` empty data renders honest empty state.
 - `UI-03` withheld result does not display numeric forecast.
@@ -533,6 +550,7 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 ### Phase 6 — System reliability, end-to-end validation and UX polish (3–4 Nov)
 
 **Agent tasks (automated):**
+
 - [ ] Add source/update status badges and explicit fail-safe messages.
 - [ ] Run entire Compose system from scratch and real-data smoke test.
 - [ ] Add Mongo index checks, dependency audit, secret scan, React error boundary, retry policies.
@@ -541,6 +559,7 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 - [ ] Validate all final artifact outputs against code and dataset manifests.
 
 **Human/manual tasks:**
+
 - [ ] Verify 3 genuine predictions from original raw source → feature → score → API → UI.
 - [ ] Perform demo rehearsal with network unavailable; identify fallback behavior.
 - [ ] Ask teammate not involved in implementation to follow README on a clean machine.
@@ -555,6 +574,7 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 ### Phase 7 — Submission freeze and final delivery (4–5 Nov)
 
 **Agent tasks (automated):**
+
 - [ ] Generate test report, source coverage table, architecture diagram, model card, and evaluated metrics table from recorded artifacts.
 - [ ] Write technical report: system architecture, stack/choice rationale, final dataset and its temporality/gaps, proposal-vs-built deviations, experiments, baselines, failures, ethical/privacy/licence notes.
 - [ ] Write 2-page summary with actual user problem, prediction, data, method, performance, demo screenshots and limits.
@@ -563,6 +583,7 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 - [ ] Final `lint`, typecheck, unit, integration, E2E, build, security and clean-install tests.
 
 **Human/manual tasks:**
+
 - [ ] Record real-data demo, narrate provenance and an emerging-hotspot insight; show baseline comparison and fail-safe behavior.
 - [ ] Inspect public GitHub while logged out (repository, code, README, licence, runnable instructions).
 - [ ] Remove credentials, tokens, personal data and unsupported copyrighted source files from commits/history.
@@ -580,25 +601,25 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 
 ## 8. Master test matrix — release blocker list
 
-| ID | Scenario | Expected behavior | Owner |
-|---|---|---|---|
-| E2E-01 | Fresh clone + local startup | documented scripts run without hidden manual steps | Integrator |
-| E2E-02 | Real dengue report ingested | totals match source sample and provenance stored | Data |
-| E2E-03 | Duplicate source fetched | no duplicate effective weekly counts | Data |
-| E2E-04 | Missing historic week | quality flag; no fake zero | Data |
-| E2E-05 | Weather source unavailable | labeled stale/missing, no silent replacement | Data/API |
-| E2E-06 | Historical replay | zero future observation leakage | ML |
-| E2E-07 | Model worse than baseline | UI/report states failure; baselines shown | ML/UI |
-| E2E-08 | Uncalibrated model | no percent probability presented as calibrated | ML/API/UI |
-| E2E-09 | Incomplete current reporting | WITHHELD response and clear dashboard state | ML/API/UI |
-| E2E-10 | Valid prediction | trace source → feature → model → Mongo → API → UI | All |
-| E2E-11 | Changed target week | every KPI/chart/list synchronized | API/UI |
-| E2E-12 | Area map mismatch | quarantined/fallback, never misleading polygon | Data/UI |
-| E2E-13 | Mongo unreachable | readiness 503; frontend recovery state | API/UI |
-| E2E-14 | 360 px mobile + keyboard | navigable without overflow/map dependency | UI |
-| E2E-15 | Old model artifact missing | forecast withheld, no stale model as current | ML/API |
-| E2E-16 | Public logged-out repo | clone works and no secret exposed | Integrator |
-| E2E-17 | Demo replay | reproducible forecast/backtest and explicit limits | All |
+| ID     | Scenario                     | Expected behavior                                  | Owner      |
+| ------ | ---------------------------- | -------------------------------------------------- | ---------- |
+| E2E-01 | Fresh clone + local startup  | documented scripts run without hidden manual steps | Integrator |
+| E2E-02 | Real dengue report ingested  | totals match source sample and provenance stored   | Data       |
+| E2E-03 | Duplicate source fetched     | no duplicate effective weekly counts               | Data       |
+| E2E-04 | Missing historic week        | quality flag; no fake zero                         | Data       |
+| E2E-05 | Weather source unavailable   | labeled stale/missing, no silent replacement       | Data/API   |
+| E2E-06 | Historical replay            | zero future observation leakage                    | ML         |
+| E2E-07 | Model worse than baseline    | UI/report states failure; baselines shown          | ML/UI      |
+| E2E-08 | Uncalibrated model           | no percent probability presented as calibrated     | ML/API/UI  |
+| E2E-09 | Incomplete current reporting | WITHHELD response and clear dashboard state        | ML/API/UI  |
+| E2E-10 | Valid prediction             | trace source → feature → model → Mongo → API → UI  | All        |
+| E2E-11 | Changed target week          | every KPI/chart/list synchronized                  | API/UI     |
+| E2E-12 | Area map mismatch            | quarantined/fallback, never misleading polygon     | Data/UI    |
+| E2E-13 | Mongo unreachable            | readiness 503; frontend recovery state             | API/UI     |
+| E2E-14 | 360 px mobile + keyboard     | navigable without overflow/map dependency          | UI         |
+| E2E-15 | Old model artifact missing   | forecast withheld, no stale model as current       | ML/API     |
+| E2E-16 | Public logged-out repo       | clone works and no secret exposed                  | Integrator |
+| E2E-17 | Demo replay                  | reproducible forecast/backtest and explicit limits | All        |
 
 **Release rule:** No unresolved P0 defects. Record any remaining P1/P2 limitation in `docs/LIMITATIONS.md` and final report.
 
@@ -653,12 +674,12 @@ npm run dev:web
 
 ## 10. Judging alignment and evidence to show
 
-| ModelX implementation scoring | Weight | Concrete proof to include |
-|---|---:|---|
-| **Data work** | **30%** | official source samples, extraction code, coverage/quality report, licensing, temporality, last refresh and failure handling |
-| **Insight delivered** | **25%** | verified historical emerging-area example, risk-vs-current ranking, top-K or lead-time comparison |
-| **Engineering quality** | **25%** | modular stack, contracts, clean build, CI, test results, commit history, transparent report |
-| **Functionality demonstrated** | **20%** | 3-minute real-data run: ingestion/source → prediction → dashboard → historical replay → fail-safe |
+| ModelX implementation scoring  |  Weight | Concrete proof to include                                                                                                    |
+| ------------------------------ | ------: | ---------------------------------------------------------------------------------------------------------------------------- |
+| **Data work**                  | **30%** | official source samples, extraction code, coverage/quality report, licensing, temporality, last refresh and failure handling |
+| **Insight delivered**          | **25%** | verified historical emerging-area example, risk-vs-current ranking, top-K or lead-time comparison                            |
+| **Engineering quality**        | **25%** | modular stack, contracts, clean build, CI, test results, commit history, transparent report                                  |
+| **Functionality demonstrated** | **20%** | 3-minute real-data run: ingestion/source → prediction → dashboard → historical replay → fail-safe                            |
 
 **Video storyboard (180 seconds maximum):**
 
@@ -749,16 +770,16 @@ Produce an evidence-based GO / NO-GO decision and exact blockers; never invent p
 
 ## 13. Practical day-by-day priority board
 
-| Date | Absolute priority | Completion evidence |
-|---|---|---|
+| Date           | Absolute priority                                           | Completion evidence                                  |
+| -------------- | ----------------------------------------------------------- | ---------------------------------------------------- |
 | **Thu 29 Oct** | scaffold + **verify actual dengue data** + decide geography | source manifest, sample extracted records, repo boot |
-| **Fri 30 Oct** | ingestion/normalization and leakage-safe features | verified real data in Mongo, parser/feature tests |
-| **Sat 31 Oct** | baseline and ML backtest | evaluation JSON, model card draft, leakage tests |
-| **Sun 1 Nov** | inference publishing and complete API | prediction record + Node routes + integration tests |
-| **Mon 2 Nov** | polished landing and core dashboards | overview/map/area detail with real API data |
-| **Tue 3 Nov** | remaining routes, quality states, historical replay | all critical E2E flows pass |
-| **Wed 4 Nov** | full-system QA, technical report, summary and video | test run, report artifacts, recorded demo |
-| **Thu 5 Nov** | final fixes, independent verification and submission | public repo, submitted files and receipt |
+| **Fri 30 Oct** | ingestion/normalization and leakage-safe features           | verified real data in Mongo, parser/feature tests    |
+| **Sat 31 Oct** | baseline and ML backtest                                    | evaluation JSON, model card draft, leakage tests     |
+| **Sun 1 Nov**  | inference publishing and complete API                       | prediction record + Node routes + integration tests  |
+| **Mon 2 Nov**  | polished landing and core dashboards                        | overview/map/area detail with real API data          |
+| **Tue 3 Nov**  | remaining routes, quality states, historical replay         | all critical E2E flows pass                          |
+| **Wed 4 Nov**  | full-system QA, technical report, summary and video         | test run, report artifacts, recorded demo            |
+| **Thu 5 Nov**  | final fixes, independent verification and submission        | public repo, submitted files and receipt             |
 
 ### No-go triggers and emergency fallback
 

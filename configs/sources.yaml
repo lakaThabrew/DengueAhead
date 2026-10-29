@@ -1,20 +1,19 @@
 # DengueAhead Data Sources Configuration
 sources:
   ndcu:
-    name: "National Dengue Control Unit (NDCU) Sri Lanka"
-    baseUrl: "https://www.dengue.health.gov.lk/weekly-report/"
-    format: "pdf_html"
-    geographicLevel: "district"
-    updateFrequency: "weekly"
-    licence: "Open Government Data / Attribution Required"
+    name: 'National Dengue Control Unit (NDCU) Sri Lanka'
+    baseUrl: 'https://www.dengue.health.gov.lk/weekly-report/'
+    format: 'pdf_html'
+    geographicLevel: 'district'
+    updateFrequency: 'weekly'
+    licence: 'Open Government Data / Attribution Required'
 
   open_meteo:
-    name: "Open-Meteo Historical Weather API"
-    baseUrl: "https://archive-api.open-meteo.com/v1/archive"
-    timezone: "Asia/Colombo"
+    name: 'Open-Meteo Historical Weather API'
+    baseUrl: 'https://archive-api.open-meteo.com/v1/archive'
+    timezone: 'Asia/Colombo'
     variables:
-      - "temperature_2m_mean"
-      - "precipitation_sum"
-      - "relative_humidity_2m_mean"
-    licence: "Attribution Required (Open-Meteo)"
-
+      - 'temperature_2m_mean'
+      - 'precipitation_sum'
+      - 'relative_humidity_2m_mean'
+    licence: 'Attribution Required (Open-Meteo)'

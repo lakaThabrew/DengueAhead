@@ -12,4 +12,3 @@ Every coding agent working in this repository must strictly adhere to the follow
 8. **Keep Trunk Green:** Code merged into the main branch must compile, pass TypeScript strict mode, and pass all unit tests.
 9. **Transparent Blockers:** When blocked, report evidence, impact, fallback options, and next experiments honestly. Never silently swap datasets or targets.
 10. **Evidence Capture:** Record all executed commands, test results, and known limitations in `docs/evidence/phase-N/`.
-

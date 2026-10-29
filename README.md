@@ -6,6 +6,7 @@
 ---
 
 ## Non-Clinical Safety & Ethical Disclaimer
+
 **DengueAhead is an educational decision-support research application.** It does not provide medical diagnosis, clinical triage, or patient prescription. It does not autonomously direct public-health interventions or replace professional epidemiological judgement.
 
 ---
@@ -35,11 +36,13 @@ DengueAhead/
 ## Quickstart & Local Setup
 
 ### 1. Prerequisites
+
 - **Node.js**: v18.0.0 or higher (v20+ recommended)
 - **Python**: 3.10+ (3.12 recommended)
 - **MongoDB**: 7.0+ (Local instance or Docker container)
 
 ### 2. Install Dependencies
+
 ```bash
 # Install Node workspaces dependencies
 npm install
@@ -49,11 +52,13 @@ pip install -e services/ml
 ```
 
 ### 3. Start Database
+
 ```bash
 docker compose up -d mongodb
 ```
 
 ### 4. Run Development Servers
+
 ```bash
 # Start API backend (runs on http://localhost:4000)
 npm run dev:api
@@ -65,6 +70,7 @@ npm run dev:web
 ---
 
 ## Testing & Verification
+
 ```bash
 # Typecheck all TypeScript workspaces
 npm run typecheck
@@ -79,6 +85,7 @@ pytest services/ml/tests
 ---
 
 ## Python ML CLI (`dengueahead`)
+
 ```bash
 # Display help and available commands
 dengueahead --help
@@ -92,4 +99,3 @@ dengueahead train            # Fit baselines and hotspot classification models
 dengueahead backtest         # Execute out-of-time rolling evaluation
 dengueahead predict          # Generate next-week hotspot predictions
 ```
-

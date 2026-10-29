@@ -30,21 +30,21 @@ Phase 0 contains **no business logic**: no real or synthetic epidemiological dat
 
 These were ambiguous in revision 1. They are now fixed so parallel agents do not diverge.
 
-| Topic | Decision | Rationale |
-|---|---|---|
-| Node version | Node 22 LTS (`.nvmrc` = `22`, `engines.node >= 22`) | Single pinned runtime in local + CI |
-| Module system | ESM everywhere (`"type": "module"`), `module: NodeNext` for Node packages, `Bundler` resolution for web | One system; avoids dual-package issues |
-| Express | Express **5.x** | Stable; async handler errors propagate natively |
-| Validation | Zod (v4 line) | Single source of truth; native `z.toJSONSchema` |
-| Contracts consumption | `exports` points at compiled `dist/`; build order enforced by root scripts (§3.2) | `npm run <x> --workspaces` is not dependency-aware |
-| Python CLI framework | `click` (group named `cli`) | Matches `dengueahead.cli.main:cli` entrypoint |
-| Python ↔ TS contract drift | Shared JSON fixtures consumed by both Zod tests and pytest, plus committed JSON Schema | Guards against the two type systems diverging |
-| Logging | `pino` + `pino-http` (structured JSON) | Structured logs with correlation ID |
-| Mongo driver | Official `mongodb` driver, used only for readiness ping in Phase 0 | Keeps API able to start while Mongo is down |
-| Health vs readiness | `/health` = liveness only (no DB). `/readiness` = DB check; **503** when any component is down | Master §5, E2E-13 |
-| Lint/format | ESLint (flat config) + Prettier at repo root; Ruff for Python | Master Phase 0 requirement |
-| Browser tests | Playwright at repo root `e2e/` | Master Phase 0 + §6 |
-| Repo directory names | Lowercase `plans/`; master plan file is `IMPLEMENTATION_PLAN.md` at repo root | Case-sensitive filesystems/CI; master §1 |
+| Topic                      | Decision                                                                                                | Rationale                                          |
+| -------------------------- | ------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| Node version               | Node 22 LTS (`.nvmrc` = `22`, `engines.node >= 22`)                                                     | Single pinned runtime in local + CI                |
+| Module system              | ESM everywhere (`"type": "module"`), `module: NodeNext` for Node packages, `Bundler` resolution for web | One system; avoids dual-package issues             |
+| Express                    | Express **5.x**                                                                                         | Stable; async handler errors propagate natively    |
+| Validation                 | Zod (v4 line)                                                                                           | Single source of truth; native `z.toJSONSchema`    |
+| Contracts consumption      | `exports` points at compiled `dist/`; build order enforced by root scripts (§3.2)                       | `npm run <x> --workspaces` is not dependency-aware |
+| Python CLI framework       | `click` (group named `cli`)                                                                             | Matches `dengueahead.cli.main:cli` entrypoint      |
+| Python ↔ TS contract drift | Shared JSON fixtures consumed by both Zod tests and pytest, plus committed JSON Schema                  | Guards against the two type systems diverging      |
+| Logging                    | `pino` + `pino-http` (structured JSON)                                                                  | Structured logs with correlation ID                |
+| Mongo driver               | Official `mongodb` driver, used only for readiness ping in Phase 0                                      | Keeps API able to start while Mongo is down        |
+| Health vs readiness        | `/health` = liveness only (no DB). `/readiness` = DB check; **503** when any component is down          | Master §5, E2E-13                                  |
+| Lint/format                | ESLint (flat config) + Prettier at repo root; Ruff for Python                                           | Master Phase 0 requirement                         |
+| Browser tests              | Playwright at repo root `e2e/`                                                                          | Master Phase 0 + §6                                |
+| Repo directory names       | Lowercase `plans/`; master plan file is `IMPLEMENTATION_PLAN.md` at repo root                           | Case-sensitive filesystems/CI; master §1           |
 
 ---
 
@@ -146,18 +146,18 @@ DengueAhead/
 4. `.nvmrc` = `22`.
 5. `.env.example` (no real secrets; each var commented):
 
-   | Variable | Example | Consumer |
-   |---|---|---|
-   | `NODE_ENV` | `development` | api |
-   | `PORT` | `4000` | api |
-   | `LOG_LEVEL` | `info` | api |
-   | `MONGODB_URI` | `mongodb://localhost:27017/dengueahead` | api (**read-only** credential in non-dev) — **required, no default** |
-   | `ML_MONGODB_WRITE_URI` | `mongodb://localhost:27017/dengueahead` | Python jobs (separate write credential; never used by API) |
-   | `MONGODB_TEST_URI` | `mongodb://localhost:27017/dengueahead_test` | integration tests only |
-   | `CORS_ORIGIN` | `http://localhost:5173` | api (comma-separated allowlist) |
-   | `API_BODY_LIMIT` | `100kb` | api |
-   | `RATE_LIMIT_WINDOW_MS` / `RATE_LIMIT_MAX` | `60000` / `120` | api |
-   | `VITE_API_BASE_URL` | `http://localhost:4000/api/v1` | web |
+   | Variable                                  | Example                                      | Consumer                                                             |
+   | ----------------------------------------- | -------------------------------------------- | -------------------------------------------------------------------- |
+   | `NODE_ENV`                                | `development`                                | api                                                                  |
+   | `PORT`                                    | `4000`                                       | api                                                                  |
+   | `LOG_LEVEL`                               | `info`                                       | api                                                                  |
+   | `MONGODB_URI`                             | `mongodb://localhost:27017/dengueahead`      | api (**read-only** credential in non-dev) — **required, no default** |
+   | `ML_MONGODB_WRITE_URI`                    | `mongodb://localhost:27017/dengueahead`      | Python jobs (separate write credential; never used by API)           |
+   | `MONGODB_TEST_URI`                        | `mongodb://localhost:27017/dengueahead_test` | integration tests only                                               |
+   | `CORS_ORIGIN`                             | `http://localhost:5173`                      | api (comma-separated allowlist)                                      |
+   | `API_BODY_LIMIT`                          | `100kb`                                      | api                                                                  |
+   | `RATE_LIMIT_WINDOW_MS` / `RATE_LIMIT_MAX` | `60000` / `120`                              | api                                                                  |
+   | `VITE_API_BASE_URL`                       | `http://localhost:4000/api/v1`               | web                                                                  |
 
 6. `docker-compose.yml`:
    - Service **`mongodb`** (name is mandatory: master runs `docker compose up -d mongodb`), image `mongo:7.0`.
@@ -189,10 +189,11 @@ DengueAhead/
      }
    }
    ```
+
 3. `tsconfig.base.json`: `strict: true`, `noImplicitAny: true`, `noUncheckedIndexedAccess: true`, `esModuleInterop: true`, `forceConsistentCasingInFileNames: true`, `isolatedModules: true`, `skipLibCheck: true`, `target: ES2022`.
 4. ESLint flat config (typescript-eslint, `eslint-plugin-react-hooks`, `eslint-plugin-jsx-a11y`) and Prettier config at the root. Python linting is Ruff (Task 0.6).
 5. Playwright installed at root with `playwright.config.ts` using `webServer` entries to start API (port 4000) and web (port 5173).
-6. `configs/sources.yaml` and `configs/model.yaml` templates. `sources.yaml` lists the sources from master §0 (NDCU weekly reports, Open-Meteo archive, DCS population) with `licenceStatus: unverified`, `verified: false`, and a header comment: *"Template. Nothing here is verified. Phase 1 must audit access, robots/terms and reuse rights before ingestion."* `model.yaml` holds only placeholder keys with `null` values, and no tuned numbers.
+6. `configs/sources.yaml` and `configs/model.yaml` templates. `sources.yaml` lists the sources from master §0 (NDCU weekly reports, Open-Meteo archive, DCS population) with `licenceStatus: unverified`, `verified: false`, and a header comment: _"Template. Nothing here is verified. Phase 1 must audit access, robots/terms and reuse rights before ingestion."_ `model.yaml` holds only placeholder keys with `null` values, and no tuned numbers.
 
 ### Task 0.3 — `@dengueahead/contracts`
 
@@ -202,13 +203,13 @@ DengueAhead/
 
 **Schemas** (fields follow master §3 collections and §5 API):
 
-| Schema | Fields and rules |
-|---|---|
-| `AreaSchema` | `areaId`, `name`, `level`, `parentAreaId` (nullable), `centroid` (`{lat, lon}` nullable, range-checked), `geometryRef` (nullable), `population` (nonneg int, **nullable**), `populationYear` (nullable; required iff `population` non-null) |
-| `WeeklyObservationSchema` | `areaId`, `weekStart`, `weekEnd` (= `weekStart`+6d), `cases` (**nonneg int or `null`**), `missingReason` (required iff `cases` null, else absent/null), `sourceSnapshotId`, `reportedAt`, `revision` (int ≥ 1), `qualityFlags`. **`0` never represents missing.** |
-| `SourceSnapshotSchema` | `sourceId`, `sourceUrl`, `observedPeriod` (`{from,to}`), `retrievedAt`, `sha256` (64 hex), `licenceStatus` (`'verified_open' \| 'permission_granted' \| 'restricted' \| 'unverified'`), `parserVersion`, `status` (`'success' \| 'partial' \| 'failed'`), `error` (nullable; required iff `status !== 'success'`) |
-| `PredictionSchema` | `areaId`, `geographicLevel`, `issueDate`, `targetWeek`, `asOfDate` (≤ `issueDate`), `modelVersion`, `status` (`EMERGING \| PERSISTENT \| COOLING \| STABLE \| WITHHELD`), `pointForecast` (nonneg or null), `interval` (null or `{lower, upper, method, coverage}` with `0 ≤ lower ≤ upper`, `coverage ∈ (0,1)`), `riskProbability` (null or `[0,1]`), `confidenceStatus` (`'CALIBRATED' \| 'UNCALIBRATED' \| 'NOT_AVAILABLE'`), `qualityFlags`, `sourceSnapshotIds` (string[]) |
-| `EvaluationMetricsSchema` | `modelVersion`, `trainedAt`, `trainRange`, `testRange` (`{from,to}`), `targetDefinition`, `featureVersion`, `artifactSha256` (nullable for baselines), `metrics` (`mae`, `topKRecall` + `k`, `precision`, `recall`, `leadTimeWeeks`, `brierScore` — **each nullable** = "not supported/not computed"), `baselinesComparison` (must contain all of `last_observation`, `rolling_average`, `seasonal`, each with its own `metrics`) |
+| Schema                    | Fields and rules                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AreaSchema`              | `areaId`, `name`, `level`, `parentAreaId` (nullable), `centroid` (`{lat, lon}` nullable, range-checked), `geometryRef` (nullable), `population` (nonneg int, **nullable**), `populationYear` (nullable; required iff `population` non-null)                                                                                                                                                                                                                                     |
+| `WeeklyObservationSchema` | `areaId`, `weekStart`, `weekEnd` (= `weekStart`+6d), `cases` (**nonneg int or `null`**), `missingReason` (required iff `cases` null, else absent/null), `sourceSnapshotId`, `reportedAt`, `revision` (int ≥ 1), `qualityFlags`. **`0` never represents missing.**                                                                                                                                                                                                               |
+| `SourceSnapshotSchema`    | `sourceId`, `sourceUrl`, `observedPeriod` (`{from,to}`), `retrievedAt`, `sha256` (64 hex), `licenceStatus` (`'verified_open' \| 'permission_granted' \| 'restricted' \| 'unverified'`), `parserVersion`, `status` (`'success' \| 'partial' \| 'failed'`), `error` (nullable; required iff `status !== 'success'`)                                                                                                                                                               |
+| `PredictionSchema`        | `areaId`, `geographicLevel`, `issueDate`, `targetWeek`, `asOfDate` (≤ `issueDate`), `modelVersion`, `status` (`EMERGING \| PERSISTENT \| COOLING \| STABLE \| WITHHELD`), `pointForecast` (nonneg or null), `interval` (null or `{lower, upper, method, coverage}` with `0 ≤ lower ≤ upper`, `coverage ∈ (0,1)`), `riskProbability` (null or `[0,1]`), `confidenceStatus` (`'CALIBRATED' \| 'UNCALIBRATED' \| 'NOT_AVAILABLE'`), `qualityFlags`, `sourceSnapshotIds` (string[]) |
+| `EvaluationMetricsSchema` | `modelVersion`, `trainedAt`, `trainRange`, `testRange` (`{from,to}`), `targetDefinition`, `featureVersion`, `artifactSha256` (nullable for baselines), `metrics` (`mae`, `topKRecall` + `k`, `precision`, `recall`, `leadTimeWeeks`, `brierScore` — **each nullable** = "not supported/not computed"), `baselinesComparison` (must contain all of `last_observation`, `rolling_average`, `seasonal`, each with its own `metrics`)                                               |
 
 **Cross-field invariants (enforced with `superRefine`, each with a unit test):**
 
@@ -220,17 +221,18 @@ DengueAhead/
 
 **API envelope types (`api.schema.ts`):**
 
-| Schema | Shape |
-|---|---|
-| `HealthResponseSchema` | `{ status: 'ok' \| 'degraded' \| 'error', apiVersion: string, timestamp: IsoInstant }` (master §5: `status`, `apiVersion`; §5 requires timestamps) |
-| `ReadinessResponseSchema` | `{ status: 'ok' \| 'error', apiVersion, timestamp, components: { database: { status: 'up' \| 'down', latencyMs: number \| null } } }` — `status: 'error'` ⇔ HTTP 503 |
-| `ErrorResponseSchema` | `{ error: { code: string, message: string, requestId: string } }` |
-| `PaginationQuerySchema` / `PageSchema(item)` | `limit` (int 1–100, default 50), `cursor` (optional opaque string); page = `{ items, nextCursor \| null }` |
+| Schema                                       | Shape                                                                                                                                                                |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `HealthResponseSchema`                       | `{ status: 'ok' \| 'degraded' \| 'error', apiVersion: string, timestamp: IsoInstant }` (master §5: `status`, `apiVersion`; §5 requires timestamps)                   |
+| `ReadinessResponseSchema`                    | `{ status: 'ok' \| 'error', apiVersion, timestamp, components: { database: { status: 'up' \| 'down', latencyMs: number \| null } } }` — `status: 'error'` ⇔ HTTP 503 |
+| `ErrorResponseSchema`                        | `{ error: { code: string, message: string, requestId: string } }`                                                                                                    |
+| `PaginationQuerySchema` / `PageSchema(item)` | `limit` (int 1–100, default 50), `cursor` (optional opaque string); page = `{ items, nextCursor \| null }`                                                           |
 
 **JSON Schema & parity:**
+
 - `npm run schema:export -w @dengueahead/contracts` writes `json-schema/*.json` using `z.toJSONSchema`. Files are committed; a test regenerates them and fails on drift.
 - JSON Schema cannot express the `superRefine` invariants, so the **fixtures are the cross-language contract**: `fixtures/valid/*.json` must parse, `fixtures/invalid/*.json` must be rejected, in **both** Zod tests (TS) and pytest (Python, Task 0.6).
-- `fixtures/README.md` states: *"Synthetic, test-only data. Not real surveillance data. Never import into any dashboard, database seed for production, or demo."* Fixtures use obviously fake IDs (`TEST_AREA_001`). The sample WITHHELD shape from master §5 is one valid fixture.
+- `fixtures/README.md` states: _"Synthetic, test-only data. Not real surveillance data. Never import into any dashboard, database seed for production, or demo."_ Fixtures use obviously fake IDs (`TEST_AREA_001`). The sample WITHHELD shape from master §5 is one valid fixture.
 
 ### Task 0.4 — `@dengueahead/api`
 
@@ -264,20 +266,21 @@ DengueAhead/
 
 1. **`styles/index.css`** — design tokens as CSS variables, with roles from master §4:
 
-   | Token | Value | Role |
-   |---|---|---|
-   | `--color-navy` | `#0B1730` | text |
-   | `--color-blue` | `#2563EB` | primary |
-   | `--color-teal` | `#0D9488` | positive / stable |
-   | `--color-amber` | `#D97706` | emerging |
-   | `--color-coral` | `#DC4754` | persistent / high |
-   | `--color-surface` | `#F5F7FB` | surface |
-   | `--color-white` | `#FFFFFF` | card |
+   | Token             | Value     | Role              |
+   | ----------------- | --------- | ----------------- |
+   | `--color-navy`    | `#0B1730` | text              |
+   | `--color-blue`    | `#2563EB` | primary           |
+   | `--color-teal`    | `#0D9488` | positive / stable |
+   | `--color-amber`   | `#D97706` | emerging          |
+   | `--color-coral`   | `#DC4754` | persistent / high |
+   | `--color-surface` | `#F5F7FB` | surface           |
+   | `--color-white`   | `#FFFFFF` | card              |
 
    Inter font, 16 px base, 8-pt spacing scale, visible focus ring, and no horizontal overflow at 360 / 768 / 1024 / 1440 px.
+
 2. **`app/App.tsx`** — semantic landmarks (`header`, `main`, `footer`), one `h1`, skip link.
-   - Header: DengueAhead wordmark and tagline *"See the next hotspot before it emerges."*
-   - Persistent **non-clinical advisory**: *"Educational decision support for public-health planning. Not a clinical tool or an official warning service."*
+   - Header: DengueAhead wordmark and tagline _"See the next hotspot before it emerges."_
+   - Persistent **non-clinical advisory**: _"Educational decision support for public-health planning. Not a clinical tool or an official warning service."_
    - Main: a "Phase 0 — foundation ready" panel and system status. **No metrics, maps, charts, or case numbers of any kind**; none are shown, not even placeholders.
 3. **`features/health/HealthBadge`** — fetches `GET {VITE_API_BASE_URL}/health` via `lib/api.ts`, **validating the response with `HealthResponseSchema`**. States: `loading`, `ok`, `degraded`, `error`, `unreachable` (network/non-2xx), `invalid` (schema mismatch), `not-configured` (`VITE_API_BASE_URL` missing). Each state shows an **icon + text label**, not colour alone, inside an `aria-live="polite"` region. It never shows "live" or "healthy" on failure.
 4. **Tests** (`src/test`):
@@ -295,17 +298,18 @@ DengueAhead/
    Ruff config in `pyproject.toml` (lint + format, line length 100). `pytest` config sets `testpaths`.
 2. **`cli/main.py`** — click group `cli` with `--version` (reads `dengueahead.__version__`) and these subcommands, with the exact options from master §9:
 
-   | Command | Options |
-   |---|---|
-   | `audit-sources` | `--config PATH` |
-   | `ingest` | `--config PATH` |
-   | `validate-data` | — |
-   | `build-features` | `--as-of YYYY-MM-DD` |
-   | `train` | `--config PATH` |
-   | `backtest` | `--config PATH` |
-   | `predict` | `--as-of YYYY-MM-DD` `--publish` (flag) |
+   | Command          | Options                                 |
+   | ---------------- | --------------------------------------- |
+   | `audit-sources`  | `--config PATH`                         |
+   | `ingest`         | `--config PATH`                         |
+   | `validate-data`  | —                                       |
+   | `build-features` | `--as-of YYYY-MM-DD`                    |
+   | `train`          | `--config PATH`                         |
+   | `backtest`       | `--config PATH`                         |
+   | `predict`        | `--as-of YYYY-MM-DD` `--publish` (flag) |
 
    **Every stub validates its options, then prints `<command>: not implemented (planned for Phase N)` to stderr and exits with code 3.** No stub may print success or create output. Phase mapping: audit-sources/ingest/validate-data → 1, build-features → 2, train/backtest → 3, predict → 4.
+
 3. **`common/logging.py`** — structured logging helper (JSON lines to stderr).
 4. **Package skeleton** — empty `ingestion`, `validation`, `features`, `training`, `evaluation`, `inference` subpackages (`__init__.py` only) so agent ownership paths in master §1 exist.
 5. **`contracts/prediction.py`** — pydantic `Prediction` model implementing the **same invariants** as the Zod schema (Task 0.3). Other models are added when their phase needs them.
@@ -317,11 +321,11 @@ DengueAhead/
 
 Triggers: `pull_request` and `push` to `main`. `concurrency` cancels superseded runs. Caching via `actions/setup-node` (`cache: npm`) and `actions/setup-python` (`cache: pip`). No test step depends on a live external network (installs excepted).
 
-| Job | Steps |
-|---|---|
-| `node` | `npm ci` → `npm run lint` → `npm run typecheck` → `npm run test:unit` → `npm run build`; **services: `mongo:7.0`** → `npm run test:integration` with `MONGODB_TEST_URI`; upload test reports; `npm audit --omit=dev` (informational) |
-| `python` | Python 3.12; `pip install -e 'services/ml[dev]'` → `ruff check` → `ruff format --check` → `python -m pytest services/ml/tests`; upload JUnit report |
-| `e2e` | `npm ci` → install Playwright Chromium → start Mongo service → `npm run test:e2e`; upload `playwright-report/` |
+| Job      | Steps                                                                                                                                                                                                                                |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `node`   | `npm ci` → `npm run lint` → `npm run typecheck` → `npm run test:unit` → `npm run build`; **services: `mongo:7.0`** → `npm run test:integration` with `MONGODB_TEST_URI`; upload test reports; `npm audit --omit=dev` (informational) |
+| `python` | Python 3.12; `pip install -e 'services/ml[dev]'` → `ruff check` → `ruff format --check` → `python -m pytest services/ml/tests`; upload JUnit report                                                                                  |
+| `e2e`    | `npm ci` → install Playwright Chromium → start Mongo service → `npm run test:e2e`; upload `playwright-report/`                                                                                                                       |
 
 ### Task 0.8 — Documentation, AGENTS.md, evidence
 
@@ -346,25 +350,25 @@ Triggers: `pull_request` and `push` to `main`. `concurrency` cancels superseded 
 
 ## 5. Verification and Testing Matrix
 
-| Test ID | Level | Target | Expected result | Command |
-|---|---|---|---|---|
-| `TEST-P0-01` | Unit | contracts | Valid fixtures parse; each invalid fixture is rejected: probability outside [0,1], negative count, `cases: null` without `missingReason`, `WITHHELD` with non-null forecast, uncalibrated `riskProbability`, interval without method/coverage, non-withheld prediction without `sourceSnapshotIds`, malformed `areaId`/dates | `npm run test:unit -w @dengueahead/contracts` |
-| `TEST-P0-02` | Unit | contracts | Regenerated JSON Schema equals committed `json-schema/` (no drift) | same |
-| `TEST-P0-03` | Unit | api | `loadEnv` **rejects missing `MONGODB_URI`**, invalid URI scheme, invalid `PORT`; error output lists field names but not values | `npm run test:unit -w @dengueahead/api` |
-| `TEST-P0-04` | Unit | api | `GET /api/v1/health` → 200, body passes `HealthResponseSchema`, has `X-Request-Id` header; inbound valid ID is echoed, invalid ID replaced | same |
-| `TEST-P0-05` | Unit | api | `GET /api/v1/readiness` with fake DB up → 200; DB down/timeout → **503** with `status: 'error'` | same |
-| `TEST-P0-06` | Unit | api | Unknown route → 404 standard error; `POST` → 405; thrown error → 500 with `requestId` and no stack; CORS rejects non-allowlisted origin | same |
-| `TEST-P0-07` | Integration | api + Mongo | With `docker compose up -d mongodb`: readiness → 200; after `docker compose stop mongodb`: readiness → 503 and `/health` still 200 | `npm run test:integration` |
-| `TEST-P0-08` | Unit | web | Shell renders landmarks, heading, non-clinical advisory; no metric/case numbers | `npm run test:unit -w @dengueahead/web` |
-| `TEST-P0-09` | Unit | web | HealthBadge shows distinct labelled states for loading/ok/degraded/error/unreachable/invalid/not-configured; `503` and malformed JSON never show "ok" | same |
-| `TEST-P0-10` | Unit | web | `vitest-axe` reports no violations on shell | same |
-| `TEST-P0-11` | Unit | ml | `dengueahead --help` exits 0 and lists all 7 subcommands; `--version` exits 0; stubs exit 3 with "not implemented"; bad `--as-of` exits 2 | `python -m pytest services/ml/tests/unit/test_cli.py` |
-| `TEST-P0-12` | Unit | ml | Python `Prediction` accepts every valid fixture and rejects every invalid fixture (parity with Zod) | `python -m pytest services/ml/tests/unit/test_contract_parity.py` |
-| `TEST-P0-13` | Static | all | ESLint, Prettier, Ruff clean | `npm run lint` · `ruff check services/ml` · `ruff format --check services/ml` |
-| `TEST-P0-14` | Static/Build | all | Strict type-check and build pass from a clean checkout (contracts built first) | `npm run typecheck` · `npm run build` |
-| `TEST-P0-15` | E2E | web + api | Playwright: API on 4000 and web on 5173; shell shows the health badge in `ok`; with the API stopped it shows `unreachable`; no console errors in the `ok` flow | `npm run test:e2e` |
-| `TEST-P0-16` | Manual | repo | Fresh-clone run of README (§6) in an empty directory succeeds with no undocumented steps | manual, recorded in evidence |
-| `TEST-P0-17` | CI | repo | `ci.yml` green on a fresh runner for a pull request | GitHub Actions run URL in evidence |
+| Test ID      | Level        | Target      | Expected result                                                                                                                                                                                                                                                                                                              | Command                                                                       |
+| ------------ | ------------ | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `TEST-P0-01` | Unit         | contracts   | Valid fixtures parse; each invalid fixture is rejected: probability outside [0,1], negative count, `cases: null` without `missingReason`, `WITHHELD` with non-null forecast, uncalibrated `riskProbability`, interval without method/coverage, non-withheld prediction without `sourceSnapshotIds`, malformed `areaId`/dates | `npm run test:unit -w @dengueahead/contracts`                                 |
+| `TEST-P0-02` | Unit         | contracts   | Regenerated JSON Schema equals committed `json-schema/` (no drift)                                                                                                                                                                                                                                                           | same                                                                          |
+| `TEST-P0-03` | Unit         | api         | `loadEnv` **rejects missing `MONGODB_URI`**, invalid URI scheme, invalid `PORT`; error output lists field names but not values                                                                                                                                                                                               | `npm run test:unit -w @dengueahead/api`                                       |
+| `TEST-P0-04` | Unit         | api         | `GET /api/v1/health` → 200, body passes `HealthResponseSchema`, has `X-Request-Id` header; inbound valid ID is echoed, invalid ID replaced                                                                                                                                                                                   | same                                                                          |
+| `TEST-P0-05` | Unit         | api         | `GET /api/v1/readiness` with fake DB up → 200; DB down/timeout → **503** with `status: 'error'`                                                                                                                                                                                                                              | same                                                                          |
+| `TEST-P0-06` | Unit         | api         | Unknown route → 404 standard error; `POST` → 405; thrown error → 500 with `requestId` and no stack; CORS rejects non-allowlisted origin                                                                                                                                                                                      | same                                                                          |
+| `TEST-P0-07` | Integration  | api + Mongo | With `docker compose up -d mongodb`: readiness → 200; after `docker compose stop mongodb`: readiness → 503 and `/health` still 200                                                                                                                                                                                           | `npm run test:integration`                                                    |
+| `TEST-P0-08` | Unit         | web         | Shell renders landmarks, heading, non-clinical advisory; no metric/case numbers                                                                                                                                                                                                                                              | `npm run test:unit -w @dengueahead/web`                                       |
+| `TEST-P0-09` | Unit         | web         | HealthBadge shows distinct labelled states for loading/ok/degraded/error/unreachable/invalid/not-configured; `503` and malformed JSON never show "ok"                                                                                                                                                                        | same                                                                          |
+| `TEST-P0-10` | Unit         | web         | `vitest-axe` reports no violations on shell                                                                                                                                                                                                                                                                                  | same                                                                          |
+| `TEST-P0-11` | Unit         | ml          | `dengueahead --help` exits 0 and lists all 7 subcommands; `--version` exits 0; stubs exit 3 with "not implemented"; bad `--as-of` exits 2                                                                                                                                                                                    | `python -m pytest services/ml/tests/unit/test_cli.py`                         |
+| `TEST-P0-12` | Unit         | ml          | Python `Prediction` accepts every valid fixture and rejects every invalid fixture (parity with Zod)                                                                                                                                                                                                                          | `python -m pytest services/ml/tests/unit/test_contract_parity.py`             |
+| `TEST-P0-13` | Static       | all         | ESLint, Prettier, Ruff clean                                                                                                                                                                                                                                                                                                 | `npm run lint` · `ruff check services/ml` · `ruff format --check services/ml` |
+| `TEST-P0-14` | Static/Build | all         | Strict type-check and build pass from a clean checkout (contracts built first)                                                                                                                                                                                                                                               | `npm run typecheck` · `npm run build`                                         |
+| `TEST-P0-15` | E2E          | web + api   | Playwright: API on 4000 and web on 5173; shell shows the health badge in `ok`; with the API stopped it shows `unreachable`; no console errors in the `ok` flow                                                                                                                                                               | `npm run test:e2e`                                                            |
+| `TEST-P0-16` | Manual       | repo        | Fresh-clone run of README (§6) in an empty directory succeeds with no undocumented steps                                                                                                                                                                                                                                     | manual, recorded in evidence                                                  |
+| `TEST-P0-17` | CI           | repo        | `ci.yml` green on a fresh runner for a pull request                                                                                                                                                                                                                                                                          | GitHub Actions run URL in evidence                                            |
 
 **Failure injection (required by master §6 gate step 6):** stop the `mongodb` container → confirm `readiness` = 503, `health` = 200, and the web shell does not claim a healthy system. Record the result in `phase-0-report.md`.
 
@@ -401,21 +405,21 @@ Evidence capture: run the verify block, tee the output to `docs/evidence/phase-0
 
 ## 7. Traceability to the Master Plan (Phase 0, §7)
 
-| Master requirement | Covered by |
-|---|---|
-| Monorepo, npm workspaces, Python project, `.editorconfig`, `.gitignore`, `.env.example`, Docker Compose Mongo | 0.1, 0.2, 0.6 |
-| TS strict mode + shared contract schemas | 0.2, 0.3 |
-| Express `/health` + React shell + Python `--help` CLI | 0.4, 0.5, 0.6 |
-| ESLint, Prettier, Vitest, pytest, Ruff, Playwright; CI jobs with caching | 0.2, 0.4–0.7 |
-| `README.md`, `AGENTS.md`, issue board, evidence folders | 0.8, 0.9 |
-| Human tasks (clone/run, ownership, deadline, repo) | 0.9 |
-| Unit: env rejects missing DB URI | `TEST-P0-03` |
-| Unit: contract rejects malformed forecast | `TEST-P0-01` |
-| Unit: API health 200; React shell renders | `TEST-P0-04`, `TEST-P0-08` |
-| Integration: docker up → API connects → React calls `/health`; CI green | `TEST-P0-07`, `TEST-P0-15`, `TEST-P0-17` |
-| Gate: fresh-install reproducibility from README; contracts frozen enough for parallel work | `TEST-P0-16`; acceptance checklist below |
-| Cross-phase gate (§6): infra up, query, API, React, **failure injection**, evidence with date/SHA | §5 failure injection; evidence report |
-| Master §5 API conventions (standard error, correlation IDs, CORS allowlist, rate limiting, read-only) | 0.4 |
+| Master requirement                                                                                            | Covered by                               |
+| ------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| Monorepo, npm workspaces, Python project, `.editorconfig`, `.gitignore`, `.env.example`, Docker Compose Mongo | 0.1, 0.2, 0.6                            |
+| TS strict mode + shared contract schemas                                                                      | 0.2, 0.3                                 |
+| Express `/health` + React shell + Python `--help` CLI                                                         | 0.4, 0.5, 0.6                            |
+| ESLint, Prettier, Vitest, pytest, Ruff, Playwright; CI jobs with caching                                      | 0.2, 0.4–0.7                             |
+| `README.md`, `AGENTS.md`, issue board, evidence folders                                                       | 0.8, 0.9                                 |
+| Human tasks (clone/run, ownership, deadline, repo)                                                            | 0.9                                      |
+| Unit: env rejects missing DB URI                                                                              | `TEST-P0-03`                             |
+| Unit: contract rejects malformed forecast                                                                     | `TEST-P0-01`                             |
+| Unit: API health 200; React shell renders                                                                     | `TEST-P0-04`, `TEST-P0-08`               |
+| Integration: docker up → API connects → React calls `/health`; CI green                                       | `TEST-P0-07`, `TEST-P0-15`, `TEST-P0-17` |
+| Gate: fresh-install reproducibility from README; contracts frozen enough for parallel work                    | `TEST-P0-16`; acceptance checklist below |
+| Cross-phase gate (§6): infra up, query, API, React, **failure injection**, evidence with date/SHA             | §5 failure injection; evidence report    |
+| Master §5 API conventions (standard error, correlation IDs, CORS allowlist, rate limiting, read-only)         | 0.4                                      |
 
 ---
 
@@ -424,34 +428,41 @@ Evidence capture: run the verify block, tee the output to `docs/evidence/phase-0
 Phase 0 is complete, and Phase 1 may start, only when **all** of the following hold and are evidenced in `docs/evidence/phase-0/`:
 
 **Repository & governance**
+
 - [ ] Git repository initialized on `main` with a clean initial commit.
 - [ ] `.env.example`, `.editorconfig`, `.gitignore`, `.nvmrc`, `docker-compose.yml`, `README.md`, `AGENTS.md`, `IMPLEMENTATION_PLAN.md` exist at the repo root; `plans/PHASE_0_IMPLEMENTATION_PLAN.md` exists.
 - [ ] `configs/sources.yaml` and `configs/model.yaml` templates exist and contain no unverified claims presented as verified.
 - [ ] No secrets in git (`.env` ignored; `git ls-files` contains no `.env`).
 
 **Contracts**
+
 - [ ] `packages/contracts` builds; exports Zod schemas **and** types for `Area`, `WeeklyObservation`, `SourceSnapshot`, `Prediction`, `EvaluationMetrics`, health, readiness, error and pagination.
 - [ ] Prediction invariants (WITHHELD ⇒ nulls; probability ⇒ calibrated; interval ⇒ method; provenance IDs) are tested (`TEST-P0-01`).
 - [ ] JSON Schema committed and drift test passes; Python parity test passes against the same fixtures.
 
 **API**
+
 - [ ] `apps/api` starts cleanly with a valid env, **exits with a clear message on invalid env**, and starts even if Mongo is down.
 - [ ] `/api/v1/health` returns 200; `/api/v1/readiness` returns 200 with Mongo and **503** without it.
 - [ ] Standard error shape, request ID, CORS allowlist, helmet, body limit, rate limit, and read-only guard are tested.
 
 **Web**
+
 - [ ] `apps/web` builds with Vite, renders without console errors, shows the non-clinical advisory, and shows truthful health states.
 - [ ] Component and axe tests pass; no metrics or case numbers displayed.
 
 **ML**
+
 - [ ] `services/ml` installs in editable mode with `[dev]`; `dengueahead --help` lists all seven subcommands; stubs exit non-zero.
 - [ ] Ruff passes; pytest passes.
 
 **Tooling & CI**
+
 - [ ] `npm run lint`, `typecheck`, `test:unit`, `test:integration`, `build`, `test:e2e` and `python -m pytest services/ml/tests` all pass locally.
 - [ ] `ci.yml` is green on a fresh runner for a pull request, with caching and reports uploaded.
 
 **Verification & evidence**
+
 - [ ] Fresh-clone run of the README succeeds (`TEST-P0-16`).
 - [ ] Failure injection (Mongo stopped) behaves truthfully (readiness 503, web does not show healthy).
 - [ ] `phase-0-verification.log` and `phase-0-report.md` (date, git SHA, versions, commands, pass/fail counts, open defects) are committed.
