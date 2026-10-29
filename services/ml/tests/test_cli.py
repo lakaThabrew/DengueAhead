@@ -1,32 +1,60 @@
+"""Unit tests for the dengueahead CLI (click-based)."""
 import pytest
-from dengueahead.cli.main import build_parser, main
+from click.testing import CliRunner
+from dengueahead.cli.main import cli
 from dengueahead import __version__
 
-def test_version_flag(capsys):
-    parser = build_parser()
-    with pytest.raises(SystemExit) as exc_info:
-        parser.parse_args(["--version"])
-    assert exc_info.value.code == 0
-    captured = capsys.readouterr()
-    assert f"dengueahead {__version__}" in captured.out
 
-def test_cli_help(capsys):
-    parser = build_parser()
-    with pytest.raises(SystemExit) as exc_info:
-        parser.parse_args(["--help"])
-    assert exc_info.value.code == 0
-    captured = capsys.readouterr()
-    assert "audit-sources" in captured.out
-    assert "ingest" in captured.out
-    assert "validate-data" in captured.out
-    assert "build-features" in captured.out
-    assert "train" in captured.out
-    assert "backtest" in captured.out
-    assert "predict" in captured.out
+@pytest.fixture()
+def runner() -> CliRunner:
+    # mix_stderr=True (default): stderr is mixed into result.output so we can assert on it
+    return CliRunner()
 
-def test_subcommand_execution(capsys):
-    ret = main(["audit-sources"])
-    assert ret == 0
-    captured = capsys.readouterr()
-    assert "Executing subcommand: audit-sources" in captured.out
 
+def test_version_flag(runner: CliRunner) -> None:
+    result = runner.invoke(cli, ["--version"])
+    assert result.exit_code == 0
+    assert __version__ in result.output
+
+
+def test_cli_help(runner: CliRunner) -> None:
+    result = runner.invoke(cli, ["--help"])
+    assert result.exit_code == 0
+    for cmd in ["audit-sources", "ingest", "validate-data", "build-features", "train", "backtest", "predict"]:
+        assert cmd in result.output
+
+
+@pytest.mark.parametrize("subcommand", [
+    ["audit-sources"],
+    ["ingest"],
+    ["validate-data"],
+    ["build-features"],
+    ["train"],
+    ["backtest"],
+    ["predict"],
+])
+def test_stubs_exit_3_with_not_implemented(runner: CliRunner, subcommand: list[str]) -> None:
+    """Every stub must exit 3 and print 'not implemented' somewhere in its output."""
+    result = runner.invoke(cli, subcommand)
+    assert result.exit_code == 3, f"{subcommand[0]} should exit 3, got {result.exit_code}\nOutput: {result.output}"
+    assert "not implemented" in result.output.lower(), (
+        f"{subcommand[0]} output should mention 'not implemented', got: {result.output!r}"
+    )
+
+
+@pytest.mark.parametrize("subcommand", ["build-features", "predict"])
+def test_invalid_as_of_exits_2(runner: CliRunner, subcommand: str) -> None:
+    """Invalid --as-of date format must exit 2 (UsageError), not 0 or 3."""
+    result = runner.invoke(cli, [subcommand, "--as-of", "not-a-date"])
+    assert result.exit_code == 2, (
+        f"{subcommand} with bad --as-of should exit 2, got {result.exit_code}\nOutput: {result.output}"
+    )
+
+
+@pytest.mark.parametrize("subcommand", ["build-features", "predict"])
+def test_valid_as_of_accepted(runner: CliRunner, subcommand: str) -> None:
+    """Valid YYYY-MM-DD --as-of should be accepted (exits 3 = not implemented, not 2)."""
+    result = runner.invoke(cli, [subcommand, "--as-of", "2026-10-25"])
+    assert result.exit_code == 3, (
+        f"{subcommand} with valid --as-of should exit 3, got {result.exit_code}\nOutput: {result.output}"
+    )

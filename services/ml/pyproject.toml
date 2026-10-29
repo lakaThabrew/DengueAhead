@@ -8,8 +8,9 @@ version = "0.1.0"
 description = "Machine Learning and data pipeline for DengueAhead Sri Lanka dengue hotspot forecasting"
 authors = [{ name = "EchoBinary" }]
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 dependencies = [
+    "click>=8.1.0",
     "pydantic>=2.7.0",
     "requests>=2.31.0",
 ]
@@ -18,10 +19,11 @@ dependencies = [
 dev = [
     "pytest>=8.0.0",
     "ruff>=0.3.0",
+    "jsonschema>=4.22.0",
 ]
 
 [project.scripts]
-dengueahead = "dengueahead.cli.main:main"
+dengueahead = "dengueahead.cli.main:cli"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -30,3 +32,10 @@ where = ["src"]
 testpaths = ["tests"]
 pythonpath = ["src"]
 
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP"]
+ignore = []
