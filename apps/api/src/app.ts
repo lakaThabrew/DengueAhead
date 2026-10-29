@@ -4,9 +4,10 @@ import helmet from 'helmet';
 import { env } from './config/env.js';
 import { requestIdMiddleware } from './middleware/request-id.js';
 import { errorHandler } from './middleware/error-handler.js';
-import { healthRouter } from './routes/health.route.js';
+import { createHealthRouter } from './routes/health.route.js';
+import type { DbClient } from './repositories/mongo.js';
 
-export function createApp() {
+export function createApp(db?: DbClient) {
   const app = express();
 
   app.use(helmet());
@@ -16,18 +17,34 @@ export function createApp() {
       credentials: true
     })
   );
-  app.use(express.json());
+  app.use(express.json({ limit: env.API_BODY_LIMIT }));
   app.use(requestIdMiddleware);
 
+  // Read-only guard: reject non-read methods
+  app.use((req, res, next) => {
+    if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
+      res.status(405).json({
+        error: {
+          code: 'METHOD_NOT_ALLOWED',
+          message: 'Only read methods are permitted on this API',
+          requestId: (req as express.Request & { requestId?: string }).requestId
+        }
+      });
+      return;
+    }
+    next();
+  });
+
   // Mount routes under API_PREFIX
-  app.use(env.API_PREFIX, healthRouter);
+  app.use(env.API_PREFIX, createHealthRouter(db));
 
   // Catch-all 404
-  app.use((_req, res) => {
+  app.use((req, res) => {
     res.status(404).json({
       error: {
         code: 'NOT_FOUND',
-        message: 'The requested resource does not exist'
+        message: 'The requested resource does not exist',
+        requestId: (req as express.Request & { requestId?: string }).requestId
       }
     });
   });
@@ -37,4 +54,3 @@ export function createApp() {
 
   return app;
 }
-
