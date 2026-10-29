@@ -50,12 +50,9 @@ def test_cli_help(runner: CliRunner) -> None:
 def test_stubs_exit_3_with_not_implemented(runner: CliRunner, subcommand: list[str]) -> None:
     """Every stub must exit 3 and print 'not implemented' somewhere in its output."""
     result = runner.invoke(cli, subcommand)
-    assert (
-        result.exit_code == 3
-    ), f"{subcommand[0]} should exit 3, got {result.exit_code}\nOutput: {result.output}"
-    assert (
-        "not implemented" in result.output.lower()
-    ), f"{subcommand[0]} output should mention 'not implemented', got: {result.output!r}"
+    cmd = subcommand[0]
+    assert result.exit_code == 3, f"{cmd} should exit 3, got {result.exit_code}"
+    assert "not implemented" in result.output.lower(), f"{cmd} missing 'not implemented'"
 
 
 @pytest.mark.parametrize("subcommand", ["build-features", "predict"])
