@@ -3,8 +3,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel, Field, field_validator, model_validator
-
+from pydantic import BaseModel, Field, model_validator
 
 PredictionStatus = Literal["EMERGING", "PERSISTENT", "COOLING", "STABLE", "WITHHELD"]
 ConfidenceStatus = Literal["CALIBRATED", "UNCALIBRATED", "NOT_AVAILABLE"]
@@ -36,7 +35,7 @@ class Prediction(BaseModel):
     sourceSnapshotIds: list[str] = Field(default_factory=list)
 
     @model_validator(mode="after")
-    def check_invariants(self) -> "Prediction":
+    def check_invariants(self) -> Prediction:
         # WITHHELD must have null numeric fields and at least one quality flag
         if self.status == "WITHHELD":
             if self.pointForecast is not None:
@@ -50,7 +49,9 @@ class Prediction(BaseModel):
         # Non-WITHHELD must have provenance and a point forecast
         if self.status != "WITHHELD":
             if len(self.sourceSnapshotIds) == 0:
-                raise ValueError("Non-WITHHELD prediction must reference at least one sourceSnapshotId")
+                raise ValueError(
+                    "Non-WITHHELD prediction must reference at least one sourceSnapshotId"
+                )
             if self.pointForecast is None:
                 raise ValueError("Non-WITHHELD prediction must have a non-null pointForecast")
         # riskProbability only when CALIBRATED

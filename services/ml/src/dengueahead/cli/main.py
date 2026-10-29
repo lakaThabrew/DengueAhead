@@ -1,6 +1,7 @@
 """DengueAhead ML & Data CLI — Phase 0 scaffolding."""
-import sys
 import re
+import sys
+
 import click
 
 from dengueahead import __version__
@@ -34,14 +35,24 @@ def _validate_date(ctx: click.Context, param: click.Parameter, value: str | None
 # ── Phase 1 stubs ─────────────────────────────────────────────────────────────
 
 @cli.command("audit-sources")
-@click.option("--config", default="configs/sources.yaml", show_default=True, help="Path to sources config YAML.")
+@click.option(
+    "--config",
+    default="configs/sources.yaml",
+    show_default=True,
+    help="Path to sources config YAML.",
+)
 def audit_sources(config: str) -> None:
     """Audit external official data sources and verify licences/access."""
     _not_implemented("audit-sources", 1)
 
 
 @cli.command("ingest")
-@click.option("--config", default="configs/sources.yaml", show_default=True, help="Path to sources config YAML.")
+@click.option(
+    "--config",
+    default="configs/sources.yaml",
+    show_default=True,
+    help="Path to sources config YAML.",
+)
 def ingest(config: str) -> None:
     """Fetch official weekly dengue reports and weather data."""
     _not_implemented("ingest", 1)
@@ -71,14 +82,24 @@ def build_features(as_of: str | None) -> None:
 # ── Phase 3 stubs ─────────────────────────────────────────────────────────────
 
 @cli.command("train")
-@click.option("--config", default="configs/model.yaml", show_default=True, help="Path to model config YAML.")
+@click.option(
+    "--config",
+    default="configs/model.yaml",
+    show_default=True,
+    help="Path to model config YAML.",
+)
 def train(config: str) -> None:
     """Fit baselines and hotspot classification models."""
     _not_implemented("train", 3)
 
 
 @cli.command("backtest")
-@click.option("--config", default="configs/model.yaml", show_default=True, help="Path to model config YAML.")
+@click.option(
+    "--config",
+    default="configs/model.yaml",
+    show_default=True,
+    help="Path to model config YAML.",
+)
 def backtest(config: str) -> None:
     """Execute out-of-time rolling evaluation."""
     _not_implemented("backtest", 3)

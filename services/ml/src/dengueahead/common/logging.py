@@ -3,13 +3,13 @@ from __future__ import annotations
 
 import json
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 
 def _log(level: str, message: str, **kwargs: Any) -> None:
     record = {
-        "timestamp": datetime.now(tz=timezone.utc).isoformat(),
+        "timestamp": datetime.now(tz=UTC).isoformat(),
         "level": level,
         "message": message,
         **kwargs,
