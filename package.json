@@ -2,19 +2,37 @@
   "name": "dengueahead-monorepo",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "workspaces": [
     "packages/*",
     "apps/*"
   ],
   "scripts": {
-    "dev:api": "npm run dev --workspace=@dengueahead/api",
-    "dev:web": "npm run dev --workspace=@dengueahead/web",
-    "build": "npm run build --workspaces",
-    "typecheck": "npm run typecheck --workspaces",
-    "test:unit": "npm run test:unit --workspaces"
+    "build:contracts": "npm run build -w @dengueahead/contracts",
+    "build": "npm run build:contracts && npm run build -w @dengueahead/api -w @dengueahead/web",
+    "typecheck": "npm run build:contracts && npm run typecheck --workspaces --if-present",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write .",
+    "test:unit": "npm run build:contracts && npm run test:unit --workspaces --if-present",
+    "test:integration": "npm run build:contracts && npm run test:integration --workspaces --if-present",
+    "test:e2e": "playwright test",
+    "test:py": "python -m pytest services/ml/tests",
+    "dev": "concurrently -n api,web \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:api": "npm run dev -w @dengueahead/api",
+    "dev:web": "npm run dev -w @dengueahead/web"
   },
   "devDependencies": {
-    "typescript": "^5.5.4"
+    "@eslint/js": "^9.0.0",
+    "@playwright/test": "^1.47.0",
+    "concurrently": "^9.0.0",
+    "eslint": "^9.0.0",
+    "eslint-plugin-jsx-a11y": "^6.10.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "prettier": "^3.3.0",
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.0.0"
   }
 }
-
