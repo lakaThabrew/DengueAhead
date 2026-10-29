@@ -1,0 +1,16 @@
+{
+  "_comment": "SYNTHETIC TEST-ONLY — not real surveillance data. Never import into any dashboard or production database.",
+  "areaId": "TEST_AREA_001",
+  "geographicLevel": "district",
+  "issueDate": "2026-10-25",
+  "targetWeek": "2026-11-01",
+  "asOfDate": "2026-10-25",
+  "modelVersion": "model-test-v1",
+  "status": "WITHHELD",
+  "confidenceStatus": "NOT_AVAILABLE",
+  "pointForecast": null,
+  "interval": null,
+  "riskProbability": null,
+  "qualityFlags": ["INSUFFICIENT_SOURCE_COVERAGE"],
+  "sourceSnapshotIds": []
+}

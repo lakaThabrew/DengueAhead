@@ -14,16 +14,15 @@ export const HealthResponseSchema = z.object({
 export type HealthResponse = z.infer<typeof HealthResponseSchema>;
 
 export const ReadinessComponentSchema = z.object({
-  status: ServiceHealthStatusSchema,
-  message: z.string().optional()
+  status: z.enum(['up', 'down']),
+  latencyMs: z.number().nonnegative().nullable()
 });
 
 export const ReadinessResponseSchema = z.object({
-  status: ServiceHealthStatusSchema,
+  status: z.enum(['ok', 'error']),
   timestamp: z.string().datetime(),
   components: z.object({
-    database: ReadinessComponentSchema,
-    dataFreshness: ReadinessComponentSchema
+    database: ReadinessComponentSchema
   })
 });
 export type ReadinessResponse = z.infer<typeof ReadinessResponseSchema>;
@@ -40,8 +39,14 @@ export type ApiError = z.infer<typeof ApiErrorSchema>;
 
 export const MetaResponseSchema = z.object({
   geographicLevel: z.enum(['district', 'moh']),
-  latestIssueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable(),
-  latestTargetWeek: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable(),
+  latestIssueDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .nullable(),
+  latestTargetWeek: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .nullable(),
   activeModelVersion: z.string().nullable(),
   lastUpdated: z.string().datetime().nullable(),
   sourceFreshnessStatus: z.enum(['CURRENT', 'STALE', 'UNAVAILABLE'])
@@ -65,4 +70,3 @@ export const OverviewSummarySchema = z.object({
   )
 });
 export type OverviewSummary = z.infer<typeof OverviewSummarySchema>;
-

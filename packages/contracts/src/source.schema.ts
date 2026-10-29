@@ -9,12 +9,7 @@ export const LicenceStatusSchema = z.enum([
 ]);
 export type LicenceStatus = z.infer<typeof LicenceStatusSchema>;
 
-export const SourceStatusSchema = z.enum([
-  'SUCCESS',
-  'PARTIAL',
-  'FAILED',
-  'STALE'
-]);
+export const SourceStatusSchema = z.enum(['SUCCESS', 'PARTIAL', 'FAILED', 'STALE']);
 export type SourceStatus = z.infer<typeof SourceStatusSchema>;
 
 export const SourceSnapshotSchema = z.object({
@@ -55,4 +50,3 @@ export const WeatherWeeklyObservationSchema = z.object({
   qualityFlags: z.array(z.string()).default([])
 });
 export type WeatherWeeklyObservation = z.infer<typeof WeatherWeeklyObservationSchema>;
-

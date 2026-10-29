@@ -1,0 +1,16 @@
+{
+  "_comment": "SYNTHETIC TEST-ONLY — INVALID: WITHHELD with non-null pointForecast.",
+  "areaId": "TEST_AREA_BAD",
+  "geographicLevel": "district",
+  "issueDate": "2026-10-25",
+  "targetWeek": "2026-11-01",
+  "asOfDate": "2026-10-25",
+  "modelVersion": "model-test-v1",
+  "status": "WITHHELD",
+  "confidenceStatus": "NOT_AVAILABLE",
+  "pointForecast": 42,
+  "interval": null,
+  "riskProbability": null,
+  "qualityFlags": ["FLAG"],
+  "sourceSnapshotIds": []
+}

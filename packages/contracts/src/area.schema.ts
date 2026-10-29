@@ -20,4 +20,3 @@ export const AreaSchema = z.object({
   populationYear: z.number().int().min(1900).max(2100).nullable().optional()
 });
 export type Area = z.infer<typeof AreaSchema>;
-

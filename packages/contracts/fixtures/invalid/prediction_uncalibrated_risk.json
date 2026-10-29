@@ -1,0 +1,16 @@
+{
+  "_comment": "SYNTHETIC TEST-ONLY — INVALID: uncalibrated riskProbability presented as a value.",
+  "areaId": "TEST_AREA_BAD",
+  "geographicLevel": "district",
+  "issueDate": "2026-10-25",
+  "targetWeek": "2026-11-01",
+  "asOfDate": "2026-10-25",
+  "modelVersion": "model-test-v1",
+  "status": "EMERGING",
+  "confidenceStatus": "UNCALIBRATED",
+  "pointForecast": 10,
+  "interval": null,
+  "riskProbability": 0.85,
+  "qualityFlags": [],
+  "sourceSnapshotIds": ["snap-test-001"]
+}
