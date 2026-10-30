@@ -42,7 +42,7 @@ def close_client() -> None:
 
 
 def ensure_indexes(db: Database) -> None:  # type: ignore[type-arg]
-    """Create all Phase 1 indexes if they do not already exist."""
+    """Create all required MongoDB indexes if they do not already exist."""
     from pymongo import ASCENDING
 
     db["source_snapshots"].create_index(
@@ -61,5 +61,28 @@ def ensure_indexes(db: Database) -> None:  # type: ignore[type-arg]
         [("areaId", ASCENDING), ("weekStart", ASCENDING), ("provider", ASCENDING)],
         unique=True,
         background=True,
+    )
+    db["feature_snapshots"].create_index(
+        [
+            ("areaId", ASCENDING),
+            ("issueDate", ASCENDING),
+            ("featureSetVersion", ASCENDING),
+        ],
+        unique=True,
+        background=True,
+    )
+    db["model_runs"].create_index([("modelVersion", ASCENDING)], unique=True, background=True)
+    db["predictions"].create_index(
+        [
+            ("areaId", ASCENDING),
+            ("targetWeek", ASCENDING),
+            ("modelVersion", ASCENDING),
+            ("issueDate", ASCENDING),
+        ],
+        unique=True,
+        background=True,
+    )
+    db["predictions"].create_index(
+        [("issueDate", ASCENDING), ("areaId", ASCENDING)], background=True
     )
     log.info("MongoDB indexes ensured")

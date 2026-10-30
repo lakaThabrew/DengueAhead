@@ -38,10 +38,9 @@ def test_cli_help(runner: CliRunner) -> None:
 @pytest.mark.parametrize(
     "subcommand",
     [
-        # audit-sources, ingest, validate-data are now implemented (Phase 1)
-        ["build-features"],
+        # audit-sources, ingest, validate-data are implemented (Phase 1)
+        # build-features, backtest are implemented (Phase 2)
         ["train"],
-        ["backtest"],
         ["predict"],
     ],
 )
@@ -63,11 +62,26 @@ def test_invalid_as_of_exits_2(runner: CliRunner, subcommand: str) -> None:
     )
 
 
-@pytest.mark.parametrize("subcommand", ["build-features", "predict"])
-def test_valid_as_of_accepted(runner: CliRunner, subcommand: str) -> None:
-    """Valid YYYY-MM-DD --as-of should be accepted (exits 3 = not implemented, not 2)."""
-    result = runner.invoke(cli, [subcommand, "--as-of", "2026-10-25"])
+def test_predict_valid_as_of_exits_3(runner: CliRunner) -> None:
+    """Valid YYYY-MM-DD --as-of on predict stub should exit 3 = not implemented, not 2."""
+    result = runner.invoke(cli, ["predict", "--as-of", "2026-10-25"])
     assert result.exit_code == 3, (
-        f"{subcommand} with valid --as-of should exit 3, got {result.exit_code}\n"
+        f"predict with valid --as-of should exit 3, got {result.exit_code}\n"
         f"Output: {result.output}"
     )
+
+
+def test_build_features_help(runner: CliRunner) -> None:
+    """build-features --help outputs command documentation and exits 0."""
+    result = runner.invoke(cli, ["build-features", "--help"])
+    assert result.exit_code == 0
+    assert "--as-of" in result.output
+    assert "--dry-run" in result.output
+
+
+def test_backtest_help(runner: CliRunner) -> None:
+    """backtest --help outputs command documentation and exits 0."""
+    result = runner.invoke(cli, ["backtest", "--help"])
+    assert result.exit_code == 0
+    assert "--config" in result.output
+    assert "--dry-run" in result.output

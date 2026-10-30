@@ -338,7 +338,7 @@ def validate_data(limit: int) -> None:
     click.echo("\nAll quality checks passed.")
 
 
-# -- Phase 2 stubs -------------------------------------------------------------
+# -- Phase 2 commands ----------------------------------------------------------
 
 
 @cli.command("build-features")
@@ -349,9 +349,85 @@ def validate_data(limit: int) -> None:
     callback=_validate_date,
     help="Forecast cutoff date in YYYY-MM-DD format.",
 )
-def build_features(as_of: str | None) -> None:
+@click.option(
+    "--area-map",
+    default="configs/area_map.yaml",
+    show_default=True,
+    help="Path to area map YAML.",
+)
+@click.option(
+    "--dry-run", is_flag=True, default=False, help="Extract features without writing to MongoDB."
+)
+def build_features(as_of: str | None, area_map: str, dry_run: bool) -> None:
     """Construct temporal and meteorological lag features (as-of safe)."""
-    _not_implemented("build-features", 2)
+    from datetime import date, timedelta
+
+    from dengueahead.features.builder import build_features_for_area
+    from dengueahead.features.seasonality import calculate_seasonal_medians
+    from dengueahead.ingestion.area_map import load_area_map
+    from dengueahead.repositories.dengue_weekly import get_all_observations
+    from dengueahead.repositories.feature_snapshots import upsert_feature_snapshot
+    from dengueahead.repositories.mongo import ensure_indexes, get_db
+
+    # Determine cutoff date
+    if as_of is None:
+        today = date.today()
+        # Default to last Monday
+        last_monday = today - timedelta(days=today.weekday())
+        cutoff = last_monday.isoformat()
+    else:
+        cutoff = as_of
+
+    area_map_path = Path(area_map)
+    if not area_map_path.exists():
+        click.echo(f"ERROR: Area map not found: {area_map}", err=True)
+        sys.exit(1)
+    am = load_area_map(area_map_path)
+    districts = [a.area_id for a in am.areas]
+
+    click.echo(f"Building as-of safe features for as_of={cutoff} across {len(districts)} districts")
+
+    # Connect to Mongo
+    try:
+        db = get_db()
+        ensure_indexes(db)
+        observations = get_all_observations(db, limit=50_000)
+    except Exception as exc:  # noqa: BLE001
+        click.echo(f"ERROR: MongoDB connection failed: {exc}", err=True)
+        sys.exit(1)
+
+    seasonal_medians = calculate_seasonal_medians(observations)
+    weather_records: list[dict] = []
+    try:
+        weather_records = list(db["weather_weekly"].find({}, {"_id": 0}))
+    except Exception:  # noqa: BLE001
+        pass
+
+    built_count = 0
+    withheld_count = 0
+    inserted_count = 0
+
+    for area_id in districts:
+        record = build_features_for_area(
+            area_id=area_id,
+            as_of=cutoff,
+            observations=observations,
+            weather_records=weather_records,
+            seasonal_medians=seasonal_medians,
+        )
+        built_count += 1
+        if record.is_withheld:
+            withheld_count += 1
+
+        if not dry_run:
+            ur = upsert_feature_snapshot(db, record)
+            if ur.inserted:
+                inserted_count += 1
+
+    click.echo(
+        f"Features built: total={built_count} withheld={withheld_count} "
+        f"{'(dry-run, not written to DB)' if dry_run else f'inserted={inserted_count}'}"
+    )
 
 
 # -- Phase 3 stubs -------------------------------------------------------------
@@ -376,9 +452,93 @@ def train(config: str) -> None:
     show_default=True,
     help="Path to model config YAML.",
 )
-def backtest(config: str) -> None:
-    """Execute out-of-time rolling evaluation."""
-    _not_implemented("backtest", 3)
+@click.option(
+    "--area-map",
+    default="configs/area_map.yaml",
+    show_default=True,
+    help="Path to area map YAML.",
+)
+@click.option(
+    "--dry-run", is_flag=True, default=False, help="Run backtest without writing to MongoDB."
+)
+def backtest(config: str, area_map: str, dry_run: bool) -> None:
+    """Execute out-of-time rolling evaluation for baseline models."""
+    from dengueahead.baselines.naive import NaiveLastWeekForecaster
+    from dengueahead.baselines.rolling_mean import RollingMean4wForecaster
+    from dengueahead.baselines.seasonal_median import SeasonalMedianForecaster
+    from dengueahead.evaluation.backtest import BacktestRunner
+    from dengueahead.evaluation.split import DEFAULT_SPLIT
+    from dengueahead.ingestion.area_map import load_area_map
+    from dengueahead.repositories.dengue_weekly import get_all_observations
+    from dengueahead.repositories.model_runs import upsert_model_run
+    from dengueahead.repositories.mongo import ensure_indexes, get_db
+    from dengueahead.repositories.predictions import upsert_predictions_batch
+
+    area_map_path = Path(area_map)
+    if not area_map_path.exists():
+        click.echo(f"ERROR: Area map not found: {area_map}", err=True)
+        sys.exit(1)
+    am = load_area_map(area_map_path)
+    districts = [a.area_id for a in am.areas]
+
+    click.echo("Running Phase 2 baseline rolling backtest...")
+    click.echo(
+        f"Evaluation window: {DEFAULT_SPLIT.test_range.start_date} "
+        f"to {DEFAULT_SPLIT.test_range.end_date}"
+    )
+
+    try:
+        db = get_db()
+        ensure_indexes(db)
+        observations = get_all_observations(db, limit=50_000)
+    except Exception as exc:  # noqa: BLE001
+        click.echo(f"ERROR: MongoDB connection failed: {exc}", err=True)
+        sys.exit(1)
+
+    runner = BacktestRunner(
+        observations=observations,
+        areas=districts,
+        train_end_date=DEFAULT_SPLIT.train_range.end_date,
+    )
+
+    models = [
+        ("naive", NaiveLastWeekForecaster()),
+        ("rolling_mean_4w", RollingMean4wForecaster()),
+        ("seasonal_median", SeasonalMedianForecaster()),
+    ]
+
+    baseline_metrics_summary = []
+    for name, model in models:
+        metrics, predictions = runner.run_backtest(model, DEFAULT_SPLIT.test_range)
+        b_entry = {
+            "baselineName": name,
+            "mae": metrics.mae,
+            "topKRecall": metrics.top_k_recall,
+            "precision": metrics.precision,
+            "recall": metrics.recall,
+        }
+        baseline_metrics_summary.append(b_entry)
+
+        click.echo(
+            f"[{name}] instances={metrics.total_instances} MAE={metrics.mae} "
+            f"Recall={metrics.recall} Prec={metrics.precision} Top3Recall={metrics.top_k_recall}"
+        )
+
+        if not dry_run:
+            run_doc = runner.build_model_run_record(
+                model_version=model.model_version,
+                model_name=f"{name.replace('_', ' ').title()} Baseline",
+                metrics=metrics,
+                train_range=DEFAULT_SPLIT.train_range,
+                test_range=DEFAULT_SPLIT.test_range,
+                baseline_metrics_list=[b_entry],
+                outperforms_baseline=False,
+                notes="Phase 2 reference baseline evaluation",
+            )
+            upsert_model_run(db, run_doc)
+            upsert_predictions_batch(db, predictions)
+
+    click.echo("Baseline backtest completed successfully.")
 
 
 # -- Phase 4 stubs -------------------------------------------------------------
