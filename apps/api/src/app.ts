@@ -7,6 +7,8 @@ import { errorHandler } from './middleware/error-handler.js';
 import { createHealthRouter } from './routes/health.route.js';
 import { createSourcesRouter } from './routes/sources.route.js';
 import { createAreasRouter } from './routes/areas.route.js';
+import { createEvaluationRouter } from './routes/evaluation.route.js';
+import { createPredictionsRouter } from './routes/predictions.route.js';
 import type { DbClient } from './repositories/mongo.js';
 
 export function createApp(db?: DbClient) {
@@ -41,6 +43,8 @@ export function createApp(db?: DbClient) {
   app.use(env.API_PREFIX, createHealthRouter(db));
   app.use(env.API_PREFIX, createSourcesRouter(db));
   app.use(env.API_PREFIX, createAreasRouter(db));
+  app.use(env.API_PREFIX, createEvaluationRouter(db));
+  app.use(env.API_PREFIX, createPredictionsRouter(db));
 
   // Catch-all 404
   app.use((req, res) => {
