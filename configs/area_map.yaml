@@ -1,0 +1,124 @@
+# DengueAhead Area Name Mapping
+# Maps NDCU report name variants → canonical areaId (LK-{district-code})
+# District codes follow ISO 3166-2:LK and Sri Lanka DCS district numbering.
+#
+# unmatched_policy options:
+#   quarantine  — store observation with areaId="QUARANTINE" + UNMATCHED_AREA flag (default)
+#   warn        — log warning and skip the observation
+#   reject      — raise ParseError (stops ingestion)
+
+unmatched_policy: 'quarantine'
+
+mappings:
+  # ── Western Province ────────────────────────────────────────────────────────
+  'Colombo': 'LK-11'
+  'Col': 'LK-11'
+  'Col.': 'LK-11'
+  'Colombo District': 'LK-11'
+  'Colombo Dist': 'LK-11'
+
+  'Gampaha': 'LK-12'
+  'Gam': 'LK-12'
+  'Gampaha District': 'LK-12'
+
+  'Kalutara': 'LK-13'
+  'Kal': 'LK-13'
+  'Kalutara District': 'LK-13'
+
+  # ── Central Province ─────────────────────────────────────────────────────────
+  'Kandy': 'LK-21'
+  'Kan': 'LK-21'
+  'Kandy District': 'LK-21'
+
+  'Matale': 'LK-22'
+  'Mat': 'LK-22'
+  'Matale District': 'LK-22'
+
+  'Nuwara Eliya': 'LK-23'
+  'N.Eliya': 'LK-23'
+  'NuwaraEliya': 'LK-23'
+  'Nuwara-Eliya': 'LK-23'
+
+  # ── Southern Province ─────────────────────────────────────────────────────────
+  'Galle': 'LK-31'
+  'Gal': 'LK-31'
+  'Galle District': 'LK-31'
+
+  'Matara': 'LK-32'
+  'Mtr': 'LK-32'
+  'Matara District': 'LK-32'
+
+  'Hambantota': 'LK-33'
+  'Ham': 'LK-33'
+  'Hambantota District': 'LK-33'
+
+  # ── Northern Province ─────────────────────────────────────────────────────────
+  'Jaffna': 'LK-41'
+  'Jaf': 'LK-41'
+  'Jaffna District': 'LK-41'
+
+  'Kilinochchi': 'LK-42'
+  'Kil': 'LK-42'
+  'Kilinochchi District': 'LK-42'
+
+  'Mannar': 'LK-43'
+  'Man': 'LK-43'
+  'Mannar District': 'LK-43'
+
+  'Mullaitivu': 'LK-44'
+  'Mul': 'LK-44'
+  'Mullaitivu District': 'LK-44'
+
+  'Vavuniya': 'LK-45'
+  'Vav': 'LK-45'
+  'Vavuniya District': 'LK-45'
+
+  # ── Eastern Province ──────────────────────────────────────────────────────────
+  'Batticaloa': 'LK-51'
+  'Bat': 'LK-51'
+  'Batticaloa District': 'LK-51'
+
+  'Ampara': 'LK-52'
+  'Amp': 'LK-52'
+  'Ampara District': 'LK-52'
+  'Amparai': 'LK-52'
+
+  'Trincomalee': 'LK-53'
+  'Tri': 'LK-53'
+  'Trincomalee District': 'LK-53'
+
+  # ── North Western Province ────────────────────────────────────────────────────
+  'Kurunegala': 'LK-61'
+  'Kur': 'LK-61'
+  'Kurunegala District': 'LK-61'
+
+  'Puttalam': 'LK-62'
+  'Put': 'LK-62'
+  'Puttalam District': 'LK-62'
+
+  # ── North Central Province ────────────────────────────────────────────────────
+  'Anuradhapura': 'LK-71'
+  'Anu': 'LK-71'
+  'Anuradhapura District': 'LK-71'
+
+  'Polonnaruwa': 'LK-72'
+  'Pol': 'LK-72'
+  'Polonnaruwa District': 'LK-72'
+
+  # ── Uva Province ─────────────────────────────────────────────────────────────
+  'Badulla': 'LK-81'
+  'Bad': 'LK-81'
+  'Badulla District': 'LK-81'
+
+  'Moneragala': 'LK-82'
+  'Mon': 'LK-82'
+  'Moneragala District': 'LK-82'
+
+  # ── Sabaragamuwa Province ─────────────────────────────────────────────────────
+  'Ratnapura': 'LK-91'
+  'Rat': 'LK-91'
+  'Ratnapura District': 'LK-91'
+
+  'Kegalle': 'LK-92'
+  'Keg': 'LK-92'
+  'Kegalle District': 'LK-92'

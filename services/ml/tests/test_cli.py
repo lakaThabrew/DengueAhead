@@ -38,9 +38,7 @@ def test_cli_help(runner: CliRunner) -> None:
 @pytest.mark.parametrize(
     "subcommand",
     [
-        ["audit-sources"],
-        ["ingest"],
-        ["validate-data"],
+        # audit-sources, ingest, validate-data are now implemented (Phase 1)
         ["build-features"],
         ["train"],
         ["backtest"],
