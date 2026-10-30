@@ -5,6 +5,8 @@ import { env } from './config/env.js';
 import { requestIdMiddleware } from './middleware/request-id.js';
 import { errorHandler } from './middleware/error-handler.js';
 import { createHealthRouter } from './routes/health.route.js';
+import { createSourcesRouter } from './routes/sources.route.js';
+import { createAreasRouter } from './routes/areas.route.js';
 import type { DbClient } from './repositories/mongo.js';
 
 export function createApp(db?: DbClient) {
@@ -37,6 +39,8 @@ export function createApp(db?: DbClient) {
 
   // Mount routes under API_PREFIX
   app.use(env.API_PREFIX, createHealthRouter(db));
+  app.use(env.API_PREFIX, createSourcesRouter(db));
+  app.use(env.API_PREFIX, createAreasRouter(db));
 
   // Catch-all 404
   app.use((req, res) => {
