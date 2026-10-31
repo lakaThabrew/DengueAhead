@@ -40,7 +40,7 @@ def test_cli_help(runner: CliRunner) -> None:
     [
         # audit-sources, ingest, validate-data are implemented (Phase 1)
         # build-features, backtest are implemented (Phase 2)
-        ["train"],
+        # train is implemented (Phase 3)
         ["predict"],
     ],
 )
@@ -76,6 +76,14 @@ def test_build_features_help(runner: CliRunner) -> None:
     result = runner.invoke(cli, ["build-features", "--help"])
     assert result.exit_code == 0
     assert "--as-of" in result.output
+    assert "--dry-run" in result.output
+
+
+def test_train_help(runner: CliRunner) -> None:
+    """train --help outputs command documentation and exits 0."""
+    result = runner.invoke(cli, ["train", "--help"])
+    assert result.exit_code == 0
+    assert "--model-type" in result.output
     assert "--dry-run" in result.output
 
 

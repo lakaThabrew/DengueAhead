@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import re
 import sys
-from datetime import UTC
+from datetime import UTC, datetime
 from pathlib import Path
 
 import click
@@ -430,7 +430,7 @@ def build_features(as_of: str | None, area_map: str, dry_run: bool) -> None:
     )
 
 
-# -- Phase 3 stubs -------------------------------------------------------------
+# -- Phase 3 commands ----------------------------------------------------------
 
 
 @cli.command("train")
@@ -440,9 +440,204 @@ def build_features(as_of: str | None, area_map: str, dry_run: bool) -> None:
     show_default=True,
     help="Path to model config YAML.",
 )
-def train(config: str) -> None:
-    """Fit baselines and hotspot classification models."""
-    _not_implemented("train", 3)
+@click.option(
+    "--model-type",
+    type=click.Choice(["ridge", "hgb"], case_sensitive=False),
+    default="hgb",
+    show_default=True,
+    help="Model architecture: 'ridge' (linear) or 'hgb' (HistGradientBoosting).",
+)
+@click.option(
+    "--area-map",
+    default="configs/area_map.yaml",
+    show_default=True,
+    help="Path to area map YAML.",
+)
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    default=False,
+    help="Train and evaluate without saving artifact or DB.",
+)
+def train(config: str, model_type: str, area_map: str, dry_run: bool) -> None:
+    """Train regularized linear or gradient boosted model and evaluate on validation/test."""
+    import numpy as np
+
+    from dengueahead.evaluation.metrics import EvaluationInstance, compute_metrics
+    from dengueahead.evaluation.split import DEFAULT_SPLIT
+    from dengueahead.explainability.attribution import compute_permutation_importance
+    from dengueahead.features.seasonality import (
+        calculate_hotspot_thresholds,
+        calculate_seasonal_medians,
+    )
+    from dengueahead.ingestion.area_map import load_area_map
+    from dengueahead.repositories.dengue_weekly import get_all_observations
+    from dengueahead.repositories.model_runs import upsert_model_run
+    from dengueahead.repositories.mongo import ensure_indexes, get_db
+    from dengueahead.training.calibration import PlattCalibrator
+    from dengueahead.training.dataset import build_tabular_dataset
+    from dengueahead.training.linear import RidgeHotspotPipeline
+    from dengueahead.training.serializer import save_model_artifact
+    from dengueahead.training.tree import HGBHotspotPipeline
+    from dengueahead.training.uncertainty import ConformalIntervalCalculator
+
+    area_map_path = Path(area_map)
+    if not area_map_path.exists():
+        click.echo(f"ERROR: Area map not found: {area_map}", err=True)
+        sys.exit(1)
+    am = load_area_map(area_map_path)
+    districts = [a.area_id for a in am.areas]
+
+    click.echo(f"Starting ML training pipeline for model_type={model_type}...")
+
+    try:
+        db = get_db()
+        ensure_indexes(db)
+        observations = get_all_observations(db, limit=50_000)
+    except Exception as exc:  # noqa: BLE001
+        click.echo(f"ERROR: MongoDB connection failed: {exc}", err=True)
+        sys.exit(1)
+
+    seasonal_medians = calculate_seasonal_medians(
+        observations, train_end_date=DEFAULT_SPLIT.train_range.end_date
+    )
+    thresholds = calculate_hotspot_thresholds(
+        observations, quantile=0.75, train_end_date=DEFAULT_SPLIT.train_range.end_date
+    )
+
+    # 1. Assemble Train, Val, Test datasets (ML-02 zero leakage)
+    train_data = build_tabular_dataset(
+        observations, districts, DEFAULT_SPLIT.train_range, seasonal_medians=seasonal_medians
+    )
+    val_data = build_tabular_dataset(
+        observations, districts, DEFAULT_SPLIT.val_range, seasonal_medians=seasonal_medians
+    )
+    test_data = build_tabular_dataset(
+        observations, districts, DEFAULT_SPLIT.test_range, seasonal_medians=seasonal_medians
+    )
+
+    click.echo(f"Data splits: Train={len(train_data)} Val={len(val_data)} Test={len(test_data)}")
+
+    if len(train_data) == 0:
+        click.echo("ERROR: Train dataset has 0 instances. Ensure data is ingested.", err=True)
+        sys.exit(1)
+
+    # 2. Instantiate and fit model
+    if model_type.lower() == "ridge":
+        model: RidgeHotspotPipeline | HGBHotspotPipeline = RidgeHotspotPipeline(
+            alpha=10.0, random_state=42
+        )
+    else:
+        model = HGBHotspotPipeline(
+            learning_rate=0.05, max_depth=4, min_samples_leaf=5, random_state=42
+        )
+
+    model.fit(train_data.X, train_data.y)
+    click.echo(f"Model {model.model_version} fitted on {len(train_data)} historical rows.")
+
+    # 3. Fit probability calibrator & prediction intervals on validation set (ML-03)
+    val_preds = model.predict_counts(val_data.X) if len(val_data) > 0 else np.array([])
+    calibrator = PlattCalibrator(random_state=42)
+    interval_calc = ConformalIntervalCalculator(target_coverage=0.80)
+
+    if len(val_data) > 0:
+        # Binary hotspot ground truth for validation
+        val_thresholds = np.array([thresholds.get((a, 20), 50.0) for a in val_data.area_ids])
+        val_binary = (val_data.y >= val_thresholds).astype(int)
+        val_margins = val_preds - val_thresholds
+
+        calibrator.fit(val_margins, val_binary)
+        interval_calc.fit(val_data.y, val_preds)
+
+    click.echo(
+        f"Calibration status: {calibrator.get_confidence_status()} "
+        f"(Brier: {calibrator.brier_score}) Conformal delta: {interval_calc.delta}"
+    )
+
+    # 4. Evaluate on held-out test split
+    test_instances = []
+    if len(test_data) > 0:
+        test_preds = model.predict_counts(test_data.X)
+        for i in range(len(test_data)):
+            a = test_data.area_ids[i]
+            tw = test_data.target_weeks[i]
+            tau = thresholds.get((a, 20), 50.0)
+            test_instances.append(
+                EvaluationInstance(
+                    area_id=a,
+                    target_week=tw,
+                    actual_cases=test_data.y[i],
+                    predicted_cases=test_preds[i],
+                    threshold=tau,
+                )
+            )
+
+    test_metrics = compute_metrics(test_instances, top_k=3)
+    click.echo(
+        f"Held-out test metrics: MAE={test_metrics.mae} "
+        f"Recall={test_metrics.recall} Prec={test_metrics.precision} "
+        f"Top3Recall={test_metrics.top_k_recall}"
+    )
+
+    # 5. Feature importances
+    importances = compute_permutation_importance(
+        model,
+        val_data.X if len(val_data) > 0 else train_data.X[:200],
+        val_data.y if len(val_data) > 0 else train_data.y[:200],
+        feature_names=train_data.feature_names,
+    )
+    sorted_imp = sorted(importances.items(), key=lambda x: x[1], reverse=True)[:5]
+    click.echo(f"Top 5 feature importances: {sorted_imp}")
+
+    if dry_run:
+        click.echo("Dry-run mode: skipping artifact serialization and database write.")
+        sys.exit(0)
+
+    # 6. Save artifact to disk
+    artifact_dir = Path(f"artifacts/models/{model.model_version}")
+    metadata = {
+        "modelVersion": model.model_version,
+        "modelName": f"{model_type.upper()} Hotspot Forecaster",
+        "trainedAt": datetime.now(UTC).isoformat(),
+        "trainRange": {
+            "startWeek": DEFAULT_SPLIT.train_range.start_date,
+            "endWeek": DEFAULT_SPLIT.train_range.end_date,
+        },
+        "valRange": {
+            "startWeek": DEFAULT_SPLIT.val_range.start_date,
+            "endWeek": DEFAULT_SPLIT.val_range.end_date,
+        },
+        "testRange": {
+            "startWeek": DEFAULT_SPLIT.test_range.start_date,
+            "endWeek": DEFAULT_SPLIT.test_range.end_date,
+        },
+        "featureNames": train_data.feature_names,
+        "metrics": test_metrics.to_dict(),
+        "conformalDelta": interval_calc.delta,
+        "topFeatures": dict(sorted_imp),
+    }
+    save_model_artifact(artifact_dir, model, calibrator, interval_calc, metadata)
+    click.echo(f"Artifact serialized to {artifact_dir}")
+
+    # 7. Upsert model run in Mongo
+    run_doc = {
+        "modelVersion": model.model_version,
+        "modelName": f"{model_type.upper()} Hotspot Forecaster",
+        "trainedAt": metadata["trainedAt"],
+        "trainRange": metadata["trainRange"],
+        "testRange": metadata["testRange"],
+        "totalEvaluatedInstances": test_metrics.total_instances,
+        "mae": test_metrics.mae,
+        "topKRecall": test_metrics.top_k_recall,
+        "precision": test_metrics.precision,
+        "recall": test_metrics.recall,
+        "brierScore": calibrator.brier_score,
+        "baselines": [],
+        "outperformsBaseline": False,
+        "notes": f"Trained on historical data through {DEFAULT_SPLIT.train_range.end_date}",
+    }
+    upsert_model_run(db, run_doc)
+    click.echo("Model run recorded in MongoDB.")
 
 
 @cli.command("backtest")
@@ -462,12 +657,14 @@ def train(config: str) -> None:
     "--dry-run", is_flag=True, default=False, help="Run backtest without writing to MongoDB."
 )
 def backtest(config: str, area_map: str, dry_run: bool) -> None:
-    """Execute out-of-time rolling evaluation for baseline models."""
+    """Execute out-of-time rolling evaluation for baseline and ML models."""
     from dengueahead.baselines.naive import NaiveLastWeekForecaster
     from dengueahead.baselines.rolling_mean import RollingMean4wForecaster
     from dengueahead.baselines.seasonal_median import SeasonalMedianForecaster
     from dengueahead.evaluation.backtest import BacktestRunner
     from dengueahead.evaluation.split import DEFAULT_SPLIT
+    from dengueahead.inference.loader import load_model_artifact
+    from dengueahead.inference.predictor import MLHotspotPredictor
     from dengueahead.ingestion.area_map import load_area_map
     from dengueahead.repositories.dengue_weekly import get_all_observations
     from dengueahead.repositories.model_runs import upsert_model_run
@@ -481,7 +678,7 @@ def backtest(config: str, area_map: str, dry_run: bool) -> None:
     am = load_area_map(area_map_path)
     districts = [a.area_id for a in am.areas]
 
-    click.echo("Running Phase 2 baseline rolling backtest...")
+    click.echo("Running rolling backtest across evaluation window...")
     click.echo(
         f"Evaluation window: {DEFAULT_SPLIT.test_range.start_date} "
         f"to {DEFAULT_SPLIT.test_range.end_date}"
@@ -501,13 +698,32 @@ def backtest(config: str, area_map: str, dry_run: bool) -> None:
         train_end_date=DEFAULT_SPLIT.train_range.end_date,
     )
 
-    models = [
+    models: list[tuple[str, object]] = [
         ("naive", NaiveLastWeekForecaster()),
         ("rolling_mean_4w", RollingMean4wForecaster()),
         ("seasonal_median", SeasonalMedianForecaster()),
     ]
 
+    # Check for trained ML artifacts
+    for m_ver in ["dengueahead-hgb-v1", "dengueahead-ridge-v1"]:
+        art_path = Path(f"artifacts/models/{m_ver}")
+        if art_path.exists():
+            try:
+                bundle = load_model_artifact(art_path)
+                ml_pred = MLHotspotPredictor(
+                    model=bundle["model"],
+                    calibrator=bundle.get("calibrator"),
+                    interval_calc=bundle.get("interval_calc"),
+                    model_version=m_ver,
+                    feature_names=bundle["metadata"].get("featureNames"),
+                )
+                models.append((m_ver, ml_pred))
+            except Exception as exc:  # noqa: BLE001
+                click.echo(f"Notice: Could not load artifact {m_ver}: {exc}")
+
     baseline_metrics_summary = []
+    best_baseline_mae = float("inf")
+
     for name, model in models:
         metrics, predictions = runner.run_backtest(model, DEFAULT_SPLIT.test_range)
         b_entry = {
@@ -519,26 +735,38 @@ def backtest(config: str, area_map: str, dry_run: bool) -> None:
         }
         baseline_metrics_summary.append(b_entry)
 
+        if name in ("naive", "rolling_mean_4w", "seasonal_median"):
+            if metrics.mae < best_baseline_mae:
+                best_baseline_mae = metrics.mae
+
+        outperforms = False
+        if name not in ("naive", "rolling_mean_4w", "seasonal_median"):
+            # Check 5% improvement gate
+            outperforms = metrics.mae <= (0.95 * best_baseline_mae)
+
+        is_ml = name not in ("naive", "rolling_mean_4w", "seasonal_median")
+        suffix = f" Outperforms={outperforms}" if is_ml else ""
         click.echo(
             f"[{name}] instances={metrics.total_instances} MAE={metrics.mae} "
-            f"Recall={metrics.recall} Prec={metrics.precision} Top3Recall={metrics.top_k_recall}"
+            f"Recall={metrics.recall} Prec={metrics.precision} "
+            f"Top3Recall={metrics.top_k_recall}{suffix}"
         )
 
         if not dry_run:
             run_doc = runner.build_model_run_record(
-                model_version=model.model_version,
-                model_name=f"{name.replace('_', ' ').title()} Baseline",
+                model_version=getattr(model, "model_version", name),
+                model_name=f"{name.replace('_', ' ').title()} Model",
                 metrics=metrics,
                 train_range=DEFAULT_SPLIT.train_range,
                 test_range=DEFAULT_SPLIT.test_range,
-                baseline_metrics_list=[b_entry],
-                outperforms_baseline=False,
-                notes="Phase 2 reference baseline evaluation",
+                baseline_metrics_list=baseline_metrics_summary,
+                outperforms_baseline=outperforms,
+                notes="Phase 3 comparative evaluation run",
             )
             upsert_model_run(db, run_doc)
             upsert_predictions_batch(db, predictions)
 
-    click.echo("Baseline backtest completed successfully.")
+    click.echo("Rolling backtest completed successfully.")
 
 
 # -- Phase 4 stubs -------------------------------------------------------------
