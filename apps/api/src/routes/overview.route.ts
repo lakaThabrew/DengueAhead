@@ -1,14 +1,34 @@
 import { Router, Request, Response } from 'express';
 import { z } from 'zod';
+import { OverviewSummarySchema, AreaSchema, PredictionSchema } from '@dengueahead/contracts';
 import type { DbClient } from '../repositories/mongo.js';
-import { createPredictionsRepository } from '../repositories/predictions.repository.js';
-import { createAreasRepository } from '../repositories/areas.repository.js';
-import { AreaSchema, PredictionSchema } from '@dengueahead/contracts';
+
+function normalizeArea(
+  doc?: Record<string, unknown>
+): Record<string, unknown> {
+  if (!doc) return {};
+  let centroid = doc.centroid as
+    | { latitude?: number; longitude?: number }
+    | [number, number]
+    | undefined;
+  if (Array.isArray(centroid)) {
+    centroid = {
+      latitude: centroid[0] ?? 6.9271,
+      longitude: centroid[1] ?? 79.8612
+    };
+  } else if (!centroid || typeof centroid.latitude !== 'number') {
+    centroid = { latitude: 6.9271, longitude: 79.8612 };
+  }
+  return {
+    ...doc,
+    centroid
+  };
+}
 
 const QuerySchema = z.object({
   issueDate: z
     .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, 'issueDate must be YYYY-MM-DD')
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'issueDate must be in YYYY-MM-DD format')
     .optional()
 });
 
@@ -16,17 +36,6 @@ export function createOverviewRouter(db?: DbClient): Router {
   const router = Router();
 
   router.get('/overview', async (req: Request, res: Response) => {
-    if (!db) {
-      res.status(503).json({
-        error: {
-          code: 'DATABASE_UNAVAILABLE',
-          message: 'No database connection',
-          requestId: (req as Request & { requestId?: string }).requestId
-        }
-      });
-      return;
-    }
-
     const parseResult = QuerySchema.safeParse(req.query);
     if (!parseResult.success) {
       res.status(400).json({
@@ -39,73 +48,119 @@ export function createOverviewRouter(db?: DbClient): Router {
       return;
     }
 
+    if (!db) {
+      res.status(503).json({
+        error: {
+          code: 'DATABASE_UNAVAILABLE',
+          message: 'No database connection',
+          requestId: (req as Request & { requestId?: string }).requestId
+        }
+      });
+      return;
+    }
+
     try {
-      const predsRepo = createPredictionsRepository(db);
-      const areasRepo = createAreasRepository(db);
+      let targetIssueDate = parseResult.data.issueDate;
 
-      // Resolve issueDate: use provided or latest
-      let issueDate = parseResult.data.issueDate;
-      if (!issueDate) {
-        const latest = await predsRepo.getLatestIssueDate();
-        if (!latest) {
-          res.json({
-            issueDate: null,
-            targetWeek: null,
-            monitoredAreasCount: 0,
-            emergingHotspotsCount: 0,
-            persistentHotspotsCount: 0,
-            stableAreasCount: 0,
-            coolingAreasCount: 0,
-            withheldCount: 0,
-            topEmergingAreas: []
-          });
-          return;
-        }
-        issueDate = latest;
-      }
+      // If no issueDate specified, find the latest issueDate
+      if (!targetIssueDate) {
+        const latestDoc = await db
+          .collection('predictions')
+          .find({}, { projection: { issueDate: 1 } })
+          .sort({ issueDate: -1 })
+          .limit(1)
+          .toArray();
 
-      const d = new Date(issueDate);
-      d.setDate(d.getDate() + 7);
-      const targetWeek = d.toISOString().slice(0, 10);
-
-      const [counts, topEmerging, allAreas] = await Promise.all([
-        predsRepo.getOverviewCounts(issueDate),
-        predsRepo.getTopEmergingAreas(issueDate, 5),
-        areasRepo.listAreas(100, 0)
-      ]);
-
-      // Build topEmergingAreas with full area detail
-      const topEmergingAreas = [];
-      for (const pred of topEmerging) {
-        const p = pred as { areaId?: string };
-        if (p.areaId) {
-          const area = await areasRepo.getArea(p.areaId);
-          if (area) {
-            const parsedArea = AreaSchema.safeParse(area);
-            const parsedPred = PredictionSchema.safeParse(pred);
-            if (parsedArea.success && parsedPred.success) {
-              topEmergingAreas.push({ area: parsedArea.data, prediction: parsedPred.data });
-            }
-          }
+        if (latestDoc.length > 0 && latestDoc[0].issueDate) {
+          targetIssueDate = latestDoc[0].issueDate;
+        } else {
+          // If no predictions exist yet, default to today's date
+          targetIssueDate = new Date().toISOString().slice(0, 10);
         }
       }
 
-      res.json({
-        issueDate,
+      // Fetch all predictions for targetIssueDate
+      const rawPredictions = await db
+        .collection('predictions')
+        .find({ issueDate: targetIssueDate }, { projection: { _id: 0 } })
+        .toArray();
+
+      const predictions = rawPredictions.map((p) => PredictionSchema.parse(p));
+
+      // Resolve targetWeek
+      const targetWeek = predictions.length > 0 ? predictions[0].targetWeek : targetIssueDate;
+
+      // Compute status breakdown
+      let emerging = 0;
+      let persistent = 0;
+      let stable = 0;
+      let cooling = 0;
+      let withheld = 0;
+
+      for (const p of predictions) {
+        if (p.status === 'EMERGING') emerging++;
+        else if (p.status === 'PERSISTENT') persistent++;
+        else if (p.status === 'STABLE') stable++;
+        else if (p.status === 'COOLING') cooling++;
+        else if (p.status === 'WITHHELD') withheld++;
+      }
+
+      // Find top emerging areas (sorted by riskProbability desc, then pointForecast desc)
+      const emergingPreds = predictions
+        .filter((p) => p.status === 'EMERGING')
+        .sort((a, b) => {
+          const probA = a.riskProbability ?? -1;
+          const probB = b.riskProbability ?? -1;
+          if (probB !== probA) return probB - probA;
+          return (b.pointForecast ?? 0) - (a.pointForecast ?? 0);
+        })
+        .slice(0, 5);
+
+      // Fetch Area details for top emerging areas
+      const topAreaIds = emergingPreds.map((p) => p.areaId);
+      const areaDocs =
+        topAreaIds.length > 0
+          ? await db
+              .collection('areas')
+              .find({ areaId: { $in: topAreaIds } }, { projection: { _id: 0 } })
+              .toArray()
+          : [];
+
+      const areaMap = new Map<string, Record<string, unknown>>();
+      for (const a of areaDocs) {
+        areaMap.set(a.areaId, a);
+      }
+
+      const topEmergingAreas = emergingPreds.map((p) => {
+        const areaRaw = areaMap.get(p.areaId) || {
+          areaId: p.areaId,
+          name: p.areaId,
+          level: 'district'
+        };
+        return {
+          area: AreaSchema.parse(normalizeArea(areaRaw)),
+          prediction: p
+        };
+      });
+
+      const summary = OverviewSummarySchema.parse({
+        issueDate: targetIssueDate,
         targetWeek,
-        monitoredAreasCount: (allAreas as unknown[]).length,
-        emergingHotspotsCount: counts['EMERGING'] ?? 0,
-        persistentHotspotsCount: counts['PERSISTENT'] ?? 0,
-        stableAreasCount: counts['STABLE'] ?? 0,
-        coolingAreasCount: counts['COOLING'] ?? 0,
-        withheldCount: counts['WITHHELD'] ?? 0,
+        monitoredAreasCount: predictions.length,
+        emergingHotspotsCount: emerging,
+        persistentHotspotsCount: persistent,
+        stableAreasCount: stable,
+        coolingAreasCount: cooling,
+        withheldCount: withheld,
         topEmergingAreas
       });
+
+      res.json(summary);
     } catch {
       res.status(503).json({
         error: {
           code: 'DATABASE_ERROR',
-          message: 'Failed to query overview',
+          message: 'Failed to generate overview summary',
           requestId: (req as Request & { requestId?: string }).requestId
         }
       });
