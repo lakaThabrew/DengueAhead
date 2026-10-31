@@ -19,6 +19,9 @@ dependencies = [
     "lxml>=5.0.0",
     "pyyaml>=6.0.0",
     "pymongo>=4.8.0",
+    "numpy>=1.26.0",
+    "scikit-learn>=1.5.0",
+    "joblib>=1.4.0",
 ]
 
 [project.optional-dependencies]
