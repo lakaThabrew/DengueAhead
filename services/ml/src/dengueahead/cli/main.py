@@ -769,7 +769,7 @@ def backtest(config: str, area_map: str, dry_run: bool) -> None:
     click.echo("Rolling backtest completed successfully.")
 
 
-# -- Phase 4 stubs -------------------------------------------------------------
+# -- Phase 4 commands ----------------------------------------------------------
 
 
 @cli.command("predict")
@@ -778,12 +778,270 @@ def backtest(config: str, area_map: str, dry_run: bool) -> None:
     "as_of",
     default=None,
     callback=_validate_date,
-    help="Forecast issue date in YYYY-MM-DD format.",
+    help="Forecast issue date in YYYY-MM-DD format. Defaults to latest Monday.",
+)
+@click.option(
+    "--model-version",
+    "model_version",
+    default="dengueahead-hgb-v1",
+    show_default=True,
+    help="Model version to load.",
+)
+@click.option(
+    "--fallback-baseline",
+    "fallback_baseline",
+    is_flag=True,
+    default=False,
+    help="Fallback to seasonal median baseline if ML artifact is unavailable.",
+)
+@click.option(
+    "--area-map",
+    default="configs/area_map.yaml",
+    show_default=True,
+    help="Path to area map YAML.",
 )
 @click.option("--publish", is_flag=True, default=False, help="Publish predictions to MongoDB.")
-def predict(as_of: str | None, publish: bool) -> None:
+@click.option(
+    "--output",
+    default=None,
+    type=click.Path(dir_okay=False),
+    help="Write predictions JSON to this file path.",
+)
+def predict(
+    as_of: str | None,
+    model_version: str,
+    fallback_baseline: bool,
+    area_map: str,
+    publish: bool,
+    output: str | None,
+) -> None:
     """Generate next-week hotspot predictions and optionally publish to DB."""
-    _not_implemented("predict", 4)
+    from datetime import date, timedelta
+
+    from dengueahead.baselines.seasonal_median import SeasonalMedianForecaster
+    from dengueahead.contracts.prediction import Prediction
+    from dengueahead.evaluation.backtest import BacktestRunner
+    from dengueahead.evaluation.split import DateRange
+    from dengueahead.features.builder import build_features_for_area
+    from dengueahead.features.seasonality import (
+        calculate_hotspot_thresholds,
+        calculate_seasonal_medians,
+    )
+    from dengueahead.features.taxonomy import classify_status
+    from dengueahead.inference.loader import (
+        ArtifactCorruptError,
+        ArtifactMissingError,
+        load_model_artifact,
+    )
+    from dengueahead.inference.predictor import MLHotspotPredictor
+    from dengueahead.ingestion.area_map import load_area_map
+    from dengueahead.repositories.dengue_weekly import get_all_observations
+    from dengueahead.repositories.mongo import ensure_indexes, get_db
+    from dengueahead.repositories.predictions import upsert_predictions_batch
+
+    # 1. Resolve as-of date
+    if as_of is None:
+        today = date.today()
+        last_monday = today - timedelta(days=today.weekday())
+        as_of = last_monday.isoformat()
+
+    # Target week is as_of + 7 days
+    as_of_date = date.fromisoformat(as_of)
+    target_week = (as_of_date + timedelta(days=7)).isoformat()
+
+    click.echo(f"Predict: as_of={as_of} target_week={target_week} model_version={model_version}")
+
+    # 2. Load area map
+    area_map_path = Path(area_map)
+    if not area_map_path.exists():
+        click.echo(f"ERROR: Area map not found: {area_map}", err=True)
+        sys.exit(1)
+    am = load_area_map(area_map_path)
+    districts = [a.area_id for a in am.areas]
+
+    # 3. Load observations from MongoDB (or skip publish path with empty list)
+    observations: list[dict] = []
+    db = None
+    if publish:
+        try:
+            db = get_db()
+            ensure_indexes(db)
+            observations = get_all_observations(db, limit=50_000)
+        except Exception as exc:  # noqa: BLE001
+            click.echo(f"ERROR: MongoDB connection failed: {exc}", err=True)
+            sys.exit(1)
+    else:
+        try:
+            db_candidate = get_db()
+            observations = get_all_observations(db_candidate, limit=50_000)
+            db = db_candidate
+        except Exception:  # noqa: BLE001
+            click.echo("Notice: No MongoDB connection — predictions withheld for all areas.")
+
+    # 4. Load model artifact — fallback to WITHHELD if missing/corrupt
+    predictor = None
+    artifact_quality_flag: str | None = None
+
+    artifact_dir = Path(f"artifacts/models/{model_version}")
+    try:
+        bundle = load_model_artifact(artifact_dir)
+        predictor = MLHotspotPredictor(
+            model=bundle["model"],
+            calibrator=bundle.get("calibrator"),
+            interval_calc=bundle.get("interval_calc"),
+            model_version=model_version,
+            feature_names=bundle["metadata"].get("featureNames"),
+        )
+        click.echo(f"Loaded ML artifact: {model_version}")
+    except ArtifactMissingError:
+        artifact_quality_flag = "MODEL_ARTIFACT_MISSING"
+        click.echo(f"Notice: Artifact not found for {model_version}.", err=True)
+    except ArtifactCorruptError:
+        artifact_quality_flag = "MODEL_ARTIFACT_CORRUPT"
+        click.echo(f"Notice: Artifact corrupt for {model_version}.", err=True)
+
+    # 5. Fall back to seasonal median baseline if requested and artifact unavailable
+    baseline_predictor = None
+    if predictor is None and fallback_baseline:
+        click.echo("Falling back to SeasonalMedianForecaster baseline.")
+        baseline_predictor = SeasonalMedianForecaster()
+
+    # 6. Seasonal stats for threshold computation
+    seasonal_medians = calculate_seasonal_medians(observations)
+    thresholds = calculate_hotspot_thresholds(observations, quantile=0.75)
+    weather_records: list[dict] = []
+    if db is not None:
+        try:
+            weather_records = list(db["weather_weekly"].find({}, {"_id": 0}))
+        except Exception:  # noqa: BLE001
+            pass
+
+    # 7. Generate predictions for all districts
+    predictions: list[Prediction] = []
+
+    for area_id in districts:
+        # Artifact-level WITHHELD (corrupt / missing, no fallback)
+        if predictor is None and baseline_predictor is None:
+            pred = Prediction(
+                areaId=area_id,
+                geographicLevel="district",
+                issueDate=as_of,
+                targetWeek=target_week,
+                asOfDate=as_of,
+                modelVersion=model_version,
+                status="WITHHELD",
+                confidenceStatus="NOT_AVAILABLE",
+                pointForecast=None,
+                interval=None,
+                riskProbability=None,
+                qualityFlags=[artifact_quality_flag or "MODEL_ARTIFACT_MISSING"],
+                sourceSnapshotIds=[],
+            )
+            predictions.append(pred)
+            continue
+
+        # Build as-of safe features
+        record = build_features_for_area(
+            area_id=area_id,
+            as_of=as_of,
+            observations=observations,
+            weather_records=weather_records,
+            seasonal_medians=seasonal_medians,
+        )
+
+        current_iso_week = as_of_date.isocalendar().week
+        current_threshold = thresholds.get((area_id, current_iso_week), 50.0)
+        next_iso_week = (as_of_date + timedelta(days=7)).isocalendar().week
+        next_threshold = thresholds.get((area_id, next_iso_week), 50.0)
+
+        if predictor is not None:
+            pred = predictor.predict(record, current_threshold, next_threshold)
+        else:
+            # Baseline fallback — use BacktestRunner single-step forecast
+            if record.is_withheld:
+                pred = Prediction(
+                    areaId=area_id,
+                    geographicLevel="district",
+                    issueDate=as_of,
+                    targetWeek=target_week,
+                    asOfDate=as_of,
+                    modelVersion="seasonal_median",
+                    status="WITHHELD",
+                    confidenceStatus="NOT_AVAILABLE",
+                    pointForecast=None,
+                    interval=None,
+                    riskProbability=None,
+                    qualityFlags=record.quality_flags or ["INSUFFICIENT_HISTORY"],
+                    sourceSnapshotIds=[],
+                )
+            else:
+                # Single-step seasonal median forecast
+                runner = BacktestRunner(
+                    observations=observations,
+                    areas=[area_id],
+                    train_end_date=as_of,
+                )
+                _metrics, bl_preds = runner.run_backtest(
+                    baseline_predictor,
+                    DateRange(start_date=target_week, end_date=target_week),
+                )
+                if bl_preds:
+                    pred = bl_preds[0]
+                else:
+                    cases_lag_1 = record.features.get("cases_lag_1") or 0.0
+                    status = classify_status(
+                        current_cases=float(cases_lag_1),
+                        next_cases=float(cases_lag_1),
+                        current_threshold=current_threshold,
+                        next_threshold=next_threshold,
+                    )
+                    pred = Prediction(
+                        areaId=area_id,
+                        geographicLevel="district",
+                        issueDate=as_of,
+                        targetWeek=target_week,
+                        asOfDate=as_of,
+                        modelVersion="seasonal_median",
+                        status=status,
+                        confidenceStatus="NOT_AVAILABLE",
+                        pointForecast=float(cases_lag_1),
+                        interval=None,
+                        riskProbability=None,
+                        qualityFlags=[],
+                        sourceSnapshotIds=["snap-baseline"],
+                    )
+
+        predictions.append(pred)
+
+    # 8. Summary output
+    status_counts: dict[str, int] = {}
+    for p in predictions:
+        status_counts[p.status] = status_counts.get(p.status, 0) + 1
+
+    click.echo(
+        f"Generated {len(predictions)} predictions: "
+        + " ".join(f"{k}={v}" for k, v in sorted(status_counts.items()))
+    )
+
+    # 9. Write JSON output if requested
+    if output:
+        out_path = Path(output)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(
+            json.dumps([p.model_dump() for p in predictions], indent=2, default=str) + "\n",
+            encoding="utf-8",
+        )
+        click.echo(f"Predictions written -> {out_path}")
+
+    # 10. Publish to MongoDB
+    if publish:
+        if db is None:
+            click.echo("ERROR: Cannot publish — no MongoDB connection.", err=True)
+            sys.exit(1)
+        inserted = upsert_predictions_batch(db, predictions)
+        click.echo(f"Published to MongoDB: inserted={inserted} total={len(predictions)}")
+    else:
+        click.echo("Dry-run mode: use --publish to write to MongoDB.")
 
 
 if __name__ == "__main__":
