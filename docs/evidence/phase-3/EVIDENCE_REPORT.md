@@ -94,13 +94,13 @@ npm run typecheck     → 0 errors (contracts + api + web)
 
 ## 4. Code Quality & Standards
 
-| Quality Gate             | Result                                  |
-|--------------------------|-----------------------------------------|
-| `ruff format --check`    | ✅ 78 files already formatted           |
-| `ruff check`             | ✅ All checks passed                    |
-| `npm run typecheck`      | ✅ 0 TypeScript errors (all workspaces) |
-| `pytest tests/unit/`     | ✅ 112 passed, 1 skipped                |
-| `npm run test:unit`      | ✅ 21 passed (API)                      |
+| Quality Gate          | Result                                  |
+| --------------------- | --------------------------------------- |
+| `ruff format --check` | ✅ 78 files already formatted           |
+| `ruff check`          | ✅ All checks passed                    |
+| `npm run typecheck`   | ✅ 0 TypeScript errors (all workspaces) |
+| `pytest tests/unit/`  | ✅ 112 passed, 1 skipped                |
+| `npm run test:unit`   | ✅ 21 passed (API)                      |
 
 ---
 

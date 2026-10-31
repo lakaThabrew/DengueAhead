@@ -14,13 +14,13 @@
 
 ### 1.1 Model Architectures
 
-| Model Version | Architecture | Framework | Random Seed |
-|---|---|---|---|
-| `baseline-naive-last-week-v1` | Persistence (ŷ = y_t) | Pure Python | n/a |
-| `baseline-rolling-mean-4w-v1` | 4-week rolling mean | Pure Python | n/a |
-| `baseline-seasonal-median-v1` | Calendar-week historical median | Pure Python | n/a |
-| `dengueahead-ridge-v1` | Ridge Regression (L2) + StandardScaler | scikit-learn | 42 |
-| `dengueahead-hgb-v1` | HistGradientBoostingRegressor | scikit-learn | 42 |
+| Model Version                 | Architecture                           | Framework    | Random Seed |
+| ----------------------------- | -------------------------------------- | ------------ | ----------- |
+| `baseline-naive-last-week-v1` | Persistence (ŷ = y_t)                  | Pure Python  | n/a         |
+| `baseline-rolling-mean-4w-v1` | 4-week rolling mean                    | Pure Python  | n/a         |
+| `baseline-seasonal-median-v1` | Calendar-week historical median        | Pure Python  | n/a         |
+| `dengueahead-ridge-v1`        | Ridge Regression (L2) + StandardScaler | scikit-learn | 42          |
+| `dengueahead-hgb-v1`          | HistGradientBoostingRegressor          | scikit-learn | 42          |
 
 ### 1.2 Prediction Task
 
@@ -42,11 +42,11 @@ where $\tau_{a, w}$ is the **75th percentile** of historical case counts for cal
 
 ## 2. Training Data
 
-| Split | Date Range | Purpose |
-|---|---|---|
-| **Train** | 2020-01-06 – 2023-12-25 | Model fitting; seasonal threshold estimation |
+| Split          | Date Range              | Purpose                                                                       |
+| -------------- | ----------------------- | ----------------------------------------------------------------------------- |
+| **Train**      | 2020-01-06 – 2023-12-25 | Model fitting; seasonal threshold estimation                                  |
 | **Validation** | 2024-01-01 – 2024-06-24 | Probability calibration; conformal interval fitting; hyperparameter selection |
-| **Test** | 2024-07-01 – 2024-12-30 | Held-out final evaluation — never touched until final benchmark |
+| **Test**       | 2024-07-01 – 2024-12-30 | Held-out final evaluation — never touched until final benchmark               |
 
 **Primary source:** National Dengue Control Unit (NDCU), Sri Lanka Ministry of Health — weekly district case counts. Licence status: `PENDING_VERIFICATION` (publicly accessible; formal open-data licence not confirmed).
 
@@ -60,26 +60,26 @@ where $\tau_{a, w}$ is the **75th percentile** of historical case counts for cal
 
 All features are computed **strictly as-of** the forecast issue date `T`. No target-week or future data can enter the feature vector.
 
-| Feature | Type | Description |
-|---|---|---|
-| `cases_lag_1` | numeric | Reported cases, week t |
-| `cases_lag_2` | numeric | Reported cases, week t-1 |
-| `cases_lag_3` | numeric | Reported cases, week t-2 |
-| `cases_lag_4` | numeric | Reported cases, week t-3 |
-| `growth_1w` | numeric | `(lag1 - lag2) / max(lag2, 1.0)` — 1-week relative growth |
-| `growth_4w` | numeric | `(lag1 - lag4) / max(lag4, 1.0)` — 4-week momentum |
-| `cases_diff_1w` | numeric | `lag1 - lag2` — absolute 1-week change |
-| `cases_roll_mean_2w` | numeric | Mean of lags 1–2 |
-| `cases_roll_mean_4w` | numeric | Mean of lags 1–4 |
-| `cases_roll_mean_8w` | numeric | Mean of up to 8 most recent lags |
-| `cases_roll_std_4w` | numeric | Std dev of lags 1–4 |
-| `calendar_week` | integer | ISO calendar week of target week (1–53) |
-| `seasonal_historical_median` | numeric | Train-split median for this district × calendar week |
-| `seasonal_ratio` | numeric | `lag1 / max(seasonal_historical_median, 1.0)` |
-| `rain_lag_1–3` | numeric | Weekly precipitation (mm), weeks t through t-2 |
-| `temp_lag_1–3` | numeric | Mean temperature (°C), weeks t through t-2 |
-| `humidity_lag_1` | numeric | Mean relative humidity (%), week t |
-| `weather_available` | boolean | Whether valid weather data was joined |
+| Feature                      | Type    | Description                                               |
+| ---------------------------- | ------- | --------------------------------------------------------- |
+| `cases_lag_1`                | numeric | Reported cases, week t                                    |
+| `cases_lag_2`                | numeric | Reported cases, week t-1                                  |
+| `cases_lag_3`                | numeric | Reported cases, week t-2                                  |
+| `cases_lag_4`                | numeric | Reported cases, week t-3                                  |
+| `growth_1w`                  | numeric | `(lag1 - lag2) / max(lag2, 1.0)` — 1-week relative growth |
+| `growth_4w`                  | numeric | `(lag1 - lag4) / max(lag4, 1.0)` — 4-week momentum        |
+| `cases_diff_1w`              | numeric | `lag1 - lag2` — absolute 1-week change                    |
+| `cases_roll_mean_2w`         | numeric | Mean of lags 1–2                                          |
+| `cases_roll_mean_4w`         | numeric | Mean of lags 1–4                                          |
+| `cases_roll_mean_8w`         | numeric | Mean of up to 8 most recent lags                          |
+| `cases_roll_std_4w`          | numeric | Std dev of lags 1–4                                       |
+| `calendar_week`              | integer | ISO calendar week of target week (1–53)                   |
+| `seasonal_historical_median` | numeric | Train-split median for this district × calendar week      |
+| `seasonal_ratio`             | numeric | `lag1 / max(seasonal_historical_median, 1.0)`             |
+| `rain_lag_1–3`               | numeric | Weekly precipitation (mm), weeks t through t-2            |
+| `temp_lag_1–3`               | numeric | Mean temperature (°C), weeks t through t-2                |
+| `humidity_lag_1`             | numeric | Mean relative humidity (%), week t                        |
+| `weather_available`          | boolean | Whether valid weather data was joined                     |
 
 Missing values are imputed with column median (Ridge) or handled natively (HGB).
 
@@ -89,20 +89,21 @@ Missing values are imputed with column median (Ridge) or handled natively (HGB).
 
 Each prediction is a [`Prediction`](packages/contracts/src/prediction.schema.ts) contract document:
 
-| Field | Description |
-|---|---|
-| `status` | `EMERGING` / `PERSISTENT` / `COOLING` / `STABLE` / `WITHHELD` |
-| `pointForecast` | Estimated case count ≥ 0.0 (null when WITHHELD) |
-| `interval` | 80% conformal prediction interval; `lower ≥ 0` always |
-| `riskProbability` | Calibrated P(hotspot) ∈ [0,1]; `null` when uncalibrated |
-| `confidenceStatus` | `CALIBRATED` / `UNCALIBRATED` / `NOT_AVAILABLE` |
-| `qualityFlags` | Flags explaining WITHHELD or data quality issues |
-| `sourceSnapshotIds` | SHA-256 hashes of raw input documents |
-| `modelVersion` | Exact model identifier |
+| Field               | Description                                                   |
+| ------------------- | ------------------------------------------------------------- |
+| `status`            | `EMERGING` / `PERSISTENT` / `COOLING` / `STABLE` / `WITHHELD` |
+| `pointForecast`     | Estimated case count ≥ 0.0 (null when WITHHELD)               |
+| `interval`          | 80% conformal prediction interval; `lower ≥ 0` always         |
+| `riskProbability`   | Calibrated P(hotspot) ∈ [0,1]; `null` when uncalibrated       |
+| `confidenceStatus`  | `CALIBRATED` / `UNCALIBRATED` / `NOT_AVAILABLE`               |
+| `qualityFlags`      | Flags explaining WITHHELD or data quality issues              |
+| `sourceSnapshotIds` | SHA-256 hashes of raw input documents                         |
+| `modelVersion`      | Exact model identifier                                        |
 
 ### 4.1 WITHHELD Conditions
 
 A prediction is suppressed to `WITHHELD` when:
+
 - `cases_lag_1` is null (current week not yet reported)
 - Fewer than 4 historical observations exist for the district prior to `T`
 - Model artifact is missing or SHA-256 checksum fails
@@ -116,17 +117,18 @@ A prediction is suppressed to `WITHHELD` when:
 
 ### Metric Definitions
 
-| Metric | Definition |
-|---|---|
-| **MAE** | Mean absolute error on continuous case count predictions |
-| **Hotspot Recall** | TP / (TP + FN) — fraction of true hotspots correctly flagged |
-| **Hotspot Precision** | TP / (TP + FP) — fraction of flagged hotspots that are real |
-| **Top-3 Recall** | Fraction of actual top-3 highest-burden districts appearing in predicted top-3, averaged across test weeks |
-| **Brier Score** | Mean squared error on calibrated probabilities (null for baselines) |
+| Metric                | Definition                                                                                                 |
+| --------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **MAE**               | Mean absolute error on continuous case count predictions                                                   |
+| **Hotspot Recall**    | TP / (TP + FN) — fraction of true hotspots correctly flagged                                               |
+| **Hotspot Precision** | TP / (TP + FP) — fraction of flagged hotspots that are real                                                |
+| **Top-3 Recall**      | Fraction of actual top-3 highest-burden districts appearing in predicted top-3, averaged across test weeks |
+| **Brier Score**       | Mean squared error on calibrated probabilities (null for baselines)                                        |
 
 ### Baseline Comparison Gate
 
 An ML model is designated as the recommended forecaster only if it achieves:
+
 - MAE ≤ 0.95 × best baseline MAE, **or**
 - Top-3 Recall ≥ best baseline Top-3 Recall + 0.05
 
@@ -141,6 +143,7 @@ If the gate fails: `outperformsBaseline = false` and the best baseline remains t
 **Acceptance criterion:** Calibrated Brier score must be ≤ climatology Brier score on the validation set.
 
 **Fallback:** If calibration degrades or validation set contains only one class:
+
 - `confidenceStatus = "UNCALIBRATED"`
 - `riskProbability = null`
 - No probability is published
@@ -152,6 +155,7 @@ If the gate fails: `outperformsBaseline = false` and the best baseline remains t
 **Method:** Empirical conformal prediction — 80th percentile of absolute validation residuals `δ_{0.80}`.
 
 **Construction:**
+
 - `lower = max(0.0, ŷ - δ_{0.80})` — never negative
 - `upper = ŷ + δ_{0.80}`
 - `coverage = 0.80`, `method = "conformal_residual_quantile"`
