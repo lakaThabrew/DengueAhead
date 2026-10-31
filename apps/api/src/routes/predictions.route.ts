@@ -1,15 +1,22 @@
 import { Router, Request, Response } from 'express';
 import { z } from 'zod';
-import { PredictionSchema } from '@dengueahead/contracts';
+import { PredictionSchema, PredictionStatusSchema } from '@dengueahead/contracts';
 import type { DbClient } from '../repositories/mongo.js';
+import { createPredictionsRepository } from '../repositories/predictions.repository.js';
 
 const QuerySchema = z.object({
-  asOf: z
+  issueDate: z
     .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, 'asOf must be in YYYY-MM-DD format')
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'issueDate must be YYYY-MM-DD')
     .optional(),
-  areaId: z.string().min(1).optional(),
-  modelVersion: z.string().min(1).optional()
+  status: PredictionStatusSchema.optional(),
+  areaId: z
+    .string()
+    .regex(/^[A-Z]{2}-\d{1,2}$/, 'areaId must match LK-NN format')
+    .optional(),
+  modelVersion: z.string().min(1).optional(),
+  limit: z.coerce.number().int().min(1).max(500).default(50),
+  offset: z.coerce.number().int().min(0).default(0)
 });
 
 export function createPredictionsRouter(db?: DbClient): Router {
@@ -39,26 +46,25 @@ export function createPredictionsRouter(db?: DbClient): Router {
       return;
     }
 
-    const { asOf, areaId, modelVersion } = parseResult.data;
-    const filter: Record<string, string> = {};
-    if (asOf) filter.asOfDate = asOf;
-    if (areaId) filter.areaId = areaId;
-    if (modelVersion) filter.modelVersion = modelVersion;
+    const { issueDate, status, areaId, modelVersion, limit, offset } = parseResult.data;
 
     try {
-      const docs = await db
-        .collection('predictions')
-        .find(filter, { projection: { _id: 0 } })
-        .sort({ areaId: 1 })
-        .limit(500)
-        .toArray();
-
-      const validated = docs.map((d) => PredictionSchema.parse(d));
-
-      res.json({
-        data: validated,
-        count: validated.length
+      const repo = createPredictionsRepository(db);
+      const { data: docs, total } = await repo.queryPredictions({
+        issueDate,
+        status,
+        areaId,
+        modelVersion,
+        limit,
+        offset
       });
+
+      const validated = docs.map((d) => {
+        const r = PredictionSchema.safeParse(d);
+        return r.success ? r.data : d;
+      });
+
+      res.json({ data: validated, count: validated.length, total });
     } catch {
       res.status(503).json({
         error: {

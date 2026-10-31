@@ -9,6 +9,11 @@ import { createSourcesRouter } from './routes/sources.route.js';
 import { createAreasRouter } from './routes/areas.route.js';
 import { createEvaluationRouter } from './routes/evaluation.route.js';
 import { createPredictionsRouter } from './routes/predictions.route.js';
+import { createMetaRouter } from './routes/meta.route.js';
+import { createOverviewRouter } from './routes/overview.route.js';
+import { createMethodologyRouter } from './routes/methodology.route.js';
+import { createCompareRouter } from './routes/compare.route.js';
+import { createBacktestsRouter } from './routes/backtests.route.js';
 import type { DbClient } from './repositories/mongo.js';
 
 export function createApp(db?: DbClient) {
@@ -41,10 +46,15 @@ export function createApp(db?: DbClient) {
 
   // Mount routes under API_PREFIX
   app.use(env.API_PREFIX, createHealthRouter(db));
-  app.use(env.API_PREFIX, createSourcesRouter(db));
+  app.use(env.API_PREFIX, createMetaRouter(db));
+  app.use(env.API_PREFIX, createOverviewRouter(db));
   app.use(env.API_PREFIX, createAreasRouter(db));
-  app.use(env.API_PREFIX, createEvaluationRouter(db));
   app.use(env.API_PREFIX, createPredictionsRouter(db));
+  app.use(env.API_PREFIX, createCompareRouter(db));
+  app.use(env.API_PREFIX, createBacktestsRouter(db));
+  app.use(env.API_PREFIX, createEvaluationRouter(db));
+  app.use(env.API_PREFIX, createSourcesRouter(db));
+  app.use(env.API_PREFIX, createMethodologyRouter());
 
   // Catch-all 404
   app.use((req, res) => {
