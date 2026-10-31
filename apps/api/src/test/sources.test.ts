@@ -24,10 +24,12 @@ const makeCollection = (docs: object[]) => () =>
     find: () => ({
       sort: () => ({
         limit: () => ({ toArray: async () => docs }),
+        skip: () => ({ limit: () => ({ toArray: async () => docs }) }),
         toArray: async () => docs
       }),
       toArray: async () => docs
     }),
+    countDocuments: async () => docs.length,
     sort: () => ({ toArray: async () => docs })
   }) as unknown as Collection<Document>;
 
