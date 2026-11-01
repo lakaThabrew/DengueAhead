@@ -41,13 +41,11 @@ describe('App Component', () => {
     expect(screen.getByText('Skip to main content')).toBeInTheDocument();
   });
 
-  it('displays the 4 architectural pillars', async () => {
+  it('displays the system pipeline pillars', async () => {
     render(<App />);
-    await waitFor(() => expect(screen.queryByText('Checking…')).toBeNull());
-    expect(screen.getByText('@dengueahead/contracts')).toBeInTheDocument();
-    expect(screen.getByText('@dengueahead/api')).toBeInTheDocument();
-    expect(screen.getByText('@dengueahead/web')).toBeInTheDocument();
-    expect(screen.getByText('services/ml')).toBeInTheDocument();
+    expect(screen.getByText('NDCU Dengue Data')).toBeInTheDocument();
+    expect(screen.getByText('Feature Engineering')).toBeInTheDocument();
+    expect(screen.getByText('HGB Forecast + Calibration')).toBeInTheDocument();
   });
 
   it('displays no numeric metrics or case numbers', async () => {
