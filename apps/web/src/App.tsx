@@ -12,50 +12,52 @@ import { DataQualityPage } from './pages/DataQualityPage.js';
 import { MethodologyPage } from './pages/MethodologyPage.js';
 import { AboutPage } from './pages/AboutPage.js';
 import { NotFoundPage } from './pages/NotFoundPage.js';
+import { ErrorBoundary } from './components/ui/ErrorBoundary.js';
 
 export const App: React.FC = () => {
   const router = useRouter();
   const path = router.pathname;
 
+  let pageContent: React.ReactNode;
+
   // Render Public Standalone Pages
   if (path === '/' || path === '') {
-    return <LandingPage />;
-  }
-
-  if (path === '/methodology') {
-    return <MethodologyPage />;
-  }
-
-  if (path === '/about') {
-    return <AboutPage />;
-  }
-
-  // Render Application Shell Pages
-  if (path.startsWith('/app')) {
-    let content: React.ReactNode;
+    pageContent = <LandingPage />;
+  } else if (path === '/methodology') {
+    pageContent = <MethodologyPage />;
+  } else if (path === '/about') {
+    pageContent = <AboutPage />;
+  } else if (path.startsWith('/app')) {
+    // Render Application Shell Pages
+    let innerContent: React.ReactNode;
 
     if (path === '/app/overview' || path === '/app') {
-      content = <OverviewPage />;
+      innerContent = <OverviewPage />;
     } else if (path === '/app/map') {
-      content = <MapPage />;
+      innerContent = <MapPage />;
     } else if (path.startsWith('/app/areas/')) {
       const areaId = path.split('/app/areas/')[1]?.split('/')[0];
-      content = <AreaDetailPage areaId={areaId} />;
+      innerContent = <AreaDetailPage areaId={areaId} />;
     } else if (path === '/app/compare') {
-      content = <ComparePage />;
+      innerContent = <ComparePage />;
     } else if (path === '/app/history') {
-      content = <HistoryPage />;
+      innerContent = <HistoryPage />;
     } else if (path === '/app/model') {
-      content = <ModelPage />;
+      innerContent = <ModelPage />;
     } else if (path === '/app/data-quality') {
-      content = <DataQualityPage />;
+      innerContent = <DataQualityPage />;
     } else {
-      content = <NotFoundPage />;
+      innerContent = <NotFoundPage />;
     }
 
-    return <AppShell currentPath={path}>{content}</AppShell>;
+    pageContent = (
+      <AppShell currentPath={path}>
+        <ErrorBoundary fallbackTitle="Application Error in View">{innerContent}</ErrorBoundary>
+      </AppShell>
+    );
+  } else {
+    pageContent = <NotFoundPage />;
   }
 
-  // 404 Catch-All
-  return <NotFoundPage />;
+  return <ErrorBoundary fallbackTitle="DengueAhead System Error">{pageContent}</ErrorBoundary>;
 };

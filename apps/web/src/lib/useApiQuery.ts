@@ -34,7 +34,7 @@ export function useApiQuery<T>(url: string | null, schema: ZodSchema<T>): UseApi
       setError(null);
 
       try {
-        const result = await apiFetch(url, schemaRef.current);
+        const result = await apiFetch(url, schemaRef.current, { signal });
         if (signal?.aborted) return;
         if (result.ok) {
           setData(result.data);

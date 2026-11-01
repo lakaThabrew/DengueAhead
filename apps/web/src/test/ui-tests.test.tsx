@@ -205,7 +205,10 @@ describe('Phase 5 UI Test Suite (UI-01 to UI-08)', () => {
       expect(screen.getByText('Surveillance Overview')).toBeInTheDocument();
     });
 
-    expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining('/api/v1/overview'));
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining('/api/v1/overview'),
+      expect.anything()
+    );
   });
 
   // ── UI-06: Multi-district comparison limits ───────────────────────────────
