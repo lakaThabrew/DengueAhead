@@ -10,14 +10,14 @@
 
 ## 1. Executed Commands & Status Summary
 
-| Step                         | Command                          | Result     | Notes                                                                              |
-| :--------------------------- | :------------------------------- | :--------- | :--------------------------------------------------------------------------------- |
-| **Monorepo TypeCheck**       | `npm run typecheck`              | **Exit 0** | `@dengueahead/contracts`, `@dengueahead/api`, `@dengueahead/web` all compile clean |
-| **Lint & Formatting**        | `npm run lint`                   | **Exit 0** | ESLint 9 + Prettier check — 0 errors, 0 warnings                                   |
-| **Unit Test Suite**          | `npm run test:unit`              | **Exit 0** | **79/79 passed** (16 contracts + 41 API + 22 web tests)                            |
-| **Python ML Tests**          | `pytest services/ml/tests`       | **Exit 0** | **118 passed, 10 skipped** (full regression suite preserved)                       |
-| **Production Web Build**     | `npm run build`                  | **Exit 0** | Vite production bundle generated in 2.29s (299 kB JS, 1.7 kB CSS, gzip: 80.9 kB)   |
-| **Playwright Test Specs**    | `e2e/dashboard.spec.ts`          | **Created**| 5 end-to-end flows defined (Landing, Map, Compare, History Replay, Viewports)      |
+| Step                      | Command                    | Result      | Notes                                                                              |
+| :------------------------ | :------------------------- | :---------- | :--------------------------------------------------------------------------------- |
+| **Monorepo TypeCheck**    | `npm run typecheck`        | **Exit 0**  | `@dengueahead/contracts`, `@dengueahead/api`, `@dengueahead/web` all compile clean |
+| **Lint & Formatting**     | `npm run lint`             | **Exit 0**  | ESLint 9 + Prettier check — 0 errors, 0 warnings                                   |
+| **Unit Test Suite**       | `npm run test:unit`        | **Exit 0**  | **79/79 passed** (16 contracts + 41 API + 22 web tests)                            |
+| **Python ML Tests**       | `pytest services/ml/tests` | **Exit 0**  | **118 passed, 10 skipped** (full regression suite preserved)                       |
+| **Production Web Build**  | `npm run build`            | **Exit 0**  | Vite production bundle generated in 2.29s (299 kB JS, 1.7 kB CSS, gzip: 80.9 kB)   |
+| **Playwright Test Specs** | `e2e/dashboard.spec.ts`    | **Created** | 5 end-to-end flows defined (Landing, Map, Compare, History Replay, Viewports)      |
 
 ---
 
@@ -56,19 +56,19 @@ Key test IDs covered:
 
 All 11 required client-side routes have been built and verified:
 
-| Route Path            | Component          | Data Source / Contract Hook        | Key Capabilities & Guardrails                                              |
-| :-------------------- | :----------------- | :--------------------------------- | :------------------------------------------------------------------------- |
-| `/`                   | `LandingPage`      | Static + Illustrative Preview      | Non-clinical safety banner, 3-step pipeline explainer, data attribution    |
-| `/app/overview`       | `OverviewPage`     | `useOverviewQuery`, `useMetaQuery` | 6 KPI cards, Top Emerging Hotspots table, stale/offline alert banner       |
-| `/app/map`            | `MapPage`          | `useAreasQuery`, `usePredictions`  | Interactive SVG 25-district map + keyboard-accessible registry table       |
-| `/app/areas/:areaId`  | `AreaDetailPage`   | `useAreaDetail`, `useAreaSeries`   | Profile header, next-week forecast, `TimeSeriesChart`, feature drivers     |
-| `/app/compare`        | `ComparePage`      | `useCompareQuery`, `useAreasQuery` | Side-by-side metric matrix, max-3 district limit validation, URL syncing   |
-| `/app/history`        | `HistoryPage`      | `useBacktestsQuery`                | Historical replay, as-of safe cutoff, "Reveal Actual Outcome" action       |
-| `/app/model`          | `ModelPage`        | `useEvaluationQuery`               | `dengueahead-hgb-v1` Model Card, baseline benchmarks, feature importance   |
-| `/app/data-quality`   | `DataQualityPage`  | `useSourcesQuery`, `useHealth`     | Source manifest, SHA-256 integrity fingerprints, live service diagnostics  |
-| `/methodology`        | `MethodologyPage`  | `useMethodologyQuery`              | Target formulations, seasonal threshold rule, district risk taxonomy table |
-| `/about`              | `AboutPage`        | Static                             | EchoBinary team info, ModelX 2.0 context, open-source repository link      |
-| `*`                   | `NotFoundPage`     | Static                             | Clean 404 recovery page linking back to Overview or Landing                |
+| Route Path           | Component         | Data Source / Contract Hook        | Key Capabilities & Guardrails                                              |
+| :------------------- | :---------------- | :--------------------------------- | :------------------------------------------------------------------------- |
+| `/`                  | `LandingPage`     | Static + Illustrative Preview      | Non-clinical safety banner, 3-step pipeline explainer, data attribution    |
+| `/app/overview`      | `OverviewPage`    | `useOverviewQuery`, `useMetaQuery` | 6 KPI cards, Top Emerging Hotspots table, stale/offline alert banner       |
+| `/app/map`           | `MapPage`         | `useAreasQuery`, `usePredictions`  | Interactive SVG 25-district map + keyboard-accessible registry table       |
+| `/app/areas/:areaId` | `AreaDetailPage`  | `useAreaDetail`, `useAreaSeries`   | Profile header, next-week forecast, `TimeSeriesChart`, feature drivers     |
+| `/app/compare`       | `ComparePage`     | `useCompareQuery`, `useAreasQuery` | Side-by-side metric matrix, max-3 district limit validation, URL syncing   |
+| `/app/history`       | `HistoryPage`     | `useBacktestsQuery`                | Historical replay, as-of safe cutoff, "Reveal Actual Outcome" action       |
+| `/app/model`         | `ModelPage`       | `useEvaluationQuery`               | `dengueahead-hgb-v1` Model Card, baseline benchmarks, feature importance   |
+| `/app/data-quality`  | `DataQualityPage` | `useSourcesQuery`, `useHealth`     | Source manifest, SHA-256 integrity fingerprints, live service diagnostics  |
+| `/methodology`       | `MethodologyPage` | `useMethodologyQuery`              | Target formulations, seasonal threshold rule, district risk taxonomy table |
+| `/about`             | `AboutPage`       | Static                             | EchoBinary team info, ModelX 2.0 context, open-source repository link      |
+| `*`                  | `NotFoundPage`    | Static                             | Clean 404 recovery page linking back to Overview or Landing                |
 
 ---
 
