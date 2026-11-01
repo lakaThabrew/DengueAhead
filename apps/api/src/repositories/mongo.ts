@@ -7,7 +7,21 @@ export interface DbClient {
 }
 
 export function createMongoClient(uri: string): DbClient {
-  const client = new MongoClient(uri, { serverSelectionTimeoutMS: 2000 });
+  const client = new MongoClient(uri, {
+    maxPoolSize: 20,
+    minPoolSize: 5,
+    serverSelectionTimeoutMS: 3000,
+    socketTimeoutMS: 5000
+  });
+
+  client.on('close', () => {
+    console.warn('[MongoDB] Connection closed');
+  });
+
+  client.on('error', (err) => {
+    console.error('[MongoDB] Connection error:', err);
+  });
+
   const appDb = client.db('dengueahead');
   let connected = false;
 
