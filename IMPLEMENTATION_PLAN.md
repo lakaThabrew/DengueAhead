@@ -217,8 +217,8 @@ DengueAhead/
 | `/app/history`       | **Historical replay**    | Choose historical issue week and view model forecast **as of that time**, reveal actual next week, baseline comparisons                                                                              | Strict time cutoff; actual hidden until “Reveal outcome”           |
 | `/app/model`         | **Model and evaluation** | Model version, training range, dataset size, target, MAE/recall/precision/top-K, baseline table, calibration and limits                                                                              | All metrics match backend run artifacts                            |
 | `/app/data-quality`  | **Data quality**         | Source registry, last observed/retrieved, missing weeks, parse errors, licence status, area coverage, refresh failures                                                                               | Meaningful offline/failure views; no false “live” indicator        |
-| `/app/methodology`   | **Public methodology**   | What is forecast, how risk is defined, data sources, backtesting, limitations, non-clinical statement                                                                                                | Link from every forecast; readable on mobile                       |
-| `/app/about`         | **About/team/contact**   | EchoBinary, project goals, data attribution, AI-assistance disclosure, GitHub link, limitations                                                                                                      | No invented contact details; attribution visible                   |
+| `/methodology`       | **Public methodology**   | What is forecast, how risk is defined, data sources, backtesting, limitations, non-clinical statement                                                                                                | Link from every forecast; readable on mobile                       |
+| `/about`             | **About/team/contact**   | EchoBinary, project goals, data attribution, AI-assistance disclosure, GitHub link, limitations                                                                                                      | No invented contact details; attribution visible                   |
 | `*`                  | **404/error boundary**   | Useful recovery links and retry                                                                                                                                                                      | Test bad paths, API errors, no crash                               |
 
 ### Wireframe: landing
@@ -543,7 +543,7 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 - `UI-07` charts visually/semantically differentiate observed vs predicted.
 - `UI-08` map search/list works without pointer input.
 
-**Integration/E2E tests:** Playwright: landing → `/app/overview` → `/app/map` → `/app/areas/:id` → `/app/compare` → `/app/history` → `/app/data-quality` → `/app/methodology` → `/app/about`; mobile viewport; API 500/timeout/empty response; forbidden invalid area route. Assert no console errors and no horizontal overflow.
+**Integration/E2E tests:** Playwright: landing → `/app/overview` → `/app/map` → `/app/areas/:id` → `/app/compare` → `/app/history` → `/app/data-quality` → `/methodology` → `/about`; mobile viewport; API 500/timeout/empty response; forbidden invalid area route. Assert no console errors and no horizontal overflow.
 
 **Gate:** every specified route functional, sourced data displayed accurately, mobile usability and accessible alternatives verified.
 
