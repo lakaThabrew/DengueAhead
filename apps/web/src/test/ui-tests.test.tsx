@@ -269,12 +269,12 @@ describe('Phase 5 UI Test Suite (UI-01 to UI-08)', () => {
     const select = screen.getByLabelText(/Add district to comparison/i);
 
     // Add 3rd district (Kalutara)
-    act(() => {
+    await act(async () => {
       fireEvent.change(select, { target: { value: 'LK-13' } });
     });
 
     // Try adding 4th district (Kandy) -> should show validation warning
-    act(() => {
+    await act(async () => {
       fireEvent.change(select, { target: { value: 'LK-21' } });
     });
 
