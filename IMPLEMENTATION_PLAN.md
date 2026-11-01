@@ -551,12 +551,12 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 
 **Agent tasks (automated):**
 
-- [ ] Add source/update status badges and explicit fail-safe messages.
-- [ ] Run entire Compose system from scratch and real-data smoke test.
-- [ ] Add Mongo index checks, dependency audit, secret scan, React error boundary, retry policies.
-- [ ] Benchmark route response times with representative data; optimize excessive queries.
-- [ ] Capture CI logs, browser screenshots, backtest plots and source evidence.
-- [ ] Validate all final artifact outputs against code and dataset manifests.
+- [x] Add source/update status badges and explicit fail-safe messages.
+- [x] Run entire Compose system from scratch and real-data smoke test.
+- [x] Add Mongo index checks, dependency audit, secret scan, React error boundary, retry policies.
+- [x] Benchmark route response times with representative data; optimize excessive queries.
+- [x] Capture CI logs, browser screenshots, backtest plots and source evidence.
+- [x] Validate all final artifact outputs against code and dataset manifests.
 
 **Human/manual tasks:**
 
