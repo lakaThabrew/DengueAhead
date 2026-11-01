@@ -16,8 +16,20 @@ describe('Areas Router (/api/v1/areas)', () => {
   };
 
   const sampleSeries = [
-    { areaId: 'LK-11', weekStart: '2024-06-17', weekEnd: '2024-06-23', cases: 100, qualityFlags: [] },
-    { areaId: 'LK-11', weekStart: '2024-06-24', weekEnd: '2024-06-30', cases: 120, qualityFlags: [] }
+    {
+      areaId: 'LK-11',
+      weekStart: '2024-06-17',
+      weekEnd: '2024-06-23',
+      cases: 100,
+      qualityFlags: []
+    },
+    {
+      areaId: 'LK-11',
+      weekStart: '2024-06-24',
+      weekEnd: '2024-06-30',
+      cases: 120,
+      qualityFlags: []
+    }
   ];
 
   const samplePrediction = {

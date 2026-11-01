@@ -11,14 +11,10 @@ import type { DbClient } from '../repositories/mongo.js';
 const NON_CAUSAL_DISCLAIMER =
   'Feature attributions indicate statistical association in historical surveillance data, not clinical or biological causation.';
 
-function normalizeArea(
-  doc?: Record<string, unknown>
-): Record<string, unknown> {
+function normalizeArea(doc?: Record<string, unknown>): Record<string, unknown> {
   if (!doc) return {};
   let centroid = doc.centroid as
-    | { latitude?: number; longitude?: number }
-    | [number, number]
-    | undefined;
+    { latitude?: number; longitude?: number } | [number, number] | undefined;
   if (Array.isArray(centroid)) {
     centroid = {
       latitude: centroid[0] ?? 6.9271,
