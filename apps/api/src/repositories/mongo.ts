@@ -1,12 +1,28 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, Collection, Document } from 'mongodb';
 
 export interface DbClient {
   ping(): Promise<{ latencyMs: number }>;
   close(): Promise<void>;
+  collection<T extends Document = Document>(name: string): Collection<T>;
 }
 
 export function createMongoClient(uri: string): DbClient {
-  const client = new MongoClient(uri, { serverSelectionTimeoutMS: 2000 });
+  const client = new MongoClient(uri, {
+    maxPoolSize: 20,
+    minPoolSize: 5,
+    serverSelectionTimeoutMS: 3000,
+    socketTimeoutMS: 5000
+  });
+
+  client.on('close', () => {
+    console.warn('[MongoDB] Connection closed');
+  });
+
+  client.on('error', (err) => {
+    console.error('[MongoDB] Connection error:', err);
+  });
+
+  const appDb = client.db('dengueahead');
   let connected = false;
 
   return {
@@ -21,6 +37,9 @@ export function createMongoClient(uri: string): DbClient {
     },
     async close(): Promise<void> {
       await client.close();
+    },
+    collection<T extends Document = Document>(name: string): Collection<T> {
+      return appDb.collection<T>(name);
     }
   };
 }

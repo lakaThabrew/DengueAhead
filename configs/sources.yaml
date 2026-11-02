@@ -1,12 +1,25 @@
 # DengueAhead Data Sources Configuration
+# Template populated by: dengueahead audit-sources
+# IMPORTANT: Set verified=true ONLY after a human has confirmed terms of use and robots.txt.
+# The ingest command will refuse to fetch any source with verified=false.
+
 sources:
   ndcu:
     name: 'National Dengue Control Unit (NDCU) Sri Lanka'
     baseUrl: 'https://www.dengue.health.gov.lk/weekly-report/'
-    format: 'pdf_html'
+    format: 'html'
     geographicLevel: 'district'
     updateFrequency: 'weekly'
-    licence: 'Open Government Data / Attribution Required'
+    licenceStatus: 'ATTRIBUTION_REQUIRED'
+    verified: false
+    attribution: 'National Dengue Control Unit, Ministry of Health, Sri Lanka'
+    robotsAllowed: null
+    lastChecked: null
+    parserVersion: '1.0.0'
+    reportUrlPattern: ''
+    notes: >
+      Weekly HTML/PDF reports listing district-level dengue case counts.
+      Verify format, robots.txt, and terms before setting verified=true.
 
   open_meteo:
     name: 'Open-Meteo Historical Weather API'
@@ -16,4 +29,13 @@ sources:
       - 'temperature_2m_mean'
       - 'precipitation_sum'
       - 'relative_humidity_2m_mean'
-    licence: 'Attribution Required (Open-Meteo)'
+    licenceStatus: 'ATTRIBUTION_REQUIRED'
+    verified: false
+    attribution: 'Weather data by Open-Meteo.com (CC BY 4.0)'
+    robotsAllowed: null
+    lastChecked: null
+    rateLimit: '10000/day'
+    notes: >
+      Historical reanalysis. Data may incorporate information unavailable at
+      the historic issuance date. Document this limitation in DATA_SOURCES.md.
+      Verify terms and attribution requirements before setting verified=true.

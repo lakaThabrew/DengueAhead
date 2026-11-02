@@ -16,6 +16,8 @@
   --color-persistent-bg: #fee2e2;
   --color-stable: #0d9488;
   --color-stable-bg: #ccfbf1;
+  --color-cooling: #0284c7;
+  --color-cooling-bg: #e0f2fe;
   --color-withheld: #64748b;
   --color-withheld-bg: #f1f5f9;
 
@@ -49,4 +51,64 @@ button {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+/* ── Skeleton shimmer animation ─────────────────────────────────────────── */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ── Focus ring ──────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ── Layout utilities ────────────────────────────────────────────────────── */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.app-layout-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.app-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background-color: var(--color-navy);
+  color: #cbd5e1;
+}
+
+.app-main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px;
+  background-color: var(--color-surface-bg);
+}
+
+@media (max-width: 768px) {
+  .app-sidebar {
+    display: none;
+  }
+  .app-main {
+    padding: 16px;
+  }
+}
+
+/* ── Responsive grid ─────────────────────────────────────────────────────── */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
 }

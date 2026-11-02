@@ -1,12 +1,22 @@
 import { describe, it, expect } from 'vitest';
 import request from 'supertest';
+import type { Collection, Document } from 'mongodb';
 import { createApp } from '../app.js';
 import type { DbClient } from '../repositories/mongo.js';
+
+const noopCollection = () =>
+  ({
+    find: () => ({
+      sort: () => ({ limit: () => ({ toArray: async () => [] }), toArray: async () => [] })
+    }),
+    sort: () => ({ toArray: async () => [] })
+  }) as unknown as Collection<Document>;
 
 // Fake DB that always succeeds
 const okDb: DbClient = {
   ping: async () => ({ latencyMs: 1 }),
-  close: async () => {}
+  close: async () => {},
+  collection: noopCollection
 };
 
 // Fake DB that always fails
@@ -14,7 +24,8 @@ const downDb: DbClient = {
   ping: async () => {
     throw new Error('Connection refused');
   },
-  close: async () => {}
+  close: async () => {},
+  collection: noopCollection
 };
 
 describe('API Health Endpoints', () => {

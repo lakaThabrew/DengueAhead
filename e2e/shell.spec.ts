@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Phase 0 shell smoke tests', () => {
   test('landing page renders DengueAhead heading and non-clinical banner', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('h1')).toContainText('System Foundation');
+    await expect(page.locator('h1')).toContainText('Early Warning');
     await expect(page.getByText(/Non-clinical decision-support system/i)).toBeVisible();
   });
 

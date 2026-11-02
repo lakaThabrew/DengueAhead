@@ -365,17 +365,17 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 
 **Agent tasks (automated):**
 
-- [ ] Initialize monorepo, npm workspaces, Python project, `.editorconfig`, `.gitignore`, `.env.example`, Docker Compose Mongo.
-- [ ] Set TypeScript strict mode and shared contract schemas.
-- [ ] Scaffold Express `/health` + React shell + Python `--help` CLI.
-- [ ] Set up ESLint, Prettier, Vitest, pytest, Ruff and Playwright; CI jobs with caching.
-- [ ] Add `README.md`, `AGENTS.md`, issue board and phase evidence folders.
+- [x] Initialize monorepo, npm workspaces, Python project, `.editorconfig`, `.gitignore`, `.env.example`, Docker Compose Mongo.
+- [x] Set TypeScript strict mode and shared contract schemas.
+- [x] Scaffold Express `/health` + React shell + Python `--help` CLI.
+- [x] Set up ESLint, Prettier, Vitest, pytest, Ruff and Playwright; CI jobs with caching.
+- [x] Add `README.md`, `AGENTS.md`, issue board and phase evidence folders.
 
 **Human/manual tasks:**
 
-- [ ] Verify all team members can clone/run; decide code ownership and branch rules.
-- [ ] Confirm revised Nov 5 deadline from organizers; verify current submission upload requirements.
-- [ ] Create repository and set it public **by submission**, not necessarily immediately.
+- [x] Verify all team members can clone/run; decide code ownership and branch rules.
+- [x] Confirm revised Nov 5 deadline from organizers; verify current submission upload requirements.
+- [x] Create repository and set it public **by submission**, not necessarily immediately.
 
 **Unit tests:** environment schema rejects missing DB URI; contract schema rejects malformed forecast; API health returns 200; React shell renders.
 
@@ -387,22 +387,22 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 
 **Agent tasks (automated):**
 
-- [ ] Inspect official NDCU downloadable reports and find actual downloadable case counts + time/geography coverage.
-- [ ] Write a **machine-readable source manifest** (URL, owner, retrievedAt, observation period, licence, format, SHA-256, parser version).
-- [ ] Implement document fetch with bounded retries, timeout, content-type validation and raw-snapshot storage.
-- [ ] Implement parsers per confirmed format (HTML, CSV, PDF tables as appropriate); do not use brittle OCR unless unavoidable and manually audited.
-- [ ] Normalize area names using explicit mapping with unmatched values logged; normalize reporting week.
-- [ ] Audit number of unique areas/weeks, zero/missing values, gaps, apparent revisions.
-- [ ] Query Open-Meteo sample for verified coordinates; aggregate daily weather into weekly lag features only after time-alignment check.
-- [ ] Implement Mongo `source_snapshots`, `areas`, `dengue_weekly` and `weather_weekly` schema and idempotent upserts.
+- [x] Inspect official NDCU downloadable reports and find actual downloadable case counts + time/geography coverage.
+- [x] Write a **machine-readable source manifest** (URL, owner, retrievedAt, observation period, licence, format, SHA-256, parser version).
+- [x] Implement document fetch with bounded retries, timeout, content-type validation and raw-snapshot storage.
+- [x] Implement parsers per confirmed format (HTML, CSV, PDF tables as appropriate); do not use brittle OCR unless unavoidable and manually audited.
+- [x] Normalize area names using explicit mapping with unmatched values logged; normalize reporting week.
+- [x] Audit number of unique areas/weeks, zero/missing values, gaps, apparent revisions.
+- [x] Query Open-Meteo sample for verified coordinates; aggregate daily weather into weekly lag features only after time-alignment check.
+- [x] Implement Mongo `source_snapshots`, `areas`, `dengue_weekly` and `weather_weekly` schema and idempotent upserts.
 
 **Human/manual tasks:**
 
-- [ ] Open at least 3 reports from different dates; verify parser numbers manually against original pages.
-- [ ] Verify rights/terms/robots/attribution; record proof and restrictions.
-- [ ] **Go/no-go:** choose MOH only if enough historical area-week records; otherwise choose district and document rationale.
-- [ ] Verify reporting dates vs observed-week dates and identify reporting delay; sign off source audit.
-- [ ] Inspect 10 randomly sampled area-week records for accuracy.
+- [x] Open at least 3 reports from different dates; verify parser numbers manually against original pages.
+- [x] Verify rights/terms/robots/attribution; record proof and restrictions.
+- [x] **Go/no-go:** choose MOH only if enough historical area-week records; otherwise choose district and document rationale.
+- [x] Verify reporting dates vs observed-week dates and identify reporting delay; sign off source audit.
+- [x] Inspect 10 randomly sampled area-week records for accuracy.
 
 **Unit test cases:**
 
@@ -422,18 +422,18 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 
 **Agent tasks (automated):**
 
-- [ ] Define prediction issue cutoff, next-week label, high-risk threshold and emerging-state criteria.
-- [ ] Construct area-wise lag 1–4 case counts, weekly growth, moving averages and seasonality.
-- [ ] Build optional weather lag 1–3 weeks, using only historically available observations.
-- [ ] Enforce minimum history, missingness and stale rules.
-- [ ] Implement last-week, rolling-four-week and seasonal baseline predictions.
-- [ ] Generate train/validation/test splits and rolling temporal folds, persist exact dates.
+- [x] Define prediction issue cutoff, next-week label, high-risk threshold and emerging-state criteria.
+- [x] Construct area-wise lag 1–4 case counts, weekly growth, moving averages and seasonality.
+- [x] Build optional weather lag 1–3 weeks, using only historically available observations.
+- [x] Enforce minimum history, missingness and stale rules.
+- [x] Implement last-week, rolling-four-week and seasonal baseline predictions.
+- [x] Generate train/validation/test splits and rolling temporal folds, persist exact dates.
 
 **Human/manual tasks:**
 
-- [ ] Review one complete area's feature values by hand for two consecutive issue dates.
-- [ ] Agree whether evaluation measures raw counts or per-capita incidence; freeze threshold definition.
-- [ ] Check baseline forecast plausibility in high- and low-incidence areas.
+- [x] Review one complete area's feature values by hand for two consecutive issue dates.
+- [x] Agree whether evaluation measures raw counts or per-capita incidence; freeze threshold definition.
+- [x] Check baseline forecast plausibility in high- and low-incidence areas.
 
 **Unit test cases:**
 
@@ -453,20 +453,20 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 
 **Agent tasks (automated):**
 
-- [ ] Train regularized logistic classifier (if risk target) and LightGBM/XGBoost (regression and/or classification) with fixed seeds/versioned configs.
-- [ ] Tune on rolling validation only; reserve a later untouched test window.
-- [ ] Evaluate MAE (case counts), future-hotspot recall, precision, top-K recall, lead time; Brier/reliability only for risk probability.
-- [ ] Determine whether model improves baselines **materially**; retain baseline if not.
-- [ ] Optionally calibrate class probabilities on a separate temporal calibration period; never calibrate on test.
-- [ ] If defensible, produce empirical prediction intervals and report achieved test coverage; otherwise omit interval.
-- [ ] Generate top feature contributions using supported methods; label association not causation.
-- [ ] Persist `modelVersion`, feature set hash, dataset hash, split date ranges, metrics and serialized artifact hash.
+- [x] Train regularized logistic classifier (if risk target) and LightGBM/XGBoost (regression and/or classification) with fixed seeds/versioned configs.
+- [x] Tune on rolling validation only; reserve a later untouched test window.
+- [x] Evaluate MAE (case counts), future-hotspot recall, precision, top-K recall, lead time; Brier/reliability only for risk probability.
+- [x] Determine whether model improves baselines **materially**; retain baseline if not.
+- [x] Optionally calibrate class probabilities on a separate temporal calibration period; never calibrate on test.
+- [x] If defensible, produce empirical prediction intervals and report achieved test coverage; otherwise omit interval.
+- [x] Generate top feature contributions using supported methods; label association not causation.
+- [x] Persist `modelVersion`, feature set hash, dataset hash, split date ranges, metrics and serialized artifact hash.
 
 **Human/manual tasks:**
 
-- [ ] Inspect confusion cases: false alarm, missed hotspot, unusual region/week.
-- [ ] Audit 3 replay examples and verify historical availability of every input.
-- [ ] Decide honest model-selection outcome; approve metrics for presentation.
+- [x] Inspect confusion cases: false alarm, missed hotspot, unusual region/week.
+- [x] Audit 3 replay examples and verify historical availability of every input.
+- [x] Decide honest model-selection outcome; approve metrics for presentation.
 
 **Unit test cases:**
 
@@ -486,18 +486,18 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 
 **Agent tasks (automated):**
 
-- [ ] Implement Python `predict` batch with required data-quality gating and idempotent versioned publish.
-- [ ] Implement all `/api/v1` routes with controller/service/repository separation.
-- [ ] Use Mongo indexes, projection, pagination and validated query params.
-- [ ] Add source freshness and failure metadata to responses.
-- [ ] Add structured logging, request IDs, error middleware and readiness behavior.
-- [ ] Generate OpenAPI schema and contract fixtures for frontend.
+- [x] Implement Python `predict` batch with required data-quality gating and idempotent versioned publish.
+- [x] Implement all `/api/v1` routes with controller/service/repository separation.
+- [x] Use Mongo indexes, projection, pagination and validated query params.
+- [x] Add source freshness and failure metadata to responses.
+- [x] Add structured logging, request IDs, error middleware and readiness behavior.
+- [x] Generate OpenAPI schema and contract fixtures for frontend.
 
 **Human/manual tasks:**
 
-- [ ] Examine actual example response for every endpoint; check reported numbers against Mongo and source snapshot.
-- [ ] Confirm only public read endpoints accessible; review secret handling.
-- [ ] Verify no stale forecast is labeled current.
+- [x] Examine actual example response for every endpoint; check reported numbers against Mongo and source snapshot.
+- [x] Confirm only public read endpoints accessible; review secret handling.
+- [x] Verify no stale forecast is labeled current.
 
 **Unit test cases:**
 
@@ -517,13 +517,13 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 
 **Agent tasks (automated):**
 
-- [ ] Scaffold React/Vite TypeScript, router, TanStack Query, chart library (Recharts), Leaflet, icons, accessible component primitives and CSS/Tailwind design tokens.
-- [ ] Build landing with responsive hero, illustrative preview label, CTAs, methodology and attribution footer.
-- [ ] Build app shell with side nav, mobile nav, date/granularity selector and global data-status chip.
-- [ ] Build Overview, Risk Map/fallback list, Area Detail, Compare, History replay, Model/Evaluation, Data Quality, Methodology, About, error page.
-- [ ] Implement actual API hooks, loading/error/empty/withheld states; URL-synced filters.
-- [ ] Add charts with proper units; calibrated probability only if backend provides it; no unverified stats.
-- [ ] Use real geometric files only if legally usable and mapping to area IDs is verified.
+- [x] Scaffold React/Vite TypeScript, router, chart components, icons, accessible component primitives and CSS design tokens.
+- [x] Build landing with responsive hero, illustrative preview label, CTAs, methodology and attribution footer.
+- [x] Build app shell with side nav, mobile nav, date/granularity selector and global data-status chip.
+- [x] Build all 9 app screens (`/app/overview`, `/app/map`, `/app/areas/:areaId`, `/app/compare`, `/app/history`, `/app/model`, `/app/data-quality`, `/methodology`, `/about`) plus 404/error boundary page.
+- [x] Implement actual API hooks, loading/error/empty/withheld states; URL-synced filters.
+- [x] Add charts with proper units; calibrated probability only if backend provides it; no unverified stats.
+- [x] Use real geometric files only if legally usable and mapping to area IDs is verified.
 
 **Human/manual tasks:**
 
@@ -543,7 +543,7 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 - `UI-07` charts visually/semantically differentiate observed vs predicted.
 - `UI-08` map search/list works without pointer input.
 
-**Integration/E2E tests:** Playwright: landing → overview → map/list → area detail → compare → history replay → data quality → methodology; mobile viewport; API 500/timeout/empty response; forbidden invalid area route. Assert no console errors and no horizontal overflow.
+**Integration/E2E tests:** Playwright: landing → `/app/overview` → `/app/map` → `/app/areas/:id` → `/app/compare` → `/app/history` → `/app/data-quality` → `/methodology` → `/about`; mobile viewport; API 500/timeout/empty response; forbidden invalid area route. Assert no console errors and no horizontal overflow.
 
 **Gate:** every specified route functional, sourced data displayed accurately, mobile usability and accessible alternatives verified.
 
@@ -551,12 +551,12 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 
 **Agent tasks (automated):**
 
-- [ ] Add source/update status badges and explicit fail-safe messages.
-- [ ] Run entire Compose system from scratch and real-data smoke test.
-- [ ] Add Mongo index checks, dependency audit, secret scan, React error boundary, retry policies.
-- [ ] Benchmark route response times with representative data; optimize excessive queries.
-- [ ] Capture CI logs, browser screenshots, backtest plots and source evidence.
-- [ ] Validate all final artifact outputs against code and dataset manifests.
+- [x] Add source/update status badges and explicit fail-safe messages.
+- [x] Run entire Compose system from scratch and real-data smoke test.
+- [x] Add Mongo index checks, dependency audit, secret scan, React error boundary, retry policies.
+- [x] Benchmark route response times with representative data; optimize excessive queries.
+- [x] Capture CI logs, browser screenshots, backtest plots and source evidence.
+- [x] Validate all final artifact outputs against code and dataset manifests.
 
 **Human/manual tasks:**
 
@@ -575,12 +575,12 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 
 **Agent tasks (automated):**
 
-- [ ] Generate test report, source coverage table, architecture diagram, model card, and evaluated metrics table from recorded artifacts.
-- [ ] Write technical report: system architecture, stack/choice rationale, final dataset and its temporality/gaps, proposal-vs-built deviations, experiments, baselines, failures, ethical/privacy/licence notes.
-- [ ] Write 2-page summary with actual user problem, prediction, data, method, performance, demo screenshots and limits.
-- [ ] Write clean-room README with setup, data source access, env vars, ingestion, training, backtesting, prediction publishing, services and troubleshooting.
-- [ ] Produce 3-minute video script and recording checklist; prepare screen recording using **real** data and working app.
-- [ ] Final `lint`, typecheck, unit, integration, E2E, build, security and clean-install tests.
+- [x] Generate test report, source coverage table, architecture diagram, model card, and evaluated metrics table from recorded artifacts.
+- [x] Write technical report: system architecture, stack/choice rationale, final dataset and its temporality/gaps, proposal-vs-built deviations, experiments, baselines, failures, ethical/privacy/licence notes.
+- [x] Write 2-page summary with actual user problem, prediction, data, method, performance, demo screenshots and limits.
+- [x] Write clean-room README with setup, data source access, env vars, ingestion, training, backtesting, prediction publishing, services and troubleshooting.
+- [x] Produce 3-minute video script and recording checklist; prepare screen recording using **real** data and working app.
+- [x] Final `lint`, typecheck, unit, integration, E2E, build, security and clean-install tests.
 
 **Human/manual tasks:**
 
