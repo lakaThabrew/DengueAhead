@@ -575,12 +575,12 @@ Use a **small deterministic test fixture** (synthetic clearly marked as test-onl
 
 **Agent tasks (automated):**
 
-- [ ] Generate test report, source coverage table, architecture diagram, model card, and evaluated metrics table from recorded artifacts.
-- [ ] Write technical report: system architecture, stack/choice rationale, final dataset and its temporality/gaps, proposal-vs-built deviations, experiments, baselines, failures, ethical/privacy/licence notes.
-- [ ] Write 2-page summary with actual user problem, prediction, data, method, performance, demo screenshots and limits.
-- [ ] Write clean-room README with setup, data source access, env vars, ingestion, training, backtesting, prediction publishing, services and troubleshooting.
-- [ ] Produce 3-minute video script and recording checklist; prepare screen recording using **real** data and working app.
-- [ ] Final `lint`, typecheck, unit, integration, E2E, build, security and clean-install tests.
+- [x] Generate test report, source coverage table, architecture diagram, model card, and evaluated metrics table from recorded artifacts.
+- [x] Write technical report: system architecture, stack/choice rationale, final dataset and its temporality/gaps, proposal-vs-built deviations, experiments, baselines, failures, ethical/privacy/licence notes.
+- [x] Write 2-page summary with actual user problem, prediction, data, method, performance, demo screenshots and limits.
+- [x] Write clean-room README with setup, data source access, env vars, ingestion, training, backtesting, prediction publishing, services and troubleshooting.
+- [x] Produce 3-minute video script and recording checklist; prepare screen recording using **real** data and working app.
+- [x] Final `lint`, typecheck, unit, integration, E2E, build, security and clean-install tests.
 
 **Human/manual tasks:**
 
