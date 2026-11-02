@@ -133,8 +133,7 @@ def run_quality_checks(observations: list[dict]) -> QualityReport:
                     week_start=week_start,
                     code="DUPLICATE_KEY",
                     message=(
-                        f"Duplicate (areaId={area_id},"
-                        f" weekStart={week_start}, revision={revision})"
+                        f"Duplicate (areaId={area_id}, weekStart={week_start}, revision={revision})"
                     ),
                 )
             )

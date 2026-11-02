@@ -9,29 +9,42 @@ Usage:
 
 import re
 import sys
-import os
 import argparse
 from pathlib import Path
 
 # Patterns that indicate a real secret — ordered by severity
 SECRET_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
-    ("Private Key",          re.compile(r"-----BEGIN (RSA |EC |DSA |OPENSSH )?PRIVATE KEY-----")),
-    ("AWS Access Key",       re.compile(r"AKIA[0-9A-Z]{16}")),
-    ("GCP Service Account",  re.compile(r'"type":\s*"service_account"')),
-    ("Bearer Token",         re.compile(r"Bearer\s+[A-Za-z0-9\-._~+/]{20,}")),
-    ("Auth Header Secret",   re.compile(r"Authorization:\s*Basic\s+[A-Za-z0-9+/=]{10,}")),
+    (
+        "Private Key",
+        re.compile(r"-----BEGIN (RSA |EC |DSA |OPENSSH )?PRIVATE KEY-----"),
+    ),
+    ("AWS Access Key", re.compile(r"AKIA[0-9A-Z]{16}")),
+    ("GCP Service Account", re.compile(r'"type":\s*"service_account"')),
+    ("Bearer Token", re.compile(r"Bearer\s+[A-Za-z0-9\-._~+/]{20,}")),
+    ("Auth Header Secret", re.compile(r"Authorization:\s*Basic\s+[A-Za-z0-9+/=]{10,}")),
     ("MongoDB URI with creds", re.compile(r"mongodb(\+srv)?://[^:]+:[^@]+@[^/]+")),
-    ("Hardcoded Password",   re.compile(r'(?i)(password|passwd|pwd)\s*[=:]\s*["\'][^"\']{6,}["\']')),
-    ("Hardcoded API Key",    re.compile(r'(?i)(api[_-]?key|apikey|api[_-]?secret)\s*[=:]\s*["\'][^"\']{8,}["\']')),
-    ("GitHub Token",         re.compile(r"gh[pous]_[A-Za-z0-9]{36,}")),
-    ("Generic Secret",       re.compile(r'(?i)(secret|token)\s*[=:]\s*["\'][A-Za-z0-9+/=_\-]{16,}["\']')),
+    (
+        "Hardcoded Password",
+        re.compile(r'(?i)(password|passwd|pwd)\s*[=:]\s*["\'][^"\']{6,}["\']'),
+    ),
+    (
+        "Hardcoded API Key",
+        re.compile(
+            r'(?i)(api[_-]?key|apikey|api[_-]?secret)\s*[=:]\s*["\'][^"\']{8,}["\']'
+        ),
+    ),
+    ("GitHub Token", re.compile(r"gh[pous]_[A-Za-z0-9]{36,}")),
+    (
+        "Generic Secret",
+        re.compile(r'(?i)(secret|token)\s*[=:]\s*["\'][A-Za-z0-9+/=_\-]{16,}["\']'),
+    ),
 ]
 
 # Safe patterns — known placeholder values that are NOT real secrets
 SAFE_PATTERNS: list[re.Pattern[str]] = [
     re.compile(r"mongodb://localhost"),
     re.compile(r"mongodb://127\.0\.0\.1"),
-    re.compile(r"mongodb://mongodb"),           # docker-compose service name
+    re.compile(r"mongodb://mongodb"),  # docker-compose service name
     re.compile(r"MONGODB_URI\s*=\s*mongodb://localhost"),
     re.compile(r"your[_-]?secret[_-]?here"),
     re.compile(r"<your[_\-\s]"),
@@ -43,10 +56,33 @@ SAFE_PATTERNS: list[re.Pattern[str]] = [
 ]
 
 # File extensions to scan
-SCAN_EXTENSIONS = {".ts", ".tsx", ".js", ".jsx", ".py", ".md", ".yaml", ".yml", ".toml", ".json", ".env", ".sh", ".ps1"}
+SCAN_EXTENSIONS = {
+    ".ts",
+    ".tsx",
+    ".js",
+    ".jsx",
+    ".py",
+    ".md",
+    ".yaml",
+    ".yml",
+    ".toml",
+    ".json",
+    ".env",
+    ".sh",
+    ".ps1",
+}
 
 # Paths to always skip
-SKIP_DIRS = {"node_modules", ".git", ".ruff_cache", ".pytest_cache", "__pycache__", "dist", "build", "playwright-report"}
+SKIP_DIRS = {
+    "node_modules",
+    ".git",
+    ".ruff_cache",
+    ".pytest_cache",
+    "__pycache__",
+    "dist",
+    "build",
+    "playwright-report",
+}
 SKIP_FILES = {"package-lock.json"}
 
 
@@ -84,7 +120,9 @@ def scan_file(path: Path) -> list[tuple[int, str, str]]:
 def main() -> int:
     parser = argparse.ArgumentParser(description="DengueAhead secret scanner")
     parser.add_argument("--path", default=".", help="Repository root to scan")
-    parser.add_argument("--fail-on-match", action="store_true", help="Exit 1 if any secrets found")
+    parser.add_argument(
+        "--fail-on-match", action="store_true", help="Exit 1 if any secrets found"
+    )
     args = parser.parse_args()
 
     root = Path(args.path).resolve()
