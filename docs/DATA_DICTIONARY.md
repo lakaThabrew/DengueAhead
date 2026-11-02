@@ -1,131 +1,170 @@
 # Data Dictionary — DengueAhead
 
-**Phase:** 1 | **Last Updated:** 2025-01
+> **Project:** DengueAhead — Early Warning for Emerging Dengue Hotspots in Sri Lanka  
+> **Team:** EchoBinary | **Competition:** ModelX 2.0  
+> **Status:** Phase 7 Final Delivery  
+> **Last Updated:** November 2026
 
 ---
 
-## Collections
+## 1. Overview & Data Philosophy
 
-### `source_snapshots`
+DengueAhead adheres to a strict data contract governed by **Rule 3 ("No Simulated Success")**, **Rule 4 ("Data Provenance is Mandatory")**, and **Rule 6 ("No Unsupported Claims")** of the DengueAhead operating guidelines:
 
-Tracks every raw document fetched from an upstream source. Keyed on `(sourceId, sha256)` — idempotent.
-
-| Field            | Type              | Required | Description                                                                                              |
-| ---------------- | ----------------- | -------- | -------------------------------------------------------------------------------------------------------- |
-| `sourceId`       | string            | ✅       | Unique identifier for the data source (e.g., `ndcu-weekly`)                                              |
-| `sourceUrl`      | string (URL)      | ✅       | Exact URL the document was fetched from                                                                  |
-| `sha256`         | string (64 hex)   | ✅       | SHA-256 digest of raw fetched bytes — uniquely identifies a document version                             |
-| `contentType`    | string            | ✅       | MIME type (`text/html`, `application/pdf`)                                                               |
-| `observedPeriod` | string            | ✅       | Epi-week of the data in the document (e.g., `"2024-W01"`)                                                |
-| `retrievedAt`    | ISO 8601 datetime | ✅       | UTC timestamp when the document was fetched                                                              |
-| `licenceStatus`  | enum              | ✅       | `PUBLIC_DOMAIN` \| `OPEN_GOVERNMENT` \| `ATTRIBUTION_REQUIRED` \| `RESTRICTED` \| `PENDING_VERIFICATION` |
-| `parserVersion`  | string            | ✅       | Parser version that processed this snapshot (e.g., `"1.0.0"`)                                            |
-| `status`         | enum              | ✅       | `SUCCESS` \| `PARTIAL` \| `FAILED` \| `STALE`                                                            |
-| `error`          | string \| null    | —        | Error message when `status=FAILED`                                                                       |
+- **Zero Synthetic Counts:** Production collections contain strictly verified figures ingested from official public surveillance and meteorological APIs.
+- **Null Means Missing:** An explicit `null` indicates missing or withheld observations. A numeric `0` is strictly reserved for legitimate zero case notifications.
+- **Cryptographic Provenance:** Every prediction and observation links directly to immutable upstream source snapshots via SHA-256 digests.
 
 ---
 
-### `dengue_weekly`
+## 2. Core Collections
 
-One document per `(areaId, weekStart, revision)`. Uses `$setOnInsert` — a published revision is never overwritten silently.
+### 2.1 `areas`
 
-| Field              | Type             | Required | Description                                                                 |
-| ------------------ | ---------------- | -------- | --------------------------------------------------------------------------- |
-| `areaId`           | string           | ✅       | Geographic unit (e.g., `LK-11`)                                             |
-| `weekStart`        | YYYY-MM-DD       | ✅       | ISO date of Monday of the epi-week                                          |
-| `weekEnd`          | YYYY-MM-DD       | ✅       | ISO date of Sunday of the epi-week (`weekStart + 6 days`)                   |
-| `reportingWeek`    | int (1–53)       | ✅       | Epi-week number within `reportingYear`                                      |
-| `reportingYear`    | int              | ✅       | Calendar year of the epi-week                                               |
-| `cases`            | int ≥ 0 \| null  | ✅       | Reported dengue cases. **`null` means missing, NOT zero.**                  |
-| `missingReason`    | string \| null   | ✅       | Required when `cases=null`. See Missing Reason Registry below.              |
-| `sourceSnapshotId` | string           | ✅       | `sha256` of the `source_snapshots` document this row came from              |
-| `reportedAt`       | ISO 8601 \| null | —        | When the source reported this data (may differ from `retrievedAt`)          |
-| `revision`         | int ≥ 0          | ✅       | Version counter. `0` = initial import. Increment to correct published data. |
-| `qualityFlags`     | string[]         | ✅       | See Quality Flag Registry below                                             |
+Stores the official geographic registry of Sri Lanka's 25 administrative districts. Populated from `configs/area_map.yaml`.
 
-> **Zero is not missing.** `cases=0` is a legitimate reported value. Missing data must always be `cases=null` with a `missingReason`.
+- **Index:** `{ areaId: 1 }` (Unique)
 
----
-
-### `weather_weekly`
-
-One document per `(areaId, weekStart, provider)`. Aggregated from daily API values.
-
-| Field          | Type                | Required | Description                                                                 |
-| -------------- | ------------------- | -------- | --------------------------------------------------------------------------- |
-| `areaId`       | string              | ✅       | Geographic unit (e.g., `LK-11`)                                             |
-| `weekStart`    | YYYY-MM-DD          | ✅       | ISO date of the start of the week                                           |
-| `rainMm`       | float ≥ 0 \| null   | ✅       | Total weekly precipitation in mm                                            |
-| `tempC`        | float \| null       | ✅       | Mean weekly temperature in °C                                               |
-| `humidityPct`  | float 0–100 \| null | ✅       | Mean weekly relative humidity (%)                                           |
-| `provider`     | string              | ✅       | Data provider (e.g., `"open-meteo"`)                                        |
-| `availableAt`  | ISO 8601 datetime   | ✅       | UTC timestamp when the data was fetched (≠ observation date for reanalysis) |
-| `qualityFlags` | string[]            | ✅       | See Quality Flag Registry below                                             |
+| Field            | Type            | Required | Nullable | Description                                                      |
+| :--------------- | :-------------- | :------: | :------: | :--------------------------------------------------------------- |
+| `areaId`         | `string`        |    ✅    |    ❌    | Canonical ISO 3166-2:LK code (e.g., `"LK-11"`, `"LK-12"`).       |
+| `name`           | `string`        |    ✅    |    ❌    | Official English district name (e.g., `"Colombo"`, `"Gampaha"`). |
+| `level`          | `string` (enum) |    ✅    |    ❌    | Geographic administrative level: `"district"` \| `"moh"`.        |
+| `province`       | `string`        |    ✅    |    ❌    | Province name (e.g., `"Western"`, `"Central"`, `"Southern"`).    |
+| `parentAreaId`   | `string`        |    ❌    |    ✅    | ID of parent administrative boundary if applicable.              |
+| `centroid`       | `object`        |    ✅    |    ❌    | Centroid coordinates: `{ latitude: number, longitude: number }`. |
+| `geometryRef`    | `string`        |    ❌    |    ✅    | Reference to GeoJSON / SVG boundary definition.                  |
+| `population`     | `number` (int)  |    ❌    |    ✅    | District population from Department of Census and Statistics.    |
+| `populationYear` | `number` (int)  |    ❌    |    ✅    | Reference year of population estimate (e.g., `2021`).            |
 
 ---
 
-### `areas`
+### 2.2 `dengue_observations`
 
-Reference table for geographic units. Populated from `configs/area_map.yaml`.
+Normalized weekly case counts published by the National Dengue Control Unit (NDCU).
 
-| Field            | Type                    | Required | Description                             |
-| ---------------- | ----------------------- | -------- | --------------------------------------- |
-| `areaId`         | string                  | ✅       | Canonical ID in `LK-{code}` format      |
-| `name`           | string                  | ✅       | English district name                   |
-| `level`          | enum                    | ✅       | `district` \| `moh`                     |
-| `parentAreaId`   | string \| null          | —        | Parent area (e.g., province)            |
-| `centroid`       | `{latitude, longitude}` | ✅       | Approximate centroid for weather fetch  |
-| `geometryRef`    | string \| null          | —        | Reference to GeoJSON geometry (Phase 2) |
-| `population`     | int \| null             | —        | Population estimate                     |
-| `populationYear` | int \| null             | —        | Year of population estimate             |
+- **Indexes:**
+  - `{ areaId: 1, weekStart: 1, revision: 1 }` (Unique compound)
+  - `{ areaId: 1, weekStart: 1 }` (Compound query index)
+  - `{ weekStart: -1 }` (Temporal query index)
 
----
-
-## Quality Flag Registry
-
-Flags are stored as string arrays on `dengue_weekly` and `weather_weekly` documents.
-
-### Dengue quality flags
-
-| Flag             | Severity | Source   | Description                                                                  |
-| ---------------- | -------- | -------- | ---------------------------------------------------------------------------- |
-| `UNMATCHED_AREA` | WARNING  | parser   | District name could not be resolved to a canonical `areaId`                  |
-| `INVALID_COUNT`  | WARNING  | parser   | Reported value was non-numeric or negative; `cases` coerced to `null`        |
-| `QUARANTINE`     | ERROR    | area_map | Area placed under quarantine by `area_map.yaml` — row excluded from pipeline |
-
-### Weather quality flags
-
-| Flag                   | Severity | Source          | Description                                          |
-| ---------------------- | -------- | --------------- | ---------------------------------------------------- |
-| `PARTIAL_WEATHER_DATA` | WARNING  | weather_fetcher | One or more daily values within the week were `null` |
-| `NO_WEATHER_DATA`      | ERROR    | weather_fetcher | All daily values for the week were `null`            |
+| Field              | Type                   | Required | Nullable | Description                                                                          |
+| :----------------- | :--------------------- | :------: | :------: | :----------------------------------------------------------------------------------- |
+| `areaId`           | `string`               |    ✅    |    ❌    | District identifier matching `areas.areaId`.                                         |
+| `weekStart`        | `string` (YYYY-MM-DD)  |    ✅    |    ❌    | Monday start date of the epidemiological reporting week.                             |
+| `weekEnd`          | `string` (YYYY-MM-DD)  |    ✅    |    ❌    | Sunday end date of the epidemiological reporting week.                               |
+| `reportingWeek`    | `number` (int 1–53)    |    ✅    |    ❌    | ISO 8601 calendar epidemiological week number.                                       |
+| `reportingYear`    | `number` (int)         |    ✅    |    ❌    | Four-digit calendar reporting year.                                                  |
+| `cases`            | `number` (int $\ge 0$) |    ✅    |    ❌    | Formally notified clinical dengue cases.                                             |
+| `sourceSnapshotId` | `string` (64 hex)      |    ✅    |    ❌    | SHA-256 hash of the raw `sources` snapshot document.                                 |
+| `reportedAt`       | `string` (ISO 8601)    |    ✅    |    ❌    | Timestamp when the bulletin was officially recorded.                                 |
+| `revision`         | `number` (int $\ge 0$) |    ✅    |    ❌    | Revision counter. Defaults to `0`; incremented for official retrospective revisions. |
+| `qualityFlags`     | `string[]`             |    ✅    |    ❌    | Diagnostic quality flags (e.g., `['UNMATCHED_AREA']`, `['DATA_DELAYED']`).           |
 
 ---
 
-## Missing Reason Registry
+### 2.3 `weather_observations`
 
-Used in `dengue_weekly.missingReason` when `cases=null`.
+Meteorological variables aggregated from Open-Meteo ERA5 daily reanalysis to weekly district centroid totals.
 
-| Value                | Meaning                                                                 |
-| -------------------- | ----------------------------------------------------------------------- |
-| `NOT_IN_REPORT`      | District was not present in the source report for this week             |
-| `DELAYED`            | Report for this period has not yet been published                       |
-| `INVALID_VALUE`      | The raw value was present but could not be parsed as a valid case count |
-| `SOURCE_UNAVAILABLE` | The upstream source could not be fetched at ingestion time              |
-| `NO_REPORT`          | The NDCU did not publish a report for this week                         |
+- **Indexes:**
+  - `{ areaId: 1, weekStart: 1, provider: 1 }` (Unique compound)
+  - `{ weekStart: -1 }` (Temporal query index)
+
+| Field          | Type                     | Required | Nullable | Description                                                                       |
+| :------------- | :----------------------- | :------: | :------: | :-------------------------------------------------------------------------------- |
+| `areaId`       | `string`                 |    ✅    |    ❌    | District identifier matching `areas.areaId`.                                      |
+| `weekStart`    | `string` (YYYY-MM-DD)    |    ✅    |    ❌    | Monday start date of the calendar week.                                           |
+| `rainMm`       | `number` (float $\ge 0$) |    ✅    |    ✅    | Total cumulative precipitation over the week in millimeters ($mm$).               |
+| `tempC`        | `number` (float)         |    ✅    |    ✅    | Mean 2-meter air temperature over the week in degrees Celsius ($^\circ\text{C}$). |
+| `humidityPct`  | `number` (float 0–100)   |    ✅    |    ✅    | Mean 2-meter relative humidity percentage ($\%$).                                 |
+| `provider`     | `string`                 |    ✅    |    ❌    | Data provider identifier (e.g., `"open-meteo"`).                                  |
+| `availableAt`  | `string` (ISO 8601)      |    ✅    |    ❌    | UTC timestamp when data was fetched (preserves as-of integrity).                  |
+| `qualityFlags` | `string[]`               |    ✅    |    ❌    | Weather flags: `['PARTIAL_WEATHER_DATA']`, `['NO_WEATHER_DATA']`.                 |
 
 ---
 
-## QC Check Registry
+### 2.4 `predictions`
 
-Checks implemented in `validation/data_quality.py`. Run via `dengueahead validate-data`.
+Published operational forecasts issued by `dengueahead predict`.
 
-| Code                         | Severity | Description                                              |
-| ---------------------------- | -------- | -------------------------------------------------------- |
-| `NEGATIVE_COUNT`             | ERROR    | `cases < 0`                                              |
-| `MISSING_REASON_ABSENT`      | ERROR    | `cases=null` but `missingReason` is empty/absent         |
-| `LONG_GAP`                   | WARNING  | 4+ consecutive missing weeks for one area                |
-| `INVALID_WEEK_RANGE`         | ERROR    | `weekEnd ≠ weekStart + 6 days`                           |
-| `DUPLICATE_KEY`              | ERROR    | Duplicate `(areaId, weekStart, revision)` in the dataset |
-| `IMPLAUSIBLE_REPORTING_DATE` | WARNING  | `reportedAt < weekEnd`                                   |
-| `LOW_COVERAGE`               | WARNING  | Area has < 50% non-null observations in the dataset      |
+- **Indexes:**
+  - `{ areaId: 1, targetWeek: 1, modelVersion: 1, issueDate: 1 }` (Unique compound)
+  - `{ areaId: 1, issueDate: -1 }` (Compound district history)
+  - `{ targetWeek: 1, issueDate: -1 }` (Compound leaderboard query)
+  - `{ status: 1 }` (Filter index)
+
+| Field               | Type                     | Required | Nullable | Description                                                                                      |
+| :------------------ | :----------------------- | :------: | :------: | :----------------------------------------------------------------------------------------------- |
+| `areaId`            | `string`                 |    ✅    |    ❌    | District identifier matching `areas.areaId`.                                                     |
+| `geographicLevel`   | `string` (enum)          |    ✅    |    ❌    | `"district"` \| `"moh"`.                                                                         |
+| `issueDate`         | `string` (YYYY-MM-DD)    |    ✅    |    ❌    | Date on which the forecast was generated.                                                        |
+| `targetWeek`        | `string` (YYYY-MM-DD)    |    ✅    |    ❌    | Monday start date of the forecasted week ($t+1$).                                                |
+| `asOfDate`          | `string` (YYYY-MM-DD)    |    ✅    |    ❌    | Strict temporal cutoff date for feature observation eligibility.                                 |
+| `modelVersion`      | `string`                 |    ✅    |    ❌    | Identifier of the model that produced the forecast.                                              |
+| `status`            | `string` (enum)          |    ✅    |    ❌    | Operational status: `"EMERGING"`, `"PERSISTENT"`, `"COOLING"`, `"STABLE"`, `"WITHHELD"`.         |
+| `confidenceStatus`  | `string` (enum)          |    ✅    |    ❌    | `"CALIBRATED"`, `"UNCALIBRATED"`, `"NOT_AVAILABLE"`.                                             |
+| `pointForecast`     | `number` (float $\ge 0$) |    ✅    |    ✅    | Predicted absolute dengue cases (strictly `null` when `WITHHELD`).                               |
+| `interval`          | `object`                 |    ✅    |    ✅    | Conformal interval: `{ lower: float >= 0, upper: float >= 0, method: string, coverage: float }`. |
+| `riskProbability`   | `number` (float 0–1)     |    ✅    |    ✅    | Calibrated hotspot probability (strictly `null` unless `CALIBRATED`).                            |
+| `qualityFlags`      | `string[]`               |    ✅    |    ❌    | Operational flags (mandatory if status is `WITHHELD`).                                           |
+| `sourceSnapshotIds` | `string[]`               |    ✅    |    ❌    | SHA-256 hashes of input source snapshots used to construct features.                             |
+
+---
+
+### 2.5 `model_runs`
+
+Audit trail of model training, validation, and evaluation runs.
+
+- **Index:** `{ modelVersion: 1 }` (Unique)
+
+| Field                     | Type                     | Required | Nullable | Description                                                              |
+| :------------------------ | :----------------------- | :------: | :------: | :----------------------------------------------------------------------- |
+| `modelVersion`            | `string`                 |    ✅    |    ❌    | Unique version string (e.g., `"dengueahead-hgb-v1"`).                    |
+| `modelName`               | `string`                 |    ✅    |    ❌    | Descriptive name of the model architecture.                              |
+| `trainedAt`               | `string` (ISO 8601)      |    ✅    |    ❌    | Timestamp when model fitting completed.                                  |
+| `trainRange`              | `object`                 |    ✅    |    ❌    | `{ startWeek: YYYY-MM-DD, endWeek: YYYY-MM-DD }`.                        |
+| `testRange`               | `object`                 |    ✅    |    ❌    | `{ startWeek: YYYY-MM-DD, endWeek: YYYY-MM-DD }`.                        |
+| `totalEvaluatedInstances` | `number` (int)           |    ✅    |    ❌    | Total district-week samples in evaluation split.                         |
+| `mae`                     | `number` (float $\ge 0$) |    ✅    |    ❌    | Mean Absolute Error across continuous evaluation targets.                |
+| `topKRecall`              | `number` (float 0–1)     |    ✅    |    ❌    | Fraction of true high-burden districts captured in Top-K.                |
+| `precision`               | `number` (float 0–1)     |    ✅    |    ❌    | Hotspot classification precision.                                        |
+| `recall`                  | `number` (float 0–1)     |    ✅    |    ❌    | Hotspot classification recall.                                           |
+| `brierScore`              | `number` (float 0–1)     |    ❌    |    ✅    | Brier score of calibrated probabilities.                                 |
+| `baselines`               | `object[]`               |    ✅    |    ❌    | Array of benchmark baseline metric objects.                              |
+| `outperformsBaseline`     | `boolean`                |    ✅    |    ❌    | Whether model outperformed the best baseline on pre-registered criteria. |
+| `notes`                   | `string`                 |    ❌    |    ❌    | Additional contextual or limitation notes.                               |
+
+---
+
+### 2.6 `sources`
+
+Immutable cryptographic audit log of raw upstream payloads retrieved by `fetcher.py`.
+
+- **Index:** `{ sourceId: 1, sha256: 1 }` (Unique compound)
+
+| Field            | Type                | Required | Nullable | Description                                                                                                 |
+| :--------------- | :------------------ | :------: | :------: | :---------------------------------------------------------------------------------------------------------- |
+| `sourceId`       | `string`            |    ✅    |    ❌    | Feed identifier: `"ndcu-weekly"`, `"open-meteo-daily"`.                                                     |
+| `sourceUrl`      | `string` (URL)      |    ✅    |    ❌    | Exact HTTP URL from which payload was fetched.                                                              |
+| `sha256`         | `string` (64 hex)   |    ✅    |    ❌    | SHA-256 cryptographic digest of raw response bytes.                                                         |
+| `observedPeriod` | `string`            |    ✅    |    ❌    | Epidemiological period represented (e.g., `"2024-W24"`).                                                    |
+| `retrievedAt`    | `string` (ISO 8601) |    ✅    |    ❌    | UTC timestamp of the retrieval request.                                                                     |
+| `licenceStatus`  | `string` (enum)     |    ✅    |    ❌    | `"PUBLIC_DOMAIN"`, `"OPEN_GOVERNMENT"`, `"ATTRIBUTION_REQUIRED"`, `"RESTRICTED"`, `"PENDING_VERIFICATION"`. |
+| `parserVersion`  | `string`            |    ✅    |    ❌    | Semantic version of parser that extracted the records.                                                      |
+| `status`         | `string` (enum)     |    ✅    |    ❌    | Status: `"SUCCESS"`, `"PARTIAL"`, `"FAILED"`, `"STALE"`.                                                    |
+| `error`          | `string`            |    ❌    |    ✅    | Diagnostic error string if extraction failed.                                                               |
+
+---
+
+## 3. Standard Quality Flags Registry
+
+| Quality Flag           | Source Component   | Severity | Description                                                                                                |
+| :--------------------- | :----------------- | :------- | :--------------------------------------------------------------------------------------------------------- |
+| `INSUFFICIENT_HISTORY` | Feature Builder    | ERROR    | District has $< 4$ historical weekly observations prior to cutoff date; forecast suppressed to `WITHHELD`. |
+| `DATA_DELAYED`         | Ingestion / API    | WARNING  | Upstream reporting delayed $> 7$ days past expected publication date.                                      |
+| `SOURCE_STALE`         | API (`/meta`)      | WARNING  | Surveillance reports delayed $> 14$ days; triggers UI alert banner and `WITHHELD` gating.                  |
+| `PARTIAL_WEATHER_DATA` | Weather Aggregator | WARNING  | One or more daily observations missing in weekly centroid aggregation.                                     |
+| `WEATHER_UNAVAILABLE`  | Feature Builder    | WARNING  | Weather feed offline; fallback to baseline autoregressive features.                                        |
+| `UNMATCHED_AREA`       | Parser / Mapping   | ERROR    | Raw district name spelling not recognized in `area_map.yaml`; row diverted to quarantine.                  |
+| `FALLBACK_BASELINE`    | Predictor CLI      | WARNING  | ML model unavailable; output derived strictly from historical seasonal median baseline.                    |

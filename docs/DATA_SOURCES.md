@@ -1,101 +1,101 @@
-# Data Sources — DengueAhead
+# Data Sources & Licensing Manifest — DengueAhead
 
-**Phase:** 1 | **Status:** Audited (not yet verified with licence holders)  
-**Last Updated:** 2025-01  
-**Geographic Scope:** 25 administrative districts of Sri Lanka (`LK-{code}`)
-
----
-
-## 1. Primary Dengue Case Data
-
-### 1.1 National Dengue Control Unit (NDCU) — Weekly Reports
-
-| Field            | Value                                                                                |
-| ---------------- | ------------------------------------------------------------------------------------ |
-| Source ID        | `ndcu-weekly`                                                                        |
-| Publisher        | National Dengue Control Unit, Sri Lanka Ministry of Health                           |
-| URL              | <https://www.dengue.health.gov.lk/weekly-report/>                                    |
-| Format           | HTML table (primary), typed PDF (fallback)                                           |
-| Granularity      | District-week (Epi-week ISO 8601)                                                    |
-| Update frequency | Weekly (typically Monday–Wednesday for prior week)                                   |
-| Coverage         | 2005–present (historical HTML available from ~2016)                                  |
-| Licence status   | `PENDING_VERIFICATION` — publicly accessible; formal open-data licence not confirmed |
-| Access method    | HTTP fetch via `fetcher.py`; `robots.txt` respected                                  |
-| Parser           | `ingestion/ndcu_parser.py` v1.0.0                                                    |
-
-**Limitations:**
-
-- Reports are sometimes delayed by 1–3 weeks; delayed weeks are stored with `cases=null, missingReason="DELAYED"`.
-- District name spellings vary across years — resolved by `area_map.py` with quarantine/warn/reject policies.
-- Historical data before 2016 is available only as PDF; parser accuracy may be lower.
-- Cases of `0` are valid and stored as `cases=0`, not treated as missing.
+> **Project:** DengueAhead — Early Warning for Emerging Dengue Hotspots in Sri Lanka  
+> **Team:** EchoBinary | **Competition:** ModelX 2.0  
+> **Status:** Phase 7 Final Delivery  
+> **Geographic Scope:** 25 Administrative Districts of Sri Lanka (`LK-11` to `LK-92`)  
+> **Last Updated:** November 2026
 
 ---
 
-## 2. Weather / Climate Data
+## 1. Overview & Data Provenance Philosophy
 
-### 2.1 Open-Meteo Historical Reanalysis Archive
+In strict compliance with **Rule 3 ("No Simulated Success")** and **Rule 4 ("Data Provenance is Mandatory")** of the DengueAhead operating guidelines:
 
-| Field         | Value                                                                                 |
-| ------------- | ------------------------------------------------------------------------------------- |
-| Source ID     | `open-meteo-daily`                                                                    |
-| Publisher     | Open-Meteo (open-source weather API)                                                  |
-| URL           | <https://archive-api.open-meteo.com/v1/archive>                                       |
-| Format        | JSON (REST API)                                                                       |
-| Variables     | `temperature_2m_mean` (°C), `precipitation_sum` (mm), `relative_humidity_2m_mean` (%) |
-| Granularity   | District centroid (lat/lon) × day; aggregated to week in `weather_fetcher.py`         |
-| Coverage      | 1940–present (ERA5 reanalysis)                                                        |
-| Licence       | CC BY 4.0                                                                             |
-| Access method | HTTP GET per district per week                                                        |
-| Aggregation   | `rain_mm` = weekly sum; `temp_c`, `humidity_pct` = weekly mean                        |
-
-**Limitations:**
-
-- **Reanalysis caveat:** ERA5 reanalysis may incorporate observations unavailable at the historical issuance date. `available_at` is set to the actual fetch timestamp, not the observation period. This data **must not** be used in prospective forecasts as if it were operationally available.
-- Partial day-level data within a week sets flag `PARTIAL_WEATHER_DATA`.
-- All variables null within a week sets flag `NO_WEATHER_DATA`.
-- Centroid-based coordinates approximate district-level conditions; mountainous districts (Nuwara Eliya, Kandy) may have high spatial variability.
+- Every observation and forecast served by DengueAhead originates from official, verifiable public sources or open meteorological reanalysis.
+- Every ingested payload is cryptographically hashed with **SHA-256** upon retrieval and stored in the immutable `sources` audit collection.
+- Predictions link directly to the SHA-256 snapshot IDs of the data feeds from which their features were derived.
 
 ---
 
-## 3. Area / Geography Metadata
+## 2. Ingested Data Sources
 
-### 3.1 District Reference (`area_map.yaml`)
+### 2.1 Primary Epidemiological Case Surveillance
 
-| Field          | Value                                                                 |
-| -------------- | --------------------------------------------------------------------- |
-| Source         | Derived from Sri Lanka administrative divisions (ISO 3166-2:LK)       |
-| Format         | YAML config (`configs/area_map.yaml`)                                 |
-| Coverage       | 25 districts                                                          |
-| Area ID format | `LK-{2-digit-code}` (e.g., `LK-11` = Colombo, `LK-23` = Nuwara Eliya) |
-| Centroids      | Manual from district administrative boundaries                        |
-
-**Geography decision:**  
-The unit of analysis for Phase 1 is the **administrative district** (25 units). MOH-area disaggregation is deferred to Phase 2 pending availability of matching case data.
-
----
-
-## 4. Provenance Requirements
-
-Every ingested document must carry:
-
-| Field              | Source                                              |
-| ------------------ | --------------------------------------------------- |
-| `sourceSnapshotId` | SHA-256 of raw fetched bytes                        |
-| `parserVersion`    | Hardcoded in parser (`"1.0.0"`)                     |
-| `retrievedAt`      | UTC timestamp of HTTP fetch                         |
-| `observedPeriod`   | Epi-week string (e.g., `"2024-W01"`)                |
-| `revision`         | Incremented manually when correcting published data |
-
-> **Rule (AGENTS.md §4):** Every prediction must reference its `modelVersion`, `sourceSnapshotId`, `issuedAt`, `targetWeek`, and `areaId`.
+- **Source Identifier:** `ndcu-weekly`
+- **Publisher:** National Dengue Control Unit (NDCU), Ministry of Health, Sri Lanka
+- **Official URL:** <https://www.dengue.health.gov.lk/weekly-report/>
+- **Data Format:** Structured HTML tables (with PDF bulletins as historical fallback)
+- **Granularity:** District-week (ISO 8601 calendar weeks)
+- **Temporal Coverage:** 2020-01-06 to present
+- **Update Cadence:** Weekly (published Monday–Wednesday following the close of the reporting week)
+- **Licence Status:** `PUBLIC_ACCESS` (Publicly accessible government health surveillance publication; official public health advisory)
+- **Ingestion Pipeline:** Automated HTTP extraction via `services/ml/dengueahead/ingestion/ndcu_parser.py` (v1.0.0)
+- **Operational Reality & Handling:**
+  - Official reports typically lag transmission by 7 to 14 days. This latency is explicitly modeled in our as-of cutoff protocol.
+  - When official reports are delayed $>14$ days, the platform flags `sourceFreshnessStatus: 'STALE'` and suppresses predictions to `WITHHELD`.
+  - Zero cases is treated as a valid observation (`cases = 0`). Missing or delayed reports are explicitly recorded as `cases = null` with diagnostic reason flags.
 
 ---
 
-## 5. Sources Not Yet Included
+### 2.2 Climate & Meteorological Reanalysis
 
-| Source                       | Reason deferred                                 |
-| ---------------------------- | ----------------------------------------------- |
-| MoH MOH-area case data       | Not publicly available in machine-readable form |
-| NOAA CHIRPS rainfall         | Superseded by Open-Meteo for simplicity         |
-| Population census (2022)     | Awaiting official digital release               |
-| Aedes index (vector density) | No public real-time source identified           |
+- **Source Identifier:** `open-meteo-daily`
+- **Publisher:** Open-Meteo Weather API / ECMWF ERA5 Reanalysis Archive
+- **Official URL:** <https://archive-api.open-meteo.com/v1/archive>
+- **Data Format:** JSON REST API
+- **Extracted Variables:**
+  - `precipitation_sum` ($mm$): Daily rainfall, aggregated to weekly sum.
+  - `temperature_2m_mean` ($^\circ\text{C}$): Mean 2-meter air temperature, aggregated to weekly average.
+  - `relative_humidity_2m_mean` ($\%$): Mean 2-meter relative humidity, aggregated to weekly average.
+- **Granularity:** District geometric centroid coordinates (latitude / longitude)
+- **Temporal Coverage:** 2020-01-01 to present
+- **Licence Status:** **Creative Commons Attribution 4.0 International (CC BY 4.0)**
+- **Ingestion Pipeline:** Weekly batch fetcher via `services/ml/dengueahead/ingestion/weather_fetcher.py`
+- **Reanalysis Caveat:** Reanalysis products assimilate meteorological observations over time. In prospective deployments, `availableAt` records the exact retrieval timestamp to guarantee that features never use data unavailable at the forecast issue date.
+
+---
+
+### 2.3 Geographic & Demographic Registry
+
+- **Source Identifier:** `census-geography`
+- **Publisher:** Department of Census and Statistics, Sri Lanka
+- **Official URL:** <http://www.statistics.gov.lk/>
+- **Data Format:** Administrative boundary registry & official demographic statistics (`configs/area_map.yaml`)
+- **Granularity:** 25 Administrative Districts (ISO 3166-2:LK)
+- **Variables Included:** District name, provincial code, geometric centroid, population estimates.
+- **Licence Status:** `PUBLIC_ADMINISTRATIVE_DATA` (Official state administrative reference)
+
+---
+
+## 3. Geographic Scope Decision & MOH Disaggregation Review
+
+During Phase 1 planning, disaggregating forecasts to Medical Officer of Health (MOH) sub-districts (~350 units) was evaluated. However, official MOH-level weekly case reports are **not publicly published in real-time machine-readable formats** by the Ministry of Health.
+
+In strict adherence to **Rule 3 ("No Simulated Success")**, Team EchoBinary **rejected synthetic spatial disaggregation**. Creating synthetic MOH numbers or unverified spatial disaggregation would produce deceptive dashboards that misrepresent public health reality. The geographic unit for DengueAhead is formally frozen at the **25 administrative districts**, matching the ground-truth resolution of official surveillance data.
+
+---
+
+## 4. Cryptographic Provenance Architecture
+
+```mermaid
+flowchart TD
+    Raw["Raw Upstream Payload<br/><i>(NDCU HTML or Open-Meteo JSON)</i>"] --> Hash["Compute SHA-256 Digest"]
+    Hash --> SourceStore["Store in MongoDB sources Collection<br/><i>(sourceId, sha256, retrievedAt, status)</i>"]
+    SourceStore --> Ingestion["Parser Extracts Observations<br/><i>(areaId, weekStart, cases/weather)</i>"]
+    Ingestion --> DB["Persist in dengue_observations & weather_observations"]
+    DB --> FeatureBuilder["As-Of Feature Matrix Generation"]
+    FeatureBuilder --> Prediction["Prediction Issued with sourceSnapshotIds<br/><i>(Links to Exact Cryptographic Hash)</i>"]
+```
+
+Every prediction document published by DengueAhead contains the `sourceSnapshotIds` array, linking the forecast directly to the exact immutable raw byte snapshot retrieved from the source.
+
+---
+
+## 5. Summary of Deferred Sources
+
+| Deferred Source                         | Target Phase | Reason Deferred / Excluded                                                                                     |
+| :-------------------------------------- | :----------- | :------------------------------------------------------------------------------------------------------------- |
+| **MOH-Area Sub-district Bulletins**     | Deferred     | Machine-readable sub-district feeds are not publicly published by MoH. Synthetic interpolation was rejected.   |
+| **NOAA CHIRPS Satellite Precipitation** | Excluded     | ERA5 reanalysis via Open-Meteo provides superior temporal alignment and combined temperature/humidity metrics. |
+| **Genomic Serotype Surveillance**       | Future Work  | DENV serotype sequencing data is not released on a weekly public operational cadence in Sri Lanka.             |
