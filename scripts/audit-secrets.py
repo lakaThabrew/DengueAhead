@@ -103,7 +103,7 @@ def main() -> int:
 
     if total_findings:
         print(f"\n{'=' * 60}")
-        print(f"⚠  {len(total_findings)} potential secret(s) found:\n")
+        print(f"[WARN] {len(total_findings)} potential secret(s) found:\n")
         for fpath, lineno, name, line in total_findings:
             print(f"  [{name}] {fpath}:{lineno}")
             print(f"    {line}\n")
@@ -111,7 +111,7 @@ def main() -> int:
         if args.fail_on_match:
             return 1
     else:
-        print(f"✓ No secrets detected across {total_files} files.")
+        print(f"[OK] Zero secrets detected across {total_files} files.")
 
     return 0
 
