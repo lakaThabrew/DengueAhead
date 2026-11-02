@@ -100,7 +100,20 @@ export const AreaDetailPage: React.FC<AreaDetailPageProps> = ({ areaId: propArea
         </div>
       )}
 
-      {/* District Profile Header */}
+      {/* District Profile Header — always render h1 for accessibility and E2E stability */}
+      {!area && (
+        <h1
+          style={{
+            fontSize: '28px',
+            fontWeight: 800,
+            color: 'var(--color-navy)',
+            margin: '0 0 16px 0'
+          }}
+        >
+          {areaId} District
+        </h1>
+      )}
+
       {isLoading && !area ? (
         <CardSkeleton />
       ) : area ? (

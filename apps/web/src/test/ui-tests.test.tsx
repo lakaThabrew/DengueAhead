@@ -10,7 +10,21 @@ import { EmptyState } from '../components/ui/EmptyState.js';
 
 describe('Phase 5 UI Test Suite (UI-01 to UI-08)', () => {
   beforeEach(() => {
-    vi.stubGlobal('fetch', vi.fn());
+    // Default fetch mock: returns a valid health response for HealthBadge on LandingPage,
+    // plus a generic 200 fallback for all other endpoints used by individual tests.
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          status: 'ok',
+          apiVersion: '1.0.0',
+          service: 'dengueahead-api',
+          timestamp: new Date().toISOString()
+        })
+      })
+    );
   });
 
   afterEach(() => {
@@ -18,9 +32,12 @@ describe('Phase 5 UI Test Suite (UI-01 to UI-08)', () => {
   });
 
   // ── UI-01: Landing page CTA navigation ────────────────────────────────────
-  it('UI-01: Landing page CTAs trigger correct navigation targets', () => {
+  it('UI-01: Landing page CTAs trigger correct navigation targets', async () => {
     const pushStateSpy = vi.spyOn(window.history, 'pushState');
     render(<LandingPage />);
+
+    // Wait for HealthBadge async state to settle so no act() warning fires
+    await waitFor(() => expect(screen.queryByText('Checking…')).toBeNull());
 
     // Click "Explore Risk Map"
     const exploreBtn = screen.getByRole('button', { name: /Explore Risk Map/i });

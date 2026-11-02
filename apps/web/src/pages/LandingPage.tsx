@@ -1,6 +1,12 @@
 import React from 'react';
 import { navigate } from '../lib/router.js';
 import { Button } from '../components/ui/Button.js';
+import { HealthBadge } from '../features/health/HealthBadge.js';
+
+const API_BASE: string =
+  (import.meta as unknown as { env?: Record<string, string | undefined> }).env?.[
+    'VITE_API_BASE_URL'
+  ] ?? 'http://localhost:4000/api/v1';
 
 export const LandingPage: React.FC = () => {
   return (
@@ -123,6 +129,7 @@ export const LandingPage: React.FC = () => {
           <Button size="sm" onClick={() => navigate('/app/overview')}>
             Open Dashboard
           </Button>
+          <HealthBadge apiBaseUrl={API_BASE} />
         </nav>
       </header>
 

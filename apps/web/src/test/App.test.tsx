@@ -43,6 +43,8 @@ describe('App Component', () => {
 
   it('displays the system pipeline pillars', async () => {
     render(<App />);
+    // Wait for HealthBadge async state to settle to avoid act() warning
+    await waitFor(() => expect(screen.queryByText('Checking…')).toBeNull());
     expect(screen.getByText('NDCU Dengue Data')).toBeInTheDocument();
     expect(screen.getByText('Feature Engineering')).toBeInTheDocument();
     expect(screen.getByText('HGB Forecast + Calibration')).toBeInTheDocument();
