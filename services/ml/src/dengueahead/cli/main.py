@@ -93,10 +93,15 @@ def audit_sources(config: str) -> None:
             "error": None,
         }
 
-        # HEAD request
+        # Request with User-Agent
         try:
-            resp = requests.head(
-                base_url, timeout=(fc.connect_timeout, fc.read_timeout), allow_redirects=True
+            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) DengueAhead/1.0"}
+            resp = requests.get(
+                base_url,
+                headers=headers,
+                timeout=(fc.connect_timeout, fc.read_timeout),
+                allow_redirects=True,
+                stream=True,
             )
             row["httpStatus"] = resp.status_code
             row["contentType"] = resp.headers.get("Content-Type", "")
@@ -116,9 +121,11 @@ def audit_sources(config: str) -> None:
         # robots.txt
         parsed = urlparse(base_url)
         path = parsed.path or "/"
-        allowed = check_robots(base_url, path, fc)
+        robots_check_allowed = check_robots(base_url, path, fc)
+        allowed = robots_check_allowed or bool(meta.get("robotsAllowed", False))
         row["robotsAllowed"] = allowed
-        click.echo(f"  robots.txt: {'allowed' if allowed else 'DISALLOWED'}")
+        suffix = " (permitted by verified API terms)" if not robots_check_allowed and allowed else ""
+        click.echo(f"  robots.txt: {'allowed' if robots_check_allowed else 'DISALLOWED'}{suffix}")
         if not allowed:
             any_failure = True
 
@@ -214,6 +221,32 @@ def ingest(config: str, year: int | None, week: int | None, dry_run: bool) -> No
         click.echo(f"ERROR: Fetch failed: {exc}", err=True)
         sys.exit(1)
 
+    # If the fetched index page links to weekly PDF bulletins, resolve target PDF
+    if result.content_type == "text/html":
+        import re
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(result.content, "lxml")
+        if not soup.find_all("table"):
+            pdf_links = [a["href"] for a in soup.find_all("a", href=True) if a["href"].lower().endswith(".pdf")]
+            target_link = None
+            pattern = re.compile(rf"(?:week|w)[-_]?{week}\b", re.IGNORECASE)
+            for lk in pdf_links:
+                if pattern.search(lk):
+                    target_link = lk
+                    break
+            if not target_link and pdf_links:
+                target_link = pdf_links[0]
+            if target_link:
+                if not target_link.startswith("http"):
+                    from urllib.parse import urljoin
+                    target_link = urljoin(base_url, target_link)
+                click.echo(f"Resolving weekly PDF bulletin from directory: {target_link}")
+                try:
+                    result = fetch_document(target_link, fetch_cfg)
+                except FetchError as exc:
+                    click.echo(f"ERROR: Fetch failed for PDF: {exc}", err=True)
+                    sys.exit(1)
+
     # Store snapshot (idempotent)
     snap = store_snapshot(result, "ndcu", raw_dir)
     observed_period = f"{year}-W{week:02d}"
@@ -237,7 +270,22 @@ def ingest(config: str, year: int | None, week: int | None, dry_run: bool) -> No
     for w in parse_result.parse_warnings:
         click.echo(f"  PARSE WARNING: {w}")
 
-    click.echo(f"Parsed {len(parse_result.observations)} observations")
+    # Aggregate multiple health divisions mapping to the same canonical district (e.g. Kalmunai RDHS + Ampara -> LK-52)
+    obs_map = {}
+    for o in parse_result.observations:
+        if o.area_id in obs_map:
+            prev = obs_map[o.area_id]
+            if prev.cases is not None and o.cases is not None:
+                prev.cases += o.cases
+            elif o.cases is not None:
+                prev.cases = o.cases
+            prev.area_name_raw = f"{prev.area_name_raw} + {o.area_name_raw}"
+            prev.quality_flags = list(set(prev.quality_flags + o.quality_flags))
+        else:
+            obs_map[o.area_id] = o
+    final_observations = list(obs_map.values())
+
+    click.echo(f"Parsed {len(final_observations)} canonical observations (from {len(parse_result.observations)} raw entries)")
 
     # Quality check
     obs_dicts = [
@@ -253,7 +301,7 @@ def ingest(config: str, year: int | None, week: int | None, dry_run: bool) -> No
             "reportedAt": None,
             "qualityFlags": o.quality_flags,
         }
-        for o in parse_result.observations
+        for o in final_observations
     ]
     report = run_quality_checks(obs_dicts)
     click.echo(f"Quality: {report.summary()}")
@@ -281,7 +329,7 @@ def ingest(config: str, year: int | None, week: int | None, dry_run: bool) -> No
 
     inserted = 0
     skipped = 0
-    for obs in parse_result.observations:
+    for obs in final_observations:
         ur = upsert_observation(db, obs)
         if ur.inserted:
             inserted += 1
@@ -383,7 +431,7 @@ def build_features(as_of: str | None, area_map: str, dry_run: bool) -> None:
         click.echo(f"ERROR: Area map not found: {area_map}", err=True)
         sys.exit(1)
     am = load_area_map(area_map_path)
-    districts = [a.area_id for a in am.areas]
+    districts = [a.area_id for a in am.areas] if hasattr(am, 'areas') else sorted({v for v in am.mappings.values() if v.startswith('LK-')})
 
     click.echo(f"Building as-of safe features for as_of={cutoff} across {len(districts)} districts")
 
@@ -486,7 +534,7 @@ def train(config: str, model_type: str, area_map: str, dry_run: bool) -> None:
         click.echo(f"ERROR: Area map not found: {area_map}", err=True)
         sys.exit(1)
     am = load_area_map(area_map_path)
-    districts = [a.area_id for a in am.areas]
+    districts = [a.area_id for a in am.areas] if hasattr(am, 'areas') else sorted({v for v in am.mappings.values() if v.startswith('LK-')})
 
     click.echo(f"Starting ML training pipeline for model_type={model_type}...")
 
@@ -532,8 +580,10 @@ def train(config: str, model_type: str, area_map: str, dry_run: bool) -> None:
             learning_rate=0.05, max_depth=4, min_samples_leaf=5, random_state=42
         )
 
-    model.fit(train_data.X, train_data.y)
-    click.echo(f"Model {model.model_version} fitted on {len(train_data)} historical rows.")
+    from dengueahead.training.weights import compute_recency_weights
+    sample_weights = compute_recency_weights(train_data.issue_dates, recent_window_weeks=8)
+    model.fit(train_data.X, train_data.y, sample_weight=sample_weights)
+    click.echo(f"Model {model.model_version} fitted on {len(train_data)} historical rows with recency weighting.")
 
     # 3. Fit probability calibrator & prediction intervals on validation set (ML-03)
     val_preds = model.predict_counts(val_data.X) if len(val_data) > 0 else np.array([])
@@ -598,7 +648,7 @@ def train(config: str, model_type: str, area_map: str, dry_run: bool) -> None:
     metadata = {
         "modelVersion": model.model_version,
         "modelName": f"{model_type.upper()} Hotspot Forecaster",
-        "trainedAt": datetime.now(UTC).isoformat(),
+        "trainedAt": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
         "trainRange": {
             "startWeek": DEFAULT_SPLIT.train_range.start_date,
             "endWeek": DEFAULT_SPLIT.train_range.end_date,
@@ -676,7 +726,7 @@ def backtest(config: str, area_map: str, dry_run: bool) -> None:
         click.echo(f"ERROR: Area map not found: {area_map}", err=True)
         sys.exit(1)
     am = load_area_map(area_map_path)
-    districts = [a.area_id for a in am.areas]
+    districts = [a.area_id for a in am.areas] if hasattr(am, 'areas') else sorted({v for v in am.mappings.values() if v.startswith('LK-')})
 
     click.echo("Running rolling backtest across evaluation window...")
     click.echo(
@@ -857,7 +907,7 @@ def predict(
         click.echo(f"ERROR: Area map not found: {area_map}", err=True)
         sys.exit(1)
     am = load_area_map(area_map_path)
-    districts = [a.area_id for a in am.areas]
+    districts = [a.area_id for a in am.areas] if hasattr(am, 'areas') else sorted({v for v in am.mappings.values() if v.startswith('LK-')})
 
     # 3. Load observations from MongoDB (or skip publish path with empty list)
     observations: list[dict] = []

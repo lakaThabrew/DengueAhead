@@ -122,7 +122,7 @@ class BacktestRunner:
         return {
             "modelVersion": model_version,
             "modelName": model_name,
-            "trainedAt": datetime.now(UTC).isoformat(),
+            "trainedAt": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
             "trainRange": {
                 "startWeek": train_range.start_date,
                 "endWeek": train_range.end_date,
