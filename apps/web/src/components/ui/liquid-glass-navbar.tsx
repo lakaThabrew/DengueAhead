@@ -490,7 +490,9 @@ export function LiquidNavbar({
       o.connect(g).connect(ctx.destination)
       o.start(t)
       o.stop(t + 0.18)
-    } catch {}
+    } catch {
+      return
+    }
   }
 
   const select = (i: number) => {
