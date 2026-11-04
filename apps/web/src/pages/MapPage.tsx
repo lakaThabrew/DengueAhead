@@ -53,6 +53,45 @@ export const MapPage: React.FC = () => {
 
   return (
     <div>
+      {/* Risk Map Geographic Banner */}
+      <div
+        style={{
+          position: 'relative',
+          borderRadius: '16px',
+          overflow: 'hidden',
+          marginBottom: '24px',
+          border: '1px solid #1e293b',
+          boxShadow: '0 20px 40px -15px rgba(0, 0, 0, 0.7)'
+        }}
+      >
+        <img
+          src="/images/gis-district-map.jpg"
+          alt="GIS Spatial District Surveillance & Topographic Terrain Radar"
+          style={{ width: '100%', height: '160px', objectFit: 'cover', display: 'block' }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(180deg, rgba(6, 11, 24, 0.15) 0%, rgba(6, 11, 24, 0.9) 100%)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-end',
+            padding: '20px 24px'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#06b6d4' }} />
+            <span style={{ fontSize: '11px', fontWeight: 700, color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              Spatial Risk Taxonomy &bull; 25 Admin Units &bull; Conformal Intervals
+            </span>
+          </div>
+          <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#ffffff', margin: 0 }}>
+            Geospatial Hotspot Surveillance &amp; District Registry
+          </h2>
+        </div>
+      </div>
+
       {/* Page Header */}
       <div style={{ marginBottom: '24px' }}>
         <h1 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--color-navy)', margin: 0 }}>
@@ -105,7 +144,7 @@ export const MapPage: React.FC = () => {
         {/* Selected District Quick Summary Drawer */}
         <div
           style={{
-            backgroundColor: '#FFFFFF',
+            backgroundColor: 'var(--color-surface-card)',
             border: '1px solid var(--color-border)',
             borderRadius: 'var(--radius-lg)',
             padding: '24px',
@@ -159,10 +198,10 @@ export const MapPage: React.FC = () => {
               >
                 <div
                   style={{
-                    backgroundColor: '#F8FAFC',
+                    backgroundColor: '#0c152d',
                     padding: '12px',
                     borderRadius: '8px',
-                    border: '1px solid var(--color-border)'
+                    border: '1px solid #1e293b'
                   }}
                 >
                   <div
@@ -186,10 +225,10 @@ export const MapPage: React.FC = () => {
 
                 <div
                   style={{
-                    backgroundColor: '#F8FAFC',
+                    backgroundColor: '#0c152d',
                     padding: '12px',
                     borderRadius: '8px',
-                    border: '1px solid var(--color-border)'
+                    border: '1px solid #1e293b'
                   }}
                 >
                   <div
@@ -201,7 +240,7 @@ export const MapPage: React.FC = () => {
                   >
                     90% Conformal Interval
                   </div>
-                  <div style={{ fontSize: '15px', fontWeight: 600, color: '#334155' }}>
+                  <div style={{ fontSize: '15px', fontWeight: 600, color: '#f8fafc' }}>
                     {selectedDistrict.interval
                       ? `[${selectedDistrict.interval.lower.toFixed(0)}, ${selectedDistrict.interval.upper.toFixed(0)}]`
                       : 'Interval not available'}

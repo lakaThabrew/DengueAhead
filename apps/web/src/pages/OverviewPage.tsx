@@ -44,6 +44,45 @@ export const OverviewPage: React.FC = () => {
         </div>
       )}
 
+      {/* Console National Overview Banner */}
+      <div
+        style={{
+          position: 'relative',
+          borderRadius: '16px',
+          overflow: 'hidden',
+          marginBottom: '24px',
+          border: '1px solid #1e293b',
+          boxShadow: '0 20px 40px -15px rgba(0, 0, 0, 0.7)'
+        }}
+      >
+        <img
+          src="/images/overview-command-center.jpg"
+          alt="National Epidemiological Surveillance Command Center"
+          style={{ width: '100%', height: '180px', objectFit: 'cover', display: 'block' }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(180deg, rgba(6, 11, 24, 0.2) 0%, rgba(6, 11, 24, 0.88) 100%)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-end',
+            padding: '20px 24px'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#38bdf8' }} />
+            <span style={{ fontSize: '11px', fontWeight: 700, color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              Sri Lanka MoH &bull; National Surveillance Console
+            </span>
+          </div>
+          <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#ffffff', margin: 0 }}>
+            Active Transmission Indicators &bull; 7-Day Early Warning
+          </h2>
+        </div>
+      </div>
+
       {/* Header Bar */}
       <div
         style={{
@@ -72,11 +111,12 @@ export const OverviewPage: React.FC = () => {
               fontWeight: 600,
               padding: '6px 12px',
               borderRadius: '6px',
-              backgroundColor: '#F1F5F9',
-              color: '#334155'
+              backgroundColor: '#0c152d',
+              border: '1px solid #1e293b',
+              color: '#94a3b8'
             }}
           >
-            Level: <strong>District</strong>
+            Level: <strong style={{ color: '#38bdf8' }}>District</strong>
           </div>
 
           {meta?.latestIssueDate && (
@@ -96,8 +136,9 @@ export const OverviewPage: React.FC = () => {
                 fontWeight: 700,
                 padding: '4px 8px',
                 borderRadius: '4px',
-                backgroundColor: isStale ? '#FEF3C7' : '#DCFCE7',
-                color: isStale ? '#92400E' : '#166534'
+                backgroundColor: isStale ? 'rgba(245, 158, 11, 0.15)' : 'rgba(16, 185, 129, 0.15)',
+                color: isStale ? '#f59e0b' : '#34d399',
+                border: isStale ? '1px solid rgba(245, 158, 11, 0.3)' : '1px solid rgba(16, 185, 129, 0.3)'
               }}
             >
               {meta.sourceFreshnessStatus}

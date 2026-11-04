@@ -1,8 +1,8 @@
 import React from 'react';
-import { navigate } from '../lib/router.js';
 import { useMethodologyQuery } from '../lib/hooks.js';
-import { Button } from '../components/ui/Button.js';
 import { StatusBadge } from '../components/ui/Badge.js';
+import { AppNavbar } from '../components/layout/AppNavbar.js';
+import { AppFooter } from '../components/layout/AppFooter.js';
 import type { PredictionStatus } from '@dengueahead/contracts';
 
 export const MethodologyPage: React.FC = () => {
@@ -37,71 +37,12 @@ export const MethodologyPage: React.FC = () => {
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: '#F8FAFC'
+        backgroundColor: '#060b18',
+        color: '#f8fafc'
       }}
     >
-      {/* Top Banner */}
-      <div
-        role="banner"
-        style={{
-          backgroundColor: '#0B1730',
-          color: '#E2E8F0',
-          padding: '8px 24px',
-          fontSize: '13px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '8px'
-        }}
-      >
-        <span aria-hidden="true">⚠</span>
-        <span>
-          <strong>DengueAhead Research &amp; Public Health Intelligence:</strong> Non-clinical
-          decision-support system.
-        </span>
-      </div>
-
-      {/* Header */}
-      <header
-        style={{
-          backgroundColor: '#FFFFFF',
-          borderBottom: '1px solid #E2E8F0',
-          padding: '12px 32px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <button
-            onClick={() => navigate('/')}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              backgroundColor: '#2563EB',
-              color: '#FFFFFF',
-              padding: '4px 12px',
-              borderRadius: '6px',
-              fontWeight: 700,
-              fontSize: '18px'
-            }}
-          >
-            DengueAhead
-          </button>
-          <span style={{ fontSize: '14px', color: '#64748B', fontWeight: 500 }}>
-            Methodology &amp; Scientific Protocol
-          </span>
-        </div>
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
-            Home
-          </Button>
-          <Button size="sm" onClick={() => navigate('/app/overview')}>
-            Open Dashboard
-          </Button>
-        </div>
-      </header>
+      {/* ── Unified Navbar (Safety Banner + Header + Compact LiquidNavbar) ── */}
+      <AppNavbar currentPath="/methodology" />
 
       {/* Main Content */}
       <main
@@ -114,10 +55,10 @@ export const MethodologyPage: React.FC = () => {
           padding: '40px 24px'
         }}
       >
-        <h1 style={{ fontSize: '32px', fontWeight: 800, color: '#0B1730', marginBottom: '12px' }}>
+        <h1 style={{ fontSize: '32px', fontWeight: 800, color: '#f8fafc', marginBottom: '12px' }}>
           Methodology &amp; Modeling Framework
         </h1>
-        <p style={{ fontSize: '16px', color: '#475569', marginBottom: '32px', lineHeight: 1.6 }}>
+        <p style={{ fontSize: '16px', color: '#94a3b8', marginBottom: '32px', lineHeight: 1.6 }}>
           DengueAhead formulates dengue risk forecasting as an evidence-driven, multi-task problem:
           predicting 1-week ahead case volume while simultaneously classifying the risk of crossing
           a district-specific seasonal threshold.
@@ -126,122 +67,246 @@ export const MethodologyPage: React.FC = () => {
         {/* Section 1: Non-Clinical Advisory */}
         <section
           style={{
-            backgroundColor: '#EFF6FF',
-            border: '1px solid #BFDBFE',
+            backgroundColor: 'rgba(56, 189, 248, 0.08)',
+            border: '1px solid rgba(56, 189, 248, 0.25)',
             borderRadius: '12px',
             padding: '24px',
             marginBottom: '32px'
           }}
         >
-          <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#1E40AF', marginBottom: '8px' }}>
+          <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#38bdf8', marginBottom: '8px' }}>
             Non-Clinical Decision-Support Scope
           </h2>
-          <p style={{ fontSize: '14px', color: '#1E3A8A', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '14px', color: '#94a3b8', lineHeight: 1.6 }}>
             {data?.nonClinicalDisclaimer ||
               'DengueAhead is designed strictly for municipal public health planning, vector control logistics (e.g. larvicide and fogging allocation), and epidemiological surveillance. It does not diagnose individual patients, prescribe medical therapies, or replace clinical diagnosis.'}
           </p>
         </section>
 
+        {/* Visual Epidemiological Analytics Hero Banner */}
+        <div
+          style={{
+            position: 'relative',
+            borderRadius: '16px',
+            overflow: 'hidden',
+            marginBottom: '36px',
+            border: '1px solid #1e293b',
+            boxShadow: '0 20px 40px -15px rgba(0, 0, 0, 0.7)'
+          }}
+        >
+          <img
+            src="/images/epidemiology-methodology.jpg"
+            alt="Epidemiological Research & Analytics Lab"
+            style={{ width: '100%', height: '260px', objectFit: 'cover', display: 'block' }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'linear-gradient(180deg, rgba(6, 11, 24, 0.2) 0%, rgba(6, 11, 24, 0.92) 100%)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-end',
+              padding: '24px'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#38bdf8' }} />
+              <span style={{ fontSize: '12px', fontWeight: 700, color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                Algorithmic Pipeline &bull; NDCU &bull; Reanalysis
+              </span>
+            </div>
+            <p style={{ fontSize: '14px', color: '#e2e8f0', margin: 0, maxWidth: '640px' }}>
+              Multi-scale temporal models combining historical case lag autoregression with biological monsoon vector response thresholds.
+            </p>
+          </div>
+        </div>
+
         {/* Section 2: Target Formulation */}
         <section style={{ marginBottom: '36px' }}>
-          <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#0B1730', marginBottom: '12px' }}>
+          <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#f8fafc', marginBottom: '12px' }}>
             1. Target Formulation
           </h2>
           <div
             style={{
-              backgroundColor: '#FFFFFF',
-              border: '1px solid #E2E8F0',
+              backgroundColor: '#0b1329',
+              border: '1px solid #1e293b',
               borderRadius: '12px',
-              padding: '24px'
+              padding: '24px',
+              marginBottom: '20px'
             }}
           >
+            <h3
+              style={{ fontSize: '16px', fontWeight: 700, color: '#f8fafc', marginBottom: '8px' }}
+            >
+              Primary Regression Target: Continuous Caseload Forecast
+            </h3>
             <p
-              style={{ fontSize: '15px', color: '#334155', lineHeight: 1.6, marginBottom: '16px' }}
+              style={{ fontSize: '14px', color: '#94a3b8', lineHeight: 1.6, marginBottom: '16px' }}
             >
-              For district $a$ at issue week $t$, the system predicts:
+              {'y_{i, t+1}'}: Total confirmed dengue cases reported in district <em>i</em> during target week <em>t+1</em>. Evaluated using Mean Absolute Error (MAE) and Root Mean Squared Error (RMSE).
             </p>
-            <ul
-              style={{ paddingLeft: '24px', color: '#334155', fontSize: '14px', lineHeight: 1.8 }}
+            <h3
+              style={{ fontSize: '16px', fontWeight: 700, color: '#f8fafc', marginBottom: '8px' }}
             >
-              <li>
-                <strong>Continuous Point Forecast:</strong> <code>y_hat(a, t+1)</code> — Expected
-                weekly case count for next epidemiological week.
-              </li>
-              <li>
-                <strong>Seasonal Threshold:</strong> <code>τ(a, w)</code> — 75th percentile of
-                historical dengue cases in district a for calendar week w, computed strictly on
-                training data prior to 2024.
-              </li>
-              <li>
-                <strong>Binary Hotspot Indicator:</strong>{' '}
-                <code>H(a, t+1) = [ y_hat(a, t+1) ≥ τ(a, w) ]</code>.
-              </li>
-            </ul>
+              Secondary Classification Target: Emerging Hotspot Binary Risk
+            </h3>
+            <p style={{ fontSize: '14px', color: '#94a3b8', lineHeight: 1.6 }}>
+              A district enters <strong>EMERGING</strong> status when its predicted caseload crosses
+              the district-specific 75th percentile historical seasonal baseline ({'τ_{i, w}'}) for
+              epidemiological week <em>w</em>.
+            </p>
           </div>
-        </section>
 
-        {/* Section 3: Status Taxonomy */}
-        <section style={{ marginBottom: '36px' }}>
-          <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#0B1730', marginBottom: '12px' }}>
-            2. District Risk Taxonomy
-          </h2>
+          <h3
+            style={{ fontSize: '16px', fontWeight: 700, color: '#f8fafc', marginBottom: '12px' }}
+          >
+            Taxonomy State Definitions
+          </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {statuses.map((item) => (
+            {statuses.map(({ status, desc }) => (
               <div
-                key={item.status}
+                key={status}
                 style={{
-                  backgroundColor: '#FFFFFF',
-                  border: '1px solid #E2E8F0',
-                  borderRadius: '12px',
-                  padding: '16px 20px',
                   display: 'flex',
                   alignItems: 'flex-start',
-                  gap: '16px'
+                  gap: '16px',
+                  backgroundColor: '#0b1329',
+                  border: '1px solid #1e293b',
+                  borderRadius: '8px',
+                  padding: '16px'
                 }}
               >
-                <div style={{ minWidth: '110px', paddingTop: '2px' }}>
-                  <StatusBadge status={item.status} />
+                <div style={{ minWidth: '100px' }}>
+                  <StatusBadge status={status} size="md" />
                 </div>
-                <p style={{ fontSize: '14px', color: '#475569', margin: 0, lineHeight: 1.5 }}>
-                  {data?.statusTaxonomy?.[item.status] || item.desc}
+                <p style={{ fontSize: '13px', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
+                  {desc}
                 </p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Section 4: Uncertainty & Calibration */}
+        {/* Visual Epidemiological Drivers Multi-Photo Strip */}
         <section style={{ marginBottom: '36px' }}>
-          <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#0B1730', marginBottom: '12px' }}>
+          <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#f8fafc', marginBottom: '12px' }}>
+            2. Scientific Drivers &amp; Input Telemetry
+          </h2>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gap: '18px',
+              marginBottom: '16px'
+            }}
+          >
+            {/* Photo Card 1: NDCU Surveillance Analysis */}
+            <div
+              style={{
+                backgroundColor: '#0b1329',
+                borderRadius: '12px',
+                border: '1px solid #1e293b',
+                overflow: 'hidden'
+              }}
+            >
+              <img
+                src="/images/ndcu-bulletin-analysis.jpg"
+                alt="NDCU Weekly Bulletin Surveillance Analytics"
+                style={{ width: '100%', height: '160px', objectFit: 'cover' }}
+              />
+              <div style={{ padding: '16px' }}>
+                <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#f8fafc', margin: '0 0 6px 0' }}>
+                  NDCU Weekly Surveillance
+                </h4>
+                <p style={{ fontSize: '12px', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
+                  Weekly district case tables ingested and verified under ISO bounds, tracking incubation waves.
+                </p>
+              </div>
+            </div>
+
+            {/* Photo Card 2: Climate Satellite */}
+            <div
+              style={{
+                backgroundColor: '#0b1329',
+                borderRadius: '12px',
+                border: '1px solid #1e293b',
+                overflow: 'hidden'
+              }}
+            >
+              <img
+                src="/images/satellite-monsoon.jpg"
+                alt="Monsoon Precipitation Satellite"
+                style={{ width: '100%', height: '160px', objectFit: 'cover' }}
+              />
+              <div style={{ padding: '16px' }}>
+                <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#f8fafc', margin: '0 0 6px 0' }}>
+                  ERA5 Climate Telemetry
+                </h4>
+                <p style={{ fontSize: '12px', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
+                  Daily rainfall accumulation, peak temperature, and relative humidity aggregated across district centroids.
+                </p>
+              </div>
+            </div>
+
+            {/* Photo Card 3: Field Inspection */}
+            <div
+              style={{
+                backgroundColor: '#0b1329',
+                borderRadius: '12px',
+                border: '1px solid #1e293b',
+                overflow: 'hidden'
+              }}
+            >
+              <img
+                src="/images/phi-inspection.jpg"
+                alt="Public Health Inspector Ground Surveillance"
+                style={{ width: '100%', height: '160px', objectFit: 'cover' }}
+              />
+              <div style={{ padding: '16px' }}>
+                <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#f8fafc', margin: '0 0 6px 0' }}>
+                  PHI Surveillance Ground Truth
+                </h4>
+                <p style={{ fontSize: '12px', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
+                  Weekly district health office bulletin filings with cryptographic SHA-256 tamper-proof provenance.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Section 3: Uncertainty Estimation & Calibration */}
+        <section style={{ marginBottom: '36px' }}>
+          <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#f8fafc', marginBottom: '12px' }}>
             3. Uncertainty Estimation &amp; Calibration
           </h2>
           <div
             style={{
-              backgroundColor: '#FFFFFF',
-              border: '1px solid #E2E8F0',
+              backgroundColor: '#0b1329',
+              border: '1px solid #1e293b',
               borderRadius: '12px',
               padding: '24px'
             }}
           >
             <h3
-              style={{ fontSize: '16px', fontWeight: 700, color: '#0B1730', marginBottom: '8px' }}
+              style={{ fontSize: '16px', fontWeight: 700, color: '#f8fafc', marginBottom: '8px' }}
             >
               Conformal Prediction Intervals
             </h3>
             <p
-              style={{ fontSize: '14px', color: '#475569', lineHeight: 1.6, marginBottom: '16px' }}
+              style={{ fontSize: '14px', color: '#94a3b8', lineHeight: 1.6, marginBottom: '16px' }}
             >
               Intervals $[L, U]$ are constructed using split conformal prediction with guaranteed
-              finite-sample coverage (nominal $1 - \alpha = 0.90$). If data quality issues or
+              finite-sample coverage (nominal $1 - \alpha = 0.80$). If data quality issues or
               insufficient observations exist, the interval is suppressed as "Interval not
               available" rather than outputting false certainty.
             </p>
             <h3
-              style={{ fontSize: '16px', fontWeight: 700, color: '#0B1730', marginBottom: '8px' }}
+              style={{ fontSize: '16px', fontWeight: 700, color: '#f8fafc', marginBottom: '8px' }}
             >
               Platt Scaling Probability Calibration
             </h3>
-            <p style={{ fontSize: '14px', color: '#475569', lineHeight: 1.6 }}>
+            <p style={{ fontSize: '14px', color: '#94a3b8', lineHeight: 1.6 }}>
               Hotspot probabilities are calibrated via univariate Platt sigmoid scaling on
               out-of-fold predictions. Uncalibrated models report relative risk rank rather than
               pseudo-percentages.
@@ -249,23 +314,23 @@ export const MethodologyPage: React.FC = () => {
           </div>
         </section>
 
-        {/* Section 5: Feature Attribution Non-Causality */}
+        {/* Section 4: Feature Attribution Non-Causality */}
         <section style={{ marginBottom: '40px' }}>
-          <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#0B1730', marginBottom: '12px' }}>
+          <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#f8fafc', marginBottom: '12px' }}>
             4. Feature Attribution &amp; Statistical Interpretation
           </h2>
           <div
             style={{
-              backgroundColor: '#FEF3C7',
-              border: '1px solid #FCD34D',
+              backgroundColor: 'rgba(245, 158, 11, 0.12)',
+              border: '1px solid rgba(245, 158, 11, 0.3)',
               borderRadius: '12px',
               padding: '20px'
             }}
           >
-            <strong style={{ color: '#78350F', display: 'block', marginBottom: '6px' }}>
+            <strong style={{ color: '#fbbf24', display: 'block', marginBottom: '6px' }}>
               Important Statistical Notice:
             </strong>
-            <p style={{ fontSize: '14px', color: '#92400E', margin: 0, lineHeight: 1.5 }}>
+            <p style={{ fontSize: '14px', color: '#fde68a', margin: 0, lineHeight: 1.5 }}>
               Feature importance scores and local attributions reflect historical statistical
               association within epidemiological surveillance and weather reanalysis time series.
               They do <em>not</em> establish clinical, biological, or epidemiological causation.
@@ -274,35 +339,8 @@ export const MethodologyPage: React.FC = () => {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer
-        style={{
-          borderTop: '1px solid #E2E8F0',
-          padding: '20px 32px',
-          backgroundColor: '#FFFFFF',
-          fontSize: '13px',
-          color: '#64748B',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}
-      >
-        <div>DengueAhead · EchoBinary · ModelX 2.0</div>
-        <div>
-          <button
-            onClick={() => navigate('/')}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              color: '#2563EB',
-              fontSize: '13px'
-            }}
-          >
-            ← Return to Home
-          </button>
-        </div>
-      </footer>
+      {/* Enterprise Multi-Column Footer */}
+      <AppFooter />
     </div>
   );
 };
