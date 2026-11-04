@@ -11,14 +11,14 @@ export const OfflineBanner: React.FC<OfflineBannerProps> = ({
     role="alert"
     aria-live="polite"
     style={{
-      backgroundColor: '#FEF3C7',
-      borderBottom: '1px solid #FCD34D',
+      backgroundColor: '#1c1200',
+      borderBottom: '1px solid #854d0e',
       padding: '8px 24px',
       fontSize: '13px',
       display: 'flex',
       alignItems: 'center',
       gap: '8px',
-      color: '#78350F'
+      color: '#fde68a'
     }}
   >
     <span aria-hidden="true">⚠</span>

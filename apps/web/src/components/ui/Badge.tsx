@@ -85,9 +85,9 @@ export const QualityBadge: React.FC<QualityBadgeProps> = ({ flag }) => (
       fontWeight: 500,
       padding: '2px 6px',
       borderRadius: '4px',
-      backgroundColor: '#FEF3C7',
-      color: '#92400E',
-      border: '1px solid #FCD34D'
+      backgroundColor: 'rgba(120,53,15,0.25)',
+      color: '#fde68a',
+      border: '1px solid #854d0e'
     }}
   >
     {flag}

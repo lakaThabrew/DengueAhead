@@ -3,10 +3,13 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [tailwindcss(), react()],
   server: {
     port: 5173,
     host: true
+  },
+  optimizeDeps: {
+    include: ['leaflet'],
   },
   test: {
     globals: true,

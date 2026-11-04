@@ -59,8 +59,8 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
       >
         <div
           style={{
-            backgroundColor: '#FFF7ED',
-            border: '1px solid #FED7AA',
+            backgroundColor: '#0d0a00',
+            border: '1px solid #92400e',
             borderRadius: '12px',
             padding: '28px 32px'
           }}
@@ -69,7 +69,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
             style={{
               fontSize: '13px',
               fontWeight: 700,
-              color: '#C2410C',
+              color: '#fb923c',
               marginBottom: '8px',
               textTransform: 'uppercase',
               letterSpacing: '0.05em'
@@ -78,11 +78,11 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
             System Error
           </div>
 
-          <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#0B1730', margin: '0 0 12px 0' }}>
+          <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#F8FAFC', margin: '0 0 12px 0' }}>
             {title}
           </h2>
 
-          <p style={{ fontSize: '14px', color: '#475569', lineHeight: 1.6, marginBottom: '16px' }}>
+          <p style={{ fontSize: '14px', color: '#94A3B8', lineHeight: 1.6, marginBottom: '16px' }}>
             {this.state.error?.message ?? 'An unexpected error occurred in this view.'}
           </p>
 
@@ -114,9 +114,9 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
               }}
               style={{
                 padding: '8px 20px',
-                backgroundColor: '#F1F5F9',
-                color: '#334155',
-                border: '1px solid #CBD5E1',
+                backgroundColor: '#0b1329',
+                color: '#94A3B8',
+                border: '1px solid #1E293B',
                 borderRadius: '6px',
                 fontWeight: 600,
                 fontSize: '14px',

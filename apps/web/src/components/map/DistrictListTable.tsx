@@ -72,7 +72,7 @@ export const DistrictListTable: React.FC<DistrictListTableProps> = ({
   return (
     <div
       style={{
-        backgroundColor: '#FFFFFF',
+        backgroundColor: 'var(--color-surface-card)',
         borderRadius: 'var(--radius-lg)',
         border: '1px solid var(--color-border)',
         padding: '20px',
@@ -125,7 +125,7 @@ export const DistrictListTable: React.FC<DistrictListTableProps> = ({
               fontSize: '13px',
               borderRadius: 'var(--radius-md)',
               border: '1px solid var(--color-border)',
-              backgroundColor: '#FFFFFF'
+              backgroundColor: 'var(--color-surface-card)'
             }}
           >
             <option value="ALL">All Statuses</option>
@@ -206,7 +206,8 @@ export const DistrictListTable: React.FC<DistrictListTableProps> = ({
                     }}
                     style={{
                       borderBottom: '1px solid var(--color-border)',
-                      backgroundColor: isSelected ? '#EFF6FF' : 'transparent',
+                      backgroundColor: isSelected ? 'rgba(37,99,235,0.18)' : 'transparent',
+                      borderLeft: isSelected ? '3px solid #2563EB' : '3px solid transparent',
                       cursor: 'pointer',
                       transition: 'background-color 0.1s'
                     }}

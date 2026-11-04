@@ -1,51 +1,65 @@
 /* Tailwind CSS v4 — imported via @tailwindcss/vite plugin */
 @import 'tailwindcss';
 
+/* ── CSS Custom Properties (Design Tokens) ─────────────────────────────── */
 :root {
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
-  --color-navy: #0b1730;
-  --color-navy-muted: #1e293b;
-  --color-surface-bg: #f5f7fb;
-  --color-surface-card: #ffffff;
-  --color-border: #e2e8f0;
-  --color-text-main: #0b1730;
-  --color-text-muted: #64748b;
-  --color-text-light: #94a3b8;
+  --color-primary: #38bdf8;
+  --color-primary-hover: #0284c7;
+  --color-navy: #f8fafc;
+  --color-navy-muted: #94a3b8;
+  --color-surface-bg: #060b18;
+  --color-surface-card: #0b1329;
+  --color-border: #1e293b;
+  --color-text-main: #f8fafc;
+  --color-text-muted: #94a3b8;
+  --color-text-light: #64748b;
 
-  --color-emerging: #d97706;
-  --color-emerging-bg: #fef3c7;
-  --color-persistent: #dc4754;
-  --color-persistent-bg: #fee2e2;
-  --color-stable: #0d9488;
-  --color-stable-bg: #ccfbf1;
-  --color-cooling: #0284c7;
-  --color-cooling-bg: #e0f2fe;
-  --color-withheld: #64748b;
-  --color-withheld-bg: #f1f5f9;
+  --color-emerging: #f59e0b;
+  --color-emerging-bg: rgba(245, 158, 11, 0.15);
+  --color-persistent: #f43f5e;
+  --color-persistent-bg: rgba(244, 63, 94, 0.15);
+  --color-stable: #10b981;
+  --color-stable-bg: rgba(16, 185, 129, 0.15);
+  --color-cooling: #06b6d4;
+  --color-cooling-bg: rgba(6, 182, 212, 0.15);
+  --color-withheld: #94a3b8;
+  --color-withheld-bg: rgba(148, 163, 184, 0.15);
 
-  --font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --radius-md: 10px;
+  --radius-lg: 16px;
 }
 
-* {
+/* ── Universal Box-Sizing Reset (includes pseudo-elements) ─────────────── */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+}
+
+/* ── Document Root Reset ───────────────────────────────────────────────── */
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
   margin: 0;
   padding: 0;
 }
 
+/* ── Body Base Styles ──────────────────────────────────────────────────── */
 body {
   font-family: var(--font-family);
   background-color: var(--color-surface-bg);
   color: var(--color-text-main);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* ── Interactive Element Resets ─────────────────────────────────────────── */
 button {
   font-family: inherit;
   cursor: pointer;
@@ -56,7 +70,7 @@ a {
   text-decoration: none;
 }
 
-/* ── Skeleton shimmer animation ─────────────────────────────────────────── */
+/* ── Skeleton shimmer animation ────────────────────────────────────────── */
 @keyframes skeleton-shimmer {
   0% {
     background-position: 200% 0;
@@ -66,52 +80,88 @@ a {
   }
 }
 
-/* ── Focus ring ──────────────────────────────────────────────────────────── */
+/* ── Focus ring ────────────────────────────────────────────────────────── */
 :focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
-/* ── Layout utilities ────────────────────────────────────────────────────── */
+/* ── App Layout Structure ──────────────────────────────────────────────── */
 .app-layout {
   display: flex;
-  min-height: 100vh;
   flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #060b18;
+  overflow-x: hidden;
 }
 
 .app-layout-body {
   display: flex;
   flex: 1;
+  min-width: 0;
   overflow: hidden;
 }
 
 .app-sidebar {
-  width: 220px;
+  width: 240px;
   flex-shrink: 0;
-  background-color: var(--color-navy);
+  background-color: #070d1e;
+  border-right: 1px solid #1e293b;
   color: #cbd5e1;
 }
 
 .app-main {
   flex: 1;
+  min-width: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 32px;
-  background-color: var(--color-surface-bg);
+  background-color: #060b18;
+  background-image: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.05) 0%, transparent 65%);
 }
 
 @media (max-width: 768px) {
   .app-sidebar {
     display: none;
   }
+
   .app-main {
     padding: 16px;
   }
 }
 
-/* ── Responsive grid ─────────────────────────────────────────────────────── */
+/* ── Responsive grid ───────────────────────────────────────────────────── */
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 16px;
   margin-bottom: 24px;
+}
+
+/* ── Select & input dark overrides ─────────────────────────────────────── */
+select, input {
+  background-color: #0b1329 !important;
+  color: #f8fafc !important;
+  border-color: #1e293b !important;
+}
+
+/* ── Table dark overrides ──────────────────────────────────────────────── */
+table {
+  color: var(--color-text-main);
+  border-collapse: collapse;
+}
+
+th {
+  background-color: #0c152d;
+  color: #94a3b8;
+  border-bottom: 1px solid #1e293b;
+}
+
+td {
+  border-bottom: 1px solid #1e293b;
+}
+
+tr:hover td {
+  background-color: rgba(56, 189, 248, 0.04);
 }

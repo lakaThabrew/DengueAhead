@@ -12,8 +12,8 @@ export const ErrorState: React.FC<ErrorStateProps> = ({ message, onRetry, isOffl
     role="alert"
     aria-live="assertive"
     style={{
-      backgroundColor: '#FFF1F2',
-      border: '1px solid #FECDD3',
+      backgroundColor: '#1a0a0e',
+      border: '1px solid #7f1d1d',
       borderRadius: 'var(--radius-lg)',
       padding: '24px',
       display: 'flex',
@@ -22,10 +22,10 @@ export const ErrorState: React.FC<ErrorStateProps> = ({ message, onRetry, isOffl
       alignItems: 'flex-start'
     }}
   >
-    <strong style={{ fontSize: '15px', color: '#9F1239' }}>
+    <strong style={{ fontSize: '15px', color: '#fca5a5' }}>
       {isOffline ? '⚠ Service Unavailable' : '⚠ Error Loading Data'}
     </strong>
-    <p style={{ fontSize: '14px', color: '#BE123C', margin: 0 }}>{message}</p>
+    <p style={{ fontSize: '14px', color: '#f87171', margin: 0 }}>{message}</p>
     {onRetry && (
       <Button variant="secondary" size="sm" onClick={onRetry}>
         Retry
