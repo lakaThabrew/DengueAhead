@@ -20,12 +20,12 @@ def get_db(uri: str | None = None, db_name: str = "dengueahead") -> Database:  #
     The client is lazily created and reused within the same process.
     """
     global _client  # noqa: PLW0603
-    resolved_uri = uri or os.environ.get("ML_MONGODB_WRITE_URI")
-    if not resolved_uri:
-        raise RuntimeError(
-            "ML_MONGODB_WRITE_URI environment variable is not set. "
-            "The Python pipeline uses a separate write credential from the Node API."
-        )
+    resolved_uri = (
+        uri
+        or os.environ.get("ML_MONGODB_WRITE_URI")
+        or os.environ.get("MONGODB_URI")
+        or "mongodb://localhost:27017/dengueahead"
+    )
     if _client is None:
         _client = MongoClient(resolved_uri, serverSelectionTimeoutMS=5000)
         log.info("MongoDB write client initialised")
@@ -44,45 +44,28 @@ def close_client() -> None:
 def ensure_indexes(db: Database) -> None:  # type: ignore[type-arg]
     """Create all required MongoDB indexes if they do not already exist."""
     from pymongo import ASCENDING
+    from pymongo.errors import OperationFailure
 
-    db["source_snapshots"].create_index(
-        [("sourceId", ASCENDING), ("sha256", ASCENDING)], unique=True, background=True
-    )
-    db["areas"].create_index([("areaId", ASCENDING)], unique=True, background=True)
-    db["dengue_weekly"].create_index(
-        [("areaId", ASCENDING), ("weekStart", ASCENDING), ("revision", ASCENDING)],
-        unique=True,
-        background=True,
-    )
-    db["dengue_weekly"].create_index(
-        [("areaId", ASCENDING), ("weekStart", ASCENDING)], background=True
-    )
-    db["weather_weekly"].create_index(
-        [("areaId", ASCENDING), ("weekStart", ASCENDING), ("provider", ASCENDING)],
-        unique=True,
-        background=True,
-    )
-    db["feature_snapshots"].create_index(
-        [
-            ("areaId", ASCENDING),
-            ("issueDate", ASCENDING),
-            ("featureSetVersion", ASCENDING),
-        ],
-        unique=True,
-        background=True,
-    )
-    db["model_runs"].create_index([("modelVersion", ASCENDING)], unique=True, background=True)
-    db["predictions"].create_index(
-        [
-            ("areaId", ASCENDING),
-            ("targetWeek", ASCENDING),
-            ("modelVersion", ASCENDING),
-            ("issueDate", ASCENDING),
-        ],
-        unique=True,
-        background=True,
-    )
-    db["predictions"].create_index(
-        [("issueDate", ASCENDING), ("areaId", ASCENDING)], background=True
-    )
+    index_specs = [
+        ("source_snapshots", [("sourceId", ASCENDING), ("sha256", ASCENDING)], {"unique": True, "name": "source_snapshots_id_sha_unique"}),
+        ("areas", [("areaId", ASCENDING)], {"unique": True, "name": "areas_areaId_unique"}),
+        ("dengue_weekly", [("areaId", ASCENDING), ("weekStart", ASCENDING), ("revision", ASCENDING)], {"unique": True}),
+        ("dengue_weekly", [("areaId", ASCENDING), ("weekStart", ASCENDING)], {}),
+        ("weather_weekly", [("areaId", ASCENDING), ("weekStart", ASCENDING), ("provider", ASCENDING)], {"unique": True}),
+        ("feature_snapshots", [("areaId", ASCENDING), ("issueDate", ASCENDING), ("featureSetVersion", ASCENDING)], {"unique": True}),
+        ("model_runs", [("modelVersion", ASCENDING)], {"unique": True, "name": "model_runs_version_unique"}),
+        ("predictions", [("areaId", ASCENDING), ("targetWeek", ASCENDING), ("modelVersion", ASCENDING), ("issueDate", ASCENDING)], {"unique": True}),
+        ("predictions", [("issueDate", ASCENDING), ("areaId", ASCENDING)], {}),
+    ]
+
+    for col_name, keys, options in index_specs:
+        try:
+            opts = dict(background=True, **options)
+            db[col_name].create_index(keys, **opts)
+        except OperationFailure as exc:
+            msg = str(exc)
+            if "already exists" in msg or "IndexOptionsConflict" in msg:
+                pass
+            else:
+                log.warning(f"Index creation warning for {col_name}: {exc}")
     log.info("MongoDB indexes ensured")

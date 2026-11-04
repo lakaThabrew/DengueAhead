@@ -28,11 +28,10 @@ def upsert_prediction(
     result = db["predictions"].update_one(
         {
             "areaId": prediction.areaId,
-            "targetWeek": prediction.targetWeek,
-            "modelVersion": prediction.modelVersion,
             "issueDate": prediction.issueDate,
+            "targetWeek": prediction.targetWeek,
         },
-        {"$setOnInsert": doc},
+        {"$set": doc},
         upsert=True,
     )
     return UpsertResult(
