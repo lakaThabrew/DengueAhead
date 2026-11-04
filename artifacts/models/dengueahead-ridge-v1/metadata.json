@@ -1,0 +1,58 @@
+{
+  "modelVersion": "dengueahead-ridge-v1",
+  "modelName": "RIDGE Hotspot Forecaster",
+  "trainedAt": "2026-11-04T18:11:43.131716+00:00",
+  "trainRange": {
+    "startWeek": "2020-01-06",
+    "endWeek": "2023-12-25"
+  },
+  "valRange": {
+    "startWeek": "2024-01-01",
+    "endWeek": "2024-06-24"
+  },
+  "testRange": {
+    "startWeek": "2024-07-01",
+    "endWeek": "2024-12-30"
+  },
+  "featureNames": [
+    "cases_lag_1",
+    "cases_lag_2",
+    "cases_lag_3",
+    "cases_lag_4",
+    "growth_1w",
+    "growth_4w",
+    "cases_diff_1w",
+    "cases_roll_mean_2w",
+    "cases_roll_mean_4w",
+    "cases_roll_mean_8w",
+    "cases_roll_std_4w",
+    "calendar_week",
+    "seasonal_historical_median",
+    "seasonal_ratio",
+    "rain_lag_1",
+    "rain_lag_2",
+    "rain_lag_3",
+    "temp_lag_1",
+    "temp_lag_2",
+    "temp_lag_3",
+    "humidity_lag_1"
+  ],
+  "metrics": {
+    "totalEvaluatedInstances": 650,
+    "mae": 9.76,
+    "precision": 0.0,
+    "recall": 1.0,
+    "topKRecall": 1.0,
+    "brierScore": null
+  },
+  "conformalDelta": 10.88,
+  "topFeatures": {
+    "seasonal_historical_median": 0.6513,
+    "cases_diff_1w": 0.1027,
+    "growth_1w": 0.082,
+    "cases_lag_2": 0.0284,
+    "cases_lag_3": 0.0277
+  },
+  "artifactSha256": "6c0b0d48b71d28e95ff2445f49fd5bb8dab3ae59175a8902cfd875bb7a87fa99",
+  "savedAt": "2026-11-04T18:11:43.140184+00:00"
+}
