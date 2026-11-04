@@ -24,6 +24,11 @@ class ParseError(Exception):
         self.raw_excerpt = raw_excerpt
 
 
+@dataclass(frozen=True)
+class AreaInfo:
+    area_id: str
+
+
 @dataclass
 class AreaMap:
     mappings: dict[str, str]
@@ -44,6 +49,11 @@ class AreaMap:
     @property
     def unmatched_names(self) -> list[str]:
         return list(self._unmatched_names)
+
+    @property
+    def areas(self) -> list[AreaInfo]:
+        unique_ids = sorted({v for v in self.mappings.values() if v.startswith("LK-")})
+        return [AreaInfo(area_id=aid) for aid in unique_ids]
 
 
 def load_area_map(path: Path) -> AreaMap:

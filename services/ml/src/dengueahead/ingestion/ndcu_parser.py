@@ -261,8 +261,15 @@ def _parse_pdf(
         str_row = [str(c or "").strip() for c in row]
         if len(str_row) <= max(district_col, cases_col):
             continue
-        raw_name = str_row[district_col]
-        if not raw_name or raw_name.lower() in ("total", "grand total"):
+        raw_name = str_row[district_col].strip()
+        cleaned_lower = raw_name.strip(" *:\t\r\n").lower()
+        if (
+            not cleaned_lower
+            or cleaned_lower in ("total", "grand total", "total*")
+            or cleaned_lower.startswith("total")
+            or "district" in cleaned_lower
+            or "rdhs" in cleaned_lower
+        ):
             continue
 
         area_id = resolve_area(raw_name, area_map)
