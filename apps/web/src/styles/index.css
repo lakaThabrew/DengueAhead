@@ -1,3 +1,6 @@
+/* Tailwind CSS v4 — imported via @tailwindcss/vite plugin */
+@import 'tailwindcss';
+
 :root {
   --color-primary: #2563eb;
   --color-primary-hover: #1d4ed8;

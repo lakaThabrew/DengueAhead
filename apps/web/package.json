@@ -12,9 +12,12 @@
   },
   "dependencies": {
     "@dengueahead/contracts": "*",
+    "@tailwindcss/vite": "^4.3.4",
     "lucide-react": "^0.441.0",
+    "motion": "^14.9.1",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^4.3.4"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",
