@@ -10,7 +10,7 @@ export const HealthResponseSchema = z.object({
   status: ServiceHealthStatusSchema,
   apiVersion: z.string().min(1),
   service: z.literal('dengueahead-api'),
-  timestamp: z.string().datetime()
+  timestamp: z.string().datetime({ offset: true })
 });
 export type HealthResponse = z.infer<typeof HealthResponseSchema>;
 
@@ -21,7 +21,7 @@ export const ReadinessComponentSchema = z.object({
 
 export const ReadinessResponseSchema = z.object({
   status: z.enum(['ok', 'error']),
-  timestamp: z.string().datetime(),
+  timestamp: z.string().datetime({ offset: true }),
   components: z.object({
     database: ReadinessComponentSchema
   })
@@ -49,7 +49,7 @@ export const MetaResponseSchema = z.object({
     .regex(/^\d{4}-\d{2}-\d{2}$/)
     .nullable(),
   activeModelVersion: z.string().nullable(),
-  lastUpdated: z.string().datetime().nullable(),
+  lastUpdated: z.string().datetime({ offset: true }).nullable(),
   sourceFreshnessStatus: z.enum(['CURRENT', 'STALE', 'UNAVAILABLE'])
 });
 export type MetaResponse = z.infer<typeof MetaResponseSchema>;
@@ -78,7 +78,7 @@ export const WeeklyObservationPointSchema = z.object({
   weekStart: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   weekEnd: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   cases: z.number().int().nonnegative().nullable(),
-  reportedAt: z.string().datetime().nullable().optional(),
+  reportedAt: z.string().datetime({ offset: true }).nullable().optional(),
   qualityFlags: z.array(z.string()).default([])
 });
 export type WeeklyObservationPoint = z.infer<typeof WeeklyObservationPointSchema>;

@@ -16,7 +16,7 @@ export const SourceSnapshotSchema = z.object({
   sourceId: z.string().min(1),
   sourceUrl: z.string().url(),
   observedPeriod: z.string().min(1),
-  retrievedAt: z.string().datetime(),
+  retrievedAt: z.string().datetime({ offset: true }),
   sha256: z.string().min(64).max(64),
   licenceStatus: LicenceStatusSchema,
   parserVersion: z.string().min(1),
@@ -33,7 +33,7 @@ export const DengueWeeklyObservationSchema = z.object({
   reportingYear: z.number().int().min(2000).max(2100),
   cases: z.number().int().nonnegative(),
   sourceSnapshotId: z.string().min(1),
-  reportedAt: z.string().datetime(),
+  reportedAt: z.string().datetime({ offset: true }),
   revision: z.number().int().nonnegative().default(0),
   qualityFlags: z.array(z.string()).default([])
 });
@@ -46,7 +46,7 @@ export const WeatherWeeklyObservationSchema = z.object({
   tempC: z.number().nullable(),
   humidityPct: z.number().min(0).max(100).nullable(),
   provider: z.string().min(1),
-  availableAt: z.string().datetime(),
+  availableAt: z.string().datetime({ offset: true }),
   qualityFlags: z.array(z.string()).default([])
 });
 export type WeatherWeeklyObservation = z.infer<typeof WeatherWeeklyObservationSchema>;

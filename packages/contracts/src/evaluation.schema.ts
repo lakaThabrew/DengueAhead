@@ -12,7 +12,10 @@ export type BaselineMetrics = z.infer<typeof BaselineMetricsSchema>;
 export const EvaluationMetricsSchema = z.object({
   modelVersion: z.string().min(1),
   modelName: z.string().min(1),
-  trainedAt: z.string().datetime(),
+  trainedAt: z.preprocess(
+    (val) => (val instanceof Date ? val.toISOString() : val),
+    z.string().datetime({ offset: true })
+  ),
   trainRange: z.object({
     startWeek: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     endWeek: z.string().regex(/^\d{4}-\d{2}-\d{2}$/)
