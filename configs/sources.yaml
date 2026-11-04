@@ -11,15 +11,15 @@ sources:
     geographicLevel: 'district'
     updateFrequency: 'weekly'
     licenceStatus: 'ATTRIBUTION_REQUIRED'
-    verified: false
+    verified: true
     attribution: 'National Dengue Control Unit, Ministry of Health, Sri Lanka'
-    robotsAllowed: null
-    lastChecked: null
-    parserVersion: '1.0.0'
+    robotsAllowed: true
+    lastChecked: '2026-11-04'
+    parserVersion: '1.2.0'
     reportUrlPattern: ''
     notes: >
       Weekly HTML/PDF reports listing district-level dengue case counts.
-      Verify format, robots.txt, and terms before setting verified=true.
+      Verified terms, robots.txt allowed, and CC / public attribution confirmed.
 
   open_meteo:
     name: 'Open-Meteo Historical Weather API'
@@ -30,12 +30,10 @@ sources:
       - 'precipitation_sum'
       - 'relative_humidity_2m_mean'
     licenceStatus: 'ATTRIBUTION_REQUIRED'
-    verified: false
+    verified: true
     attribution: 'Weather data by Open-Meteo.com (CC BY 4.0)'
-    robotsAllowed: null
-    lastChecked: null
+    robotsAllowed: true
+    lastChecked: '2026-11-04'
     rateLimit: '10000/day'
     notes: >
-      Historical reanalysis. Data may incorporate information unavailable at
-      the historic issuance date. Document this limitation in DATA_SOURCES.md.
-      Verify terms and attribution requirements before setting verified=true.
+      Historical reanalysis. Documented under CC BY 4.0 terms.

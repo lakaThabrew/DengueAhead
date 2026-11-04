@@ -82,6 +82,8 @@ mappings:
   'Amp': 'LK-52'
   'Ampara District': 'LK-52'
   'Amparai': 'LK-52'
+  'Kalmunai': 'LK-52'
+  'Kalmunai*': 'LK-52'
 
   'Trincomalee': 'LK-53'
   'Tri': 'LK-53'
@@ -113,6 +115,8 @@ mappings:
   'Moneragala': 'LK-82'
   'Mon': 'LK-82'
   'Moneragala District': 'LK-82'
+  'Monaragala': 'LK-82'
+  'Monaragala District': 'LK-82'
 
   # ── Sabaragamuwa Province ─────────────────────────────────────────────────────
   'Ratnapura': 'LK-91'
