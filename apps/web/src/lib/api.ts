@@ -45,19 +45,19 @@ export async function apiFetch<T>(
     }
 
     // If HTTP 503 Service/Database Unavailable and retries left, back off and retry
-    if (response.status === 503 && attempt < maxRetries) {
+    if (response && response.status === 503 && attempt < maxRetries) {
       const jitter = Math.random() * 50;
       const delay = initialDelay * Math.pow(2, attempt) + jitter;
       await new Promise((res) => setTimeout(res, delay));
       continue;
     }
 
-    if (!response.ok) {
+    if (!response || !response.ok) {
       return {
         ok: false,
         kind: 'http',
-        status: response.status,
-        message: `HTTP ${response.status}`
+        status: response?.status,
+        message: `HTTP ${response?.status ?? 'Error'}`
       };
     }
 
