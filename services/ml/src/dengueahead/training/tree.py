@@ -58,8 +58,13 @@ class HGBHotspotPipeline:
                 mask[j] = True
         return mask
 
-    def fit(self, X: np.ndarray, y: np.ndarray) -> HGBHotspotPipeline:
-        """Fit HistGradientBoosting regressor on (X, y).
+    def fit(
+        self,
+        X: np.ndarray,
+        y: np.ndarray,
+        sample_weight: np.ndarray | None = None,
+    ) -> HGBHotspotPipeline:
+        """Fit HistGradientBoosting regressor on (X, y) with optional sample_weight.
 
         Automatically drops constant or all-NaN feature columns so that
         sklearn's binning step never encounters a degenerate sliding window.
@@ -69,7 +74,7 @@ class HGBHotspotPipeline:
         self._active_col_mask = self._active_columns(X)
         if not self._active_col_mask.any():
             raise ValueError("All feature columns are constant or all-NaN; cannot fit HGB model")
-        self.regressor.fit(X[:, self._active_col_mask], y)
+        self.regressor.fit(X[:, self._active_col_mask], y, sample_weight=sample_weight)
         self.is_fitted = True
         return self
 

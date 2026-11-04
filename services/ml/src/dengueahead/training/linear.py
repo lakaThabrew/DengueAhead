@@ -39,11 +39,19 @@ class RidgeHotspotPipeline:
         )
         self.is_fitted = False
 
-    def fit(self, X: np.ndarray, y: np.ndarray) -> RidgeHotspotPipeline:
-        """Fit scaler and ridge regressor on training matrix (X, y)."""
+    def fit(
+        self,
+        X: np.ndarray,
+        y: np.ndarray,
+        sample_weight: np.ndarray | None = None,
+    ) -> RidgeHotspotPipeline:
+        """Fit scaler and ridge regressor on training matrix (X, y) with optional sample_weight."""
         if len(y) == 0:
             raise ValueError("Cannot fit Ridge model on empty training set")
-        self.pipeline.fit(X, y)
+        if sample_weight is not None:
+            self.pipeline.fit(X, y, regressor__sample_weight=sample_weight)
+        else:
+            self.pipeline.fit(X, y)
         self.is_fitted = True
         return self
 
