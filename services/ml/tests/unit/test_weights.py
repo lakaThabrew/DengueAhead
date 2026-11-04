@@ -1,11 +1,10 @@
 """Unit tests for sample recency and time-decay weighting (ML)."""
 
 import numpy as np
-import pytest
 
-from dengueahead.training.weights import compute_recency_weights
-from dengueahead.training.tree import HGBHotspotPipeline
 from dengueahead.training.linear import RidgeHotspotPipeline
+from dengueahead.training.tree import HGBHotspotPipeline
+from dengueahead.training.weights import compute_recency_weights
 
 
 def test_compute_recency_weights_empty():
@@ -46,13 +45,15 @@ def test_compute_recency_weights_decay():
 
 
 def test_hgb_fit_with_sample_weights():
-    X = np.array([
-        [10.0, 5.0, 1.0],
-        [20.0, 10.0, 2.0],
-        [30.0, 15.0, 3.0],
-        [40.0, 20.0, 4.0],
-        [50.0, 25.0, 5.0],
-    ])
+    X = np.array(
+        [
+            [10.0, 5.0, 1.0],
+            [20.0, 10.0, 2.0],
+            [30.0, 15.0, 3.0],
+            [40.0, 20.0, 4.0],
+            [50.0, 25.0, 5.0],
+        ]
+    )
     y = np.array([12.0, 22.0, 31.0, 42.0, 53.0])
     weights = np.array([0.2, 0.4, 0.6, 0.8, 1.0])
 
@@ -65,13 +66,15 @@ def test_hgb_fit_with_sample_weights():
 
 
 def test_ridge_fit_with_sample_weights():
-    X = np.array([
-        [10.0, 5.0],
-        [20.0, 10.0],
-        [30.0, 15.0],
-        [40.0, 20.0],
-        [50.0, 25.0],
-    ])
+    X = np.array(
+        [
+            [10.0, 5.0],
+            [20.0, 10.0],
+            [30.0, 15.0],
+            [40.0, 20.0],
+            [50.0, 25.0],
+        ]
+    )
     y = np.array([12.0, 22.0, 31.0, 42.0, 53.0])
     weights = np.array([0.2, 0.4, 0.6, 0.8, 1.0])
 
@@ -81,4 +84,3 @@ def test_ridge_fit_with_sample_weights():
     preds = m.predict_counts(X)
     assert len(preds) == len(y)
     assert np.all(preds >= 0.0)
-

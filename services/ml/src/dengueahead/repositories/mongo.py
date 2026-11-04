@@ -47,14 +47,43 @@ def ensure_indexes(db: Database) -> None:  # type: ignore[type-arg]
     from pymongo.errors import OperationFailure
 
     index_specs = [
-        ("source_snapshots", [("sourceId", ASCENDING), ("sha256", ASCENDING)], {"unique": True, "name": "source_snapshots_id_sha_unique"}),
+        (
+            "source_snapshots",
+            [("sourceId", ASCENDING), ("sha256", ASCENDING)],
+            {"unique": True, "name": "source_snapshots_id_sha_unique"},
+        ),
         ("areas", [("areaId", ASCENDING)], {"unique": True, "name": "areas_areaId_unique"}),
-        ("dengue_weekly", [("areaId", ASCENDING), ("weekStart", ASCENDING), ("revision", ASCENDING)], {"unique": True}),
+        (
+            "dengue_weekly",
+            [("areaId", ASCENDING), ("weekStart", ASCENDING), ("revision", ASCENDING)],
+            {"unique": True},
+        ),
         ("dengue_weekly", [("areaId", ASCENDING), ("weekStart", ASCENDING)], {}),
-        ("weather_weekly", [("areaId", ASCENDING), ("weekStart", ASCENDING), ("provider", ASCENDING)], {"unique": True}),
-        ("feature_snapshots", [("areaId", ASCENDING), ("issueDate", ASCENDING), ("featureSetVersion", ASCENDING)], {"unique": True}),
-        ("model_runs", [("modelVersion", ASCENDING)], {"unique": True, "name": "model_runs_version_unique"}),
-        ("predictions", [("areaId", ASCENDING), ("targetWeek", ASCENDING), ("modelVersion", ASCENDING), ("issueDate", ASCENDING)], {"unique": True}),
+        (
+            "weather_weekly",
+            [("areaId", ASCENDING), ("weekStart", ASCENDING), ("provider", ASCENDING)],
+            {"unique": True},
+        ),
+        (
+            "feature_snapshots",
+            [("areaId", ASCENDING), ("issueDate", ASCENDING), ("featureSetVersion", ASCENDING)],
+            {"unique": True},
+        ),
+        (
+            "model_runs",
+            [("modelVersion", ASCENDING)],
+            {"unique": True, "name": "model_runs_version_unique"},
+        ),
+        (
+            "predictions",
+            [
+                ("areaId", ASCENDING),
+                ("targetWeek", ASCENDING),
+                ("modelVersion", ASCENDING),
+                ("issueDate", ASCENDING),
+            ],
+            {"unique": True},
+        ),
         ("predictions", [("issueDate", ASCENDING), ("areaId", ASCENDING)], {}),
     ]
 

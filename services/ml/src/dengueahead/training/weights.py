@@ -49,4 +49,3 @@ def compute_recency_weights(
             weights.append(float(np.clip(w, min_weight, 1.0)))
 
     return np.array(weights, dtype=float)
-
