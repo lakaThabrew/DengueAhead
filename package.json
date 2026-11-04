@@ -20,6 +20,7 @@
     "test:integration": "npm run build:contracts && npm run test:integration --workspaces --if-present",
     "test:e2e": "playwright test",
     "test:py": "python -m pytest services/ml/tests",
+    "seed": "npm run seed -w @dengueahead/api",
     "dev": "concurrently -n api,web \"npm run dev:api\" \"npm run dev:web\"",
     "dev:api": "npm run dev -w @dengueahead/api",
     "dev:web": "npm run dev -w @dengueahead/web"
@@ -34,5 +35,10 @@
     "prettier": "^3.3.0",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.0.0"
+  },
+  "dependencies": {
+    "@types/leaflet": "^1.9.22",
+    "leaflet": "^1.9.4",
+    "react-leaflet": "^4.2.1"
   }
 }
