@@ -29,47 +29,247 @@ import { createMongoClient } from './repositories/mongo.js';
 // ── 1. ALL 25 SRI LANKA DISTRICTS ───────────────────────────────────────────
 export const DISTRICTS = [
   // Western Province
-  { areaId: 'LK-11', name: 'Colombo', level: 'district' as const, parentAreaId: 'LK-1', centroid: { latitude: 6.9271, longitude: 79.8612 }, population: 2326000, populationYear: 2021 },
-  { areaId: 'LK-12', name: 'Gampaha', level: 'district' as const, parentAreaId: 'LK-1', centroid: { latitude: 7.0837, longitude: 80.0144 }, population: 2304000, populationYear: 2021 },
-  { areaId: 'LK-13', name: 'Kalutara', level: 'district' as const, parentAreaId: 'LK-1', centroid: { latitude: 6.5854, longitude: 80.1954 }, population: 1221948, populationYear: 2021 },
+  {
+    areaId: 'LK-11',
+    name: 'Colombo',
+    level: 'district' as const,
+    parentAreaId: 'LK-1',
+    centroid: { latitude: 6.9271, longitude: 79.8612 },
+    population: 2326000,
+    populationYear: 2021
+  },
+  {
+    areaId: 'LK-12',
+    name: 'Gampaha',
+    level: 'district' as const,
+    parentAreaId: 'LK-1',
+    centroid: { latitude: 7.0837, longitude: 80.0144 },
+    population: 2304000,
+    populationYear: 2021
+  },
+  {
+    areaId: 'LK-13',
+    name: 'Kalutara',
+    level: 'district' as const,
+    parentAreaId: 'LK-1',
+    centroid: { latitude: 6.5854, longitude: 80.1954 },
+    population: 1221948,
+    populationYear: 2021
+  },
 
   // Central Province
-  { areaId: 'LK-21', name: 'Kandy', level: 'district' as const, parentAreaId: 'LK-2', centroid: { latitude: 7.2906, longitude: 80.6337 }, population: 1375382, populationYear: 2021 },
-  { areaId: 'LK-22', name: 'Matale', level: 'district' as const, parentAreaId: 'LK-2', centroid: { latitude: 7.4675, longitude: 80.6234 }, population: 484531, populationYear: 2021 },
-  { areaId: 'LK-23', name: 'Nuwara Eliya', level: 'district' as const, parentAreaId: 'LK-2', centroid: { latitude: 6.9497, longitude: 80.7891 }, population: 706588, populationYear: 2021 },
+  {
+    areaId: 'LK-21',
+    name: 'Kandy',
+    level: 'district' as const,
+    parentAreaId: 'LK-2',
+    centroid: { latitude: 7.2906, longitude: 80.6337 },
+    population: 1375382,
+    populationYear: 2021
+  },
+  {
+    areaId: 'LK-22',
+    name: 'Matale',
+    level: 'district' as const,
+    parentAreaId: 'LK-2',
+    centroid: { latitude: 7.4675, longitude: 80.6234 },
+    population: 484531,
+    populationYear: 2021
+  },
+  {
+    areaId: 'LK-23',
+    name: 'Nuwara Eliya',
+    level: 'district' as const,
+    parentAreaId: 'LK-2',
+    centroid: { latitude: 6.9497, longitude: 80.7891 },
+    population: 706588,
+    populationYear: 2021
+  },
 
   // Southern Province
-  { areaId: 'LK-31', name: 'Galle', level: 'district' as const, parentAreaId: 'LK-3', centroid: { latitude: 6.0535, longitude: 80.2210 }, population: 1063334, populationYear: 2021 },
-  { areaId: 'LK-32', name: 'Matara', level: 'district' as const, parentAreaId: 'LK-3', centroid: { latitude: 5.9549, longitude: 80.5550 }, population: 814048, populationYear: 2021 },
-  { areaId: 'LK-33', name: 'Hambantota', level: 'district' as const, parentAreaId: 'LK-3', centroid: { latitude: 6.1429, longitude: 81.1212 }, population: 599903, populationYear: 2021 },
+  {
+    areaId: 'LK-31',
+    name: 'Galle',
+    level: 'district' as const,
+    parentAreaId: 'LK-3',
+    centroid: { latitude: 6.0535, longitude: 80.221 },
+    population: 1063334,
+    populationYear: 2021
+  },
+  {
+    areaId: 'LK-32',
+    name: 'Matara',
+    level: 'district' as const,
+    parentAreaId: 'LK-3',
+    centroid: { latitude: 5.9549, longitude: 80.555 },
+    population: 814048,
+    populationYear: 2021
+  },
+  {
+    areaId: 'LK-33',
+    name: 'Hambantota',
+    level: 'district' as const,
+    parentAreaId: 'LK-3',
+    centroid: { latitude: 6.1429, longitude: 81.1212 },
+    population: 599903,
+    populationYear: 2021
+  },
 
   // Northern Province
-  { areaId: 'LK-41', name: 'Jaffna', level: 'district' as const, parentAreaId: 'LK-4', centroid: { latitude: 9.6615, longitude: 80.0255 }, population: 583882, populationYear: 2021 },
-  { areaId: 'LK-42', name: 'Kilinochchi', level: 'district' as const, parentAreaId: 'LK-4', centroid: { latitude: 9.3803, longitude: 80.4037 }, population: 113510, populationYear: 2021 },
-  { areaId: 'LK-43', name: 'Mannar', level: 'district' as const, parentAreaId: 'LK-4', centroid: { latitude: 8.9810, longitude: 79.9044 }, population: 99570, populationYear: 2021 },
-  { areaId: 'LK-44', name: 'Vavuniya', level: 'district' as const, parentAreaId: 'LK-4', centroid: { latitude: 8.7514, longitude: 80.4979 }, population: 172115, populationYear: 2021 },
-  { areaId: 'LK-45', name: 'Mullaitivu', level: 'district' as const, parentAreaId: 'LK-4', centroid: { latitude: 9.2671, longitude: 80.8122 }, population: 92238, populationYear: 2021 },
+  {
+    areaId: 'LK-41',
+    name: 'Jaffna',
+    level: 'district' as const,
+    parentAreaId: 'LK-4',
+    centroid: { latitude: 9.6615, longitude: 80.0255 },
+    population: 583882,
+    populationYear: 2021
+  },
+  {
+    areaId: 'LK-42',
+    name: 'Kilinochchi',
+    level: 'district' as const,
+    parentAreaId: 'LK-4',
+    centroid: { latitude: 9.3803, longitude: 80.4037 },
+    population: 113510,
+    populationYear: 2021
+  },
+  {
+    areaId: 'LK-43',
+    name: 'Mannar',
+    level: 'district' as const,
+    parentAreaId: 'LK-4',
+    centroid: { latitude: 8.981, longitude: 79.9044 },
+    population: 99570,
+    populationYear: 2021
+  },
+  {
+    areaId: 'LK-44',
+    name: 'Vavuniya',
+    level: 'district' as const,
+    parentAreaId: 'LK-4',
+    centroid: { latitude: 8.7514, longitude: 80.4979 },
+    population: 172115,
+    populationYear: 2021
+  },
+  {
+    areaId: 'LK-45',
+    name: 'Mullaitivu',
+    level: 'district' as const,
+    parentAreaId: 'LK-4',
+    centroid: { latitude: 9.2671, longitude: 80.8122 },
+    population: 92238,
+    populationYear: 2021
+  },
 
   // Eastern Province
-  { areaId: 'LK-51', name: 'Batticaloa', level: 'district' as const, parentAreaId: 'LK-5', centroid: { latitude: 7.7170, longitude: 81.7003 }, population: 526567, populationYear: 2021 },
-  { areaId: 'LK-52', name: 'Ampara', level: 'district' as const, parentAreaId: 'LK-5', centroid: { latitude: 7.2964, longitude: 81.6747 }, population: 649402, populationYear: 2021 },
-  { areaId: 'LK-53', name: 'Trincomalee', level: 'district' as const, parentAreaId: 'LK-5', centroid: { latitude: 8.5874, longitude: 81.2152 }, population: 379541, populationYear: 2021 },
+  {
+    areaId: 'LK-51',
+    name: 'Batticaloa',
+    level: 'district' as const,
+    parentAreaId: 'LK-5',
+    centroid: { latitude: 7.717, longitude: 81.7003 },
+    population: 526567,
+    populationYear: 2021
+  },
+  {
+    areaId: 'LK-52',
+    name: 'Ampara',
+    level: 'district' as const,
+    parentAreaId: 'LK-5',
+    centroid: { latitude: 7.2964, longitude: 81.6747 },
+    population: 649402,
+    populationYear: 2021
+  },
+  {
+    areaId: 'LK-53',
+    name: 'Trincomalee',
+    level: 'district' as const,
+    parentAreaId: 'LK-5',
+    centroid: { latitude: 8.5874, longitude: 81.2152 },
+    population: 379541,
+    populationYear: 2021
+  },
 
   // North Western Province
-  { areaId: 'LK-61', name: 'Kurunegala', level: 'district' as const, parentAreaId: 'LK-6', centroid: { latitude: 7.4867, longitude: 80.3647 }, population: 1618465, populationYear: 2021 },
-  { areaId: 'LK-62', name: 'Puttalam', level: 'district' as const, parentAreaId: 'LK-6', centroid: { latitude: 8.0362, longitude: 79.8283 }, population: 762396, populationYear: 2021 },
+  {
+    areaId: 'LK-61',
+    name: 'Kurunegala',
+    level: 'district' as const,
+    parentAreaId: 'LK-6',
+    centroid: { latitude: 7.4867, longitude: 80.3647 },
+    population: 1618465,
+    populationYear: 2021
+  },
+  {
+    areaId: 'LK-62',
+    name: 'Puttalam',
+    level: 'district' as const,
+    parentAreaId: 'LK-6',
+    centroid: { latitude: 8.0362, longitude: 79.8283 },
+    population: 762396,
+    populationYear: 2021
+  },
 
   // North Central Province
-  { areaId: 'LK-71', name: 'Anuradhapura', level: 'district' as const, parentAreaId: 'LK-7', centroid: { latitude: 8.3114, longitude: 80.4037 }, population: 860575, populationYear: 2021 },
-  { areaId: 'LK-72', name: 'Polonnaruwa', level: 'district' as const, parentAreaId: 'LK-7', centroid: { latitude: 7.9403, longitude: 81.0188 }, population: 406088, populationYear: 2021 },
+  {
+    areaId: 'LK-71',
+    name: 'Anuradhapura',
+    level: 'district' as const,
+    parentAreaId: 'LK-7',
+    centroid: { latitude: 8.3114, longitude: 80.4037 },
+    population: 860575,
+    populationYear: 2021
+  },
+  {
+    areaId: 'LK-72',
+    name: 'Polonnaruwa',
+    level: 'district' as const,
+    parentAreaId: 'LK-7',
+    centroid: { latitude: 7.9403, longitude: 81.0188 },
+    population: 406088,
+    populationYear: 2021
+  },
 
   // Uva Province
-  { areaId: 'LK-81', name: 'Badulla', level: 'district' as const, parentAreaId: 'LK-8', centroid: { latitude: 6.9934, longitude: 81.0550 }, population: 815405, populationYear: 2021 },
-  { areaId: 'LK-82', name: 'Monaragala', level: 'district' as const, parentAreaId: 'LK-8', centroid: { latitude: 6.8728, longitude: 81.3507 }, population: 451058, populationYear: 2021 },
+  {
+    areaId: 'LK-81',
+    name: 'Badulla',
+    level: 'district' as const,
+    parentAreaId: 'LK-8',
+    centroid: { latitude: 6.9934, longitude: 81.055 },
+    population: 815405,
+    populationYear: 2021
+  },
+  {
+    areaId: 'LK-82',
+    name: 'Monaragala',
+    level: 'district' as const,
+    parentAreaId: 'LK-8',
+    centroid: { latitude: 6.8728, longitude: 81.3507 },
+    population: 451058,
+    populationYear: 2021
+  },
 
   // Sabaragamuwa Province
-  { areaId: 'LK-91', name: 'Ratnapura', level: 'district' as const, parentAreaId: 'LK-9', centroid: { latitude: 6.6828, longitude: 80.3992 }, population: 1088007, populationYear: 2021 },
-  { areaId: 'LK-92', name: 'Kegalle', level: 'district' as const, parentAreaId: 'LK-9', centroid: { latitude: 7.2513, longitude: 80.3464 }, population: 840648, populationYear: 2021 }
+  {
+    areaId: 'LK-91',
+    name: 'Ratnapura',
+    level: 'district' as const,
+    parentAreaId: 'LK-9',
+    centroid: { latitude: 6.6828, longitude: 80.3992 },
+    population: 1088007,
+    populationYear: 2021
+  },
+  {
+    areaId: 'LK-92',
+    name: 'Kegalle',
+    level: 'district' as const,
+    parentAreaId: 'LK-9',
+    centroid: { latitude: 7.2513, longitude: 80.3464 },
+    population: 840648,
+    populationYear: 2021
+  }
 ];
 
 // ── 2. OFFICIAL DATA SOURCE SNAPSHOTS ───────────────────────────────────────
@@ -166,7 +366,8 @@ export const MODEL_RUNS = [
         recall: 0.641
       }
     ],
-    notes: 'Primary 2026 production candidate trained on multi-year NDCU surveillance tables and ERA5 reanalysis.'
+    notes:
+      'Primary 2026 production candidate trained on multi-year NDCU surveillance tables and ERA5 reanalysis.'
   },
   {
     modelVersion: 'dengueahead-hgb-v1',
@@ -261,7 +462,7 @@ function getSeasonalEpidemicMultiplier(week: number, year: number, status: strin
   if (year === 2023) yearWave = 1.18;
   else if (year === 2024) yearWave = 0.94;
   else if (year === 2025) yearWave = 1.02;
-  else if (year === 2026) yearWave = 1.10;
+  else if (year === 2026) yearWave = 1.1;
 
   let momentum = 1.0;
   if (year === 2026 && week >= 37) {
@@ -281,7 +482,9 @@ function getSeasonalWeather(week: number) {
   if (isSouthwestMonsoon) rain += 45 + Math.random() * 30;
   if (isNortheastMonsoon) rain += 55 + Math.random() * 35;
 
-  const temp = parseFloat((27.2 + Math.sin((week / 52) * Math.PI * 2) * 1.6 + (Math.random() * 0.8)).toFixed(1));
+  const temp = parseFloat(
+    (27.2 + Math.sin((week / 52) * Math.PI * 2) * 1.6 + Math.random() * 0.8).toFixed(1)
+  );
   const humidity = parseFloat((70 + (rain > 40 ? 15 : 5) + Math.random() * 5).toFixed(1));
 
   return {
@@ -294,34 +497,37 @@ function getSeasonalWeather(week: number) {
 // Base typical weekly case incidence scale by district
 const DISTRICT_BASE_CASES: Record<string, number> = {
   'LK-11': 158, // Colombo
-  'LK-12': 98,  // Gampaha
-  'LK-13': 42,  // Kalutara
-  'LK-21': 56,  // Kandy
-  'LK-22': 22,  // Matale
-  'LK-23': 12,  // Nuwara Eliya
-  'LK-31': 52,  // Galle
-  'LK-32': 34,  // Matara
-  'LK-33': 18,  // Hambantota
-  'LK-41': 28,  // Jaffna
-  'LK-42': 8,   // Kilinochchi
-  'LK-43': 6,   // Mannar
-  'LK-44': 14,  // Vavuniya
-  'LK-45': 5,   // Mullaitivu
-  'LK-51': 36,  // Batticaloa
-  'LK-52': 20,  // Ampara
-  'LK-53': 16,  // Trincomalee
-  'LK-61': 54,  // Kurunegala
-  'LK-62': 26,  // Puttalam
-  'LK-71': 24,  // Anuradhapura
-  'LK-72': 15,  // Polonnaruwa
-  'LK-81': 30,  // Badulla
-  'LK-82': 14,  // Monaragala
-  'LK-91': 44,  // Ratnapura
-  'LK-92': 38   // Kegalle
+  'LK-12': 98, // Gampaha
+  'LK-13': 42, // Kalutara
+  'LK-21': 56, // Kandy
+  'LK-22': 22, // Matale
+  'LK-23': 12, // Nuwara Eliya
+  'LK-31': 52, // Galle
+  'LK-32': 34, // Matara
+  'LK-33': 18, // Hambantota
+  'LK-41': 28, // Jaffna
+  'LK-42': 8, // Kilinochchi
+  'LK-43': 6, // Mannar
+  'LK-44': 14, // Vavuniya
+  'LK-45': 5, // Mullaitivu
+  'LK-51': 36, // Batticaloa
+  'LK-52': 20, // Ampara
+  'LK-53': 16, // Trincomalee
+  'LK-61': 54, // Kurunegala
+  'LK-62': 26, // Puttalam
+  'LK-71': 24, // Anuradhapura
+  'LK-72': 15, // Polonnaruwa
+  'LK-81': 30, // Badulla
+  'LK-82': 14, // Monaragala
+  'LK-91': 44, // Ratnapura
+  'LK-92': 38 // Kegalle
 };
 
 // District status classification for active surveillance
-const DISTRICT_STATUS: Record<string, 'EMERGING' | 'PERSISTENT' | 'COOLING' | 'STABLE' | 'WITHHELD'> = {
+const DISTRICT_STATUS: Record<
+  string,
+  'EMERGING' | 'PERSISTENT' | 'COOLING' | 'STABLE' | 'WITHHELD'
+> = {
   'LK-11': 'EMERGING',
   'LK-12': 'PERSISTENT',
   'LK-13': 'EMERGING',
@@ -365,26 +571,26 @@ export async function seedDatabase(clientUri?: string) {
   console.log('[Seed] Seeding 25 Sri Lanka administrative districts...');
   for (const district of DISTRICTS) {
     const validated = AreaSchema.parse(district);
-    await db.collection('areas').replaceOne(
-      { areaId: validated.areaId },
-      validated,
-      { upsert: true }
-    );
+    await db
+      .collection('areas')
+      .replaceOne({ areaId: validated.areaId }, validated, { upsert: true });
   }
 
   // ── B. SEED SOURCE SNAPSHOTS ───────────────────────────────────────────────
   console.log('[Seed] Seeding official source snapshots (2026 & 2024)...');
   for (const snapshot of SNAPSHOTS) {
     const validated = SourceSnapshotSchema.parse(snapshot);
-    await db.collection('source_snapshots').replaceOne(
-      { sourceId: validated.sourceId, sha256: validated.sha256 },
-      validated,
-      { upsert: true }
-    );
+    await db
+      .collection('source_snapshots')
+      .replaceOne({ sourceId: validated.sourceId, sha256: validated.sha256 }, validated, {
+        upsert: true
+      });
   }
 
   // ── C. SEED DENGUE WEEKLY OBSERVATIONS (2023-2026 MULTI-YEAR) ─────────────
-  console.log(`[Seed] Seeding multi-year surveillance across all 25 districts (${ALL_SURVEILLANCE_WEEKS.length} weeks, 2023–2026)...`);
+  console.log(
+    `[Seed] Seeding multi-year surveillance across all 25 districts (${ALL_SURVEILLANCE_WEEKS.length} weeks, 2023–2026)...`
+  );
   const dengueOps: any[] = [];
   for (const district of DISTRICTS) {
     const base = DISTRICT_BASE_CASES[district.areaId] ?? 20;
@@ -422,7 +628,9 @@ export async function seedDatabase(clientUri?: string) {
   }
 
   // ── D. SEED WEATHER WEEKLY REANALYSIS (2023-2026 MULTI-YEAR) ──────────────
-  console.log('[Seed] Seeding multi-year climate reanalysis (temperature, precipitation, humidity)...');
+  console.log(
+    '[Seed] Seeding multi-year climate reanalysis (temperature, precipitation, humidity)...'
+  );
   const weatherOps: any[] = [];
   for (const district of DISTRICTS) {
     for (const wk of ALL_SURVEILLANCE_WEEKS) {
@@ -449,22 +657,24 @@ export async function seedDatabase(clientUri?: string) {
   }
 
   for (let i = 0; i < weatherOps.length; i += 500) {
-    await db.collection('weather_weekly').bulkWrite(weatherOps.slice(i, i + 500), { ordered: false });
+    await db
+      .collection('weather_weekly')
+      .bulkWrite(weatherOps.slice(i, i + 500), { ordered: false });
   }
 
   // ── E. SEED MODEL RUNS ────────────────────────────────────────────────────
   console.log('[Seed] Seeding model evaluation and baseline benchmark runs...');
   for (const run of MODEL_RUNS) {
     const validated = EvaluationMetricsSchema.parse(run);
-    await db.collection('model_runs').replaceOne(
-      { modelVersion: validated.modelVersion },
-      validated,
-      { upsert: true }
-    );
+    await db
+      .collection('model_runs')
+      .replaceOne({ modelVersion: validated.modelVersion }, validated, { upsert: true });
   }
 
   // ── F. SEED 25 DISTRICT PREDICTIONS (2026-11-02 ACTIVE & 2024-12-30 HISTORICAL) ──
-  console.log('[Seed] Seeding calibrated 7-day hotspot predictions across all 25 districts (2026 & 2024)...');
+  console.log(
+    '[Seed] Seeding calibrated 7-day hotspot predictions across all 25 districts (2026 & 2024)...'
+  );
 
   const predictionRounds = [
     {
@@ -512,10 +722,10 @@ export async function seedDatabase(clientUri?: string) {
           ptForecast = Math.round(base * 1.35);
           riskProb = 0.82;
         } else if (status === 'PERSISTENT') {
-          ptForecast = Math.round(base * 1.20);
+          ptForecast = Math.round(base * 1.2);
           riskProb = 0.74;
         } else if (status === 'COOLING') {
-          ptForecast = Math.round(base * 0.80);
+          ptForecast = Math.round(base * 0.8);
           riskProb = 0.32;
         } else {
           ptForecast = Math.round(base * 0.95);
@@ -547,7 +757,11 @@ export async function seedDatabase(clientUri?: string) {
 
       const validated = PredictionSchema.parse(predDoc);
       await db.collection('predictions').replaceOne(
-        { areaId: validated.areaId, issueDate: validated.issueDate, targetWeek: validated.targetWeek },
+        {
+          areaId: validated.areaId,
+          issueDate: validated.issueDate,
+          targetWeek: validated.targetWeek
+        },
         validated,
         { upsert: true }
       );
@@ -559,27 +773,45 @@ export async function seedDatabase(clientUri?: string) {
   const featureDriversMap: Record<string, unknown> = {
     'LK-11': {
       areaId: 'LK-11',
-      features: { seasonal_historical_median: 110.0, cases_lag_1: 154, cases_lag_2: 142, precip_lag_2: 68.4, growth_1w: 0.18 }
+      features: {
+        seasonal_historical_median: 110.0,
+        cases_lag_1: 154,
+        cases_lag_2: 142,
+        precip_lag_2: 68.4,
+        growth_1w: 0.18
+      }
     },
     'LK-12': {
       areaId: 'LK-12',
-      features: { seasonal_historical_median: 75.0, cases_lag_1: 96, cases_lag_2: 92, precip_lag_2: 54.0, growth_1w: 0.05 }
+      features: {
+        seasonal_historical_median: 75.0,
+        cases_lag_1: 96,
+        cases_lag_2: 92,
+        precip_lag_2: 54.0,
+        growth_1w: 0.05
+      }
     },
     'LK-21': {
       areaId: 'LK-21',
-      features: { seasonal_historical_median: 48.0, cases_lag_1: 42, cases_lag_2: 50, precip_lag_2: 32.1, growth_1w: -0.16 }
+      features: {
+        seasonal_historical_median: 48.0,
+        cases_lag_1: 42,
+        cases_lag_2: 50,
+        precip_lag_2: 32.1,
+        growth_1w: -0.16
+      }
     }
   };
 
   for (const [areaId, data] of Object.entries(featureDriversMap)) {
-    await db.collection('feature_snapshots').replaceOne(
-      { areaId },
-      data as Record<string, unknown>,
-      { upsert: true }
-    );
+    await db
+      .collection('feature_snapshots')
+      .replaceOne({ areaId }, data as Record<string, unknown>, { upsert: true });
   }
 
-  console.log('[Seed] Database seed completed successfully! Active 2026 & historical 2024 surveillance inserted.');
+  console.log(
+    '[Seed] Database seed completed successfully! Active 2026 & historical 2024 surveillance inserted.'
+  );
   await client.close();
   await appDbClient.close();
 }

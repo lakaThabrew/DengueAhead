@@ -72,7 +72,8 @@ export const ComparePage: React.FC = () => {
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(180deg, rgba(6, 11, 24, 0.15) 0%, rgba(6, 11, 24, 0.9) 100%)',
+            background:
+              'linear-gradient(180deg, rgba(6, 11, 24, 0.15) 0%, rgba(6, 11, 24, 0.9) 100%)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'flex-end',
@@ -80,8 +81,23 @@ export const ComparePage: React.FC = () => {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#818cf8' }} />
-            <span style={{ fontSize: '11px', fontWeight: 700, color: '#a5b4fc', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            <span
+              style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                backgroundColor: '#818cf8'
+              }}
+            />
+            <span
+              style={{
+                fontSize: '11px',
+                fontWeight: 700,
+                color: '#a5b4fc',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em'
+              }}
+            >
               Side-by-Side Trajectory &bull; Baseline Comparison &bull; Max 3 Units
             </span>
           </div>
@@ -399,24 +415,23 @@ export const ComparePage: React.FC = () => {
                               deltaPct > 0
                                 ? 'rgba(244, 63, 94, 0.15)'
                                 : deltaPct < 0
-                                ? 'rgba(16, 185, 129, 0.15)'
-                                : 'rgba(56, 189, 248, 0.15)',
-                            color:
-                              deltaPct > 0
-                                ? '#fb7185'
-                                : deltaPct < 0
-                                ? '#34d399'
-                                : '#38bdf8',
+                                  ? 'rgba(16, 185, 129, 0.15)'
+                                  : 'rgba(56, 189, 248, 0.15)',
+                            color: deltaPct > 0 ? '#fb7185' : deltaPct < 0 ? '#34d399' : '#38bdf8',
                             border: `1px solid ${
                               deltaPct > 0
                                 ? 'rgba(244, 63, 94, 0.3)'
                                 : deltaPct < 0
-                                ? 'rgba(16, 185, 129, 0.3)'
-                                : 'rgba(56, 189, 248, 0.3)'
+                                  ? 'rgba(16, 185, 129, 0.3)'
+                                  : 'rgba(56, 189, 248, 0.3)'
                             }`
                           }}
                         >
-                          {deltaPct > 0 ? `+${deltaPct}% Surge` : deltaPct < 0 ? `${deltaPct}% Drop` : 'Stable'}
+                          {deltaPct > 0
+                            ? `+${deltaPct}% Surge`
+                            : deltaPct < 0
+                              ? `${deltaPct}% Drop`
+                              : 'Stable'}
                         </span>
                       </div>
 
@@ -435,7 +450,10 @@ export const ComparePage: React.FC = () => {
                       >
                         {last4.map((pt, idx) => {
                           const cases = pt.cases ?? 0;
-                          const heightPct = Math.min(100, Math.max(14, (cases / maxCasesInTrend) * 100));
+                          const heightPct = Math.min(
+                            100,
+                            Math.max(14, (cases / maxCasesInTrend) * 100)
+                          );
                           const isLatest = idx === last4.length - 1;
                           return (
                             <div

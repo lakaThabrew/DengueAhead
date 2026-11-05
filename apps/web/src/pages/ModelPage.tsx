@@ -184,7 +184,8 @@ export const ModelPage: React.FC = () => {
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(180deg, rgba(6, 11, 24, 0.25) 0%, rgba(6, 11, 24, 0.92) 100%)',
+            background:
+              'linear-gradient(180deg, rgba(6, 11, 24, 0.25) 0%, rgba(6, 11, 24, 0.92) 100%)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'flex-end',
@@ -192,8 +193,23 @@ export const ModelPage: React.FC = () => {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#38bdf8' }} />
-            <span style={{ fontSize: '11px', fontWeight: 700, color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            <span
+              style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                backgroundColor: '#38bdf8'
+              }}
+            />
+            <span
+              style={{
+                fontSize: '11px',
+                fontWeight: 700,
+                color: '#38bdf8',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em'
+              }}
+            >
               Gradient Boosted Regressor &bull; Split Conformal Bounds &bull; Platt Scaling
             </span>
           </div>
@@ -201,7 +217,8 @@ export const ModelPage: React.FC = () => {
             Production Model Card: dengueahead-hgb-v1
           </h2>
           <p style={{ fontSize: '13px', color: '#94a3b8', margin: 0, maxWidth: '640px' }}>
-            Calibrated multi-step transmission predictions benchmarked against Naive persistence and rolling seasonal baselines across 25 administrative units.
+            Calibrated multi-step transmission predictions benchmarked against Naive persistence and
+            rolling seasonal baselines across 25 administrative units.
           </p>
         </div>
       </div>
@@ -391,7 +408,8 @@ export const ModelPage: React.FC = () => {
       <div
         style={{
           backgroundColor: '#070E22',
-          backgroundImage: 'radial-gradient(ellipse at 50% 0%, rgba(56, 189, 248, 0.08) 0%, #070E22 80%)',
+          backgroundImage:
+            'radial-gradient(ellipse at 50% 0%, rgba(56, 189, 248, 0.08) 0%, #070E22 80%)',
           borderRadius: '18px',
           border: '1px solid rgba(56, 189, 248, 0.22)',
           padding: '24px 28px',
@@ -408,12 +426,22 @@ export const ModelPage: React.FC = () => {
             left: 0,
             right: 0,
             height: '2px',
-            background: 'linear-gradient(90deg, transparent 0%, #38BDF8 30%, #818CF8 70%, transparent 100%)',
+            background:
+              'linear-gradient(90deg, transparent 0%, #38BDF8 30%, #818CF8 70%, transparent 100%)',
             opacity: 0.85
           }}
         />
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px', marginBottom: '16px' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            flexWrap: 'wrap',
+            gap: '12px',
+            marginBottom: '16px'
+          }}
+        >
           <div>
             <h2
               style={{
@@ -427,26 +455,67 @@ export const ModelPage: React.FC = () => {
               Global Permutation Feature Importance
             </h2>
             <p style={{ fontSize: '13px', color: '#94A3B8', margin: '4px 0 0 0' }}>
-              Normalized mean loss degradation under out-of-fold feature permutation across 21 engineered covariates.
+              Normalized mean loss degradation under out-of-fold feature permutation across 21
+              engineered covariates.
             </p>
           </div>
 
           {/* Category Legend Pills */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', fontSize: '11px', color: '#94A3B8' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '10px',
+              fontSize: '11px',
+              color: '#94A3B8'
+            }}
+          >
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#38BDF8', boxShadow: '0 0 6px #38BDF8' }} />
+              <span
+                style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  backgroundColor: '#38BDF8',
+                  boxShadow: '0 0 6px #38BDF8'
+                }}
+              />
               <span>Autoregressive</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#60A5FA', boxShadow: '0 0 6px #60A5FA' }} />
+              <span
+                style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  backgroundColor: '#60A5FA',
+                  boxShadow: '0 0 6px #60A5FA'
+                }}
+              />
               <span>Precipitation</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#F59E0B', boxShadow: '0 0 6px #F59E0B' }} />
+              <span
+                style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  backgroundColor: '#F59E0B',
+                  boxShadow: '0 0 6px #F59E0B'
+                }}
+              />
               <span>Biometeorology</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#C084FC', boxShadow: '0 0 6px #C084FC' }} />
+              <span
+                style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  backgroundColor: '#C084FC',
+                  boxShadow: '0 0 6px #C084FC'
+                }}
+              />
               <span>Seasonality</span>
             </div>
           </div>
@@ -483,26 +552,26 @@ export const ModelPage: React.FC = () => {
                       idx === 0
                         ? 'rgba(245, 158, 11, 0.2)'
                         : idx === 1
-                        ? 'rgba(56, 189, 248, 0.2)'
-                        : idx === 2
-                        ? 'rgba(129, 140, 248, 0.2)'
-                        : 'rgba(30, 41, 59, 0.6)',
+                          ? 'rgba(56, 189, 248, 0.2)'
+                          : idx === 2
+                            ? 'rgba(129, 140, 248, 0.2)'
+                            : 'rgba(30, 41, 59, 0.6)',
                     color:
                       idx === 0
                         ? '#FBBF24'
                         : idx === 1
-                        ? '#38BDF8'
-                        : idx === 2
-                        ? '#818CF8'
-                        : '#64748B',
+                          ? '#38BDF8'
+                          : idx === 2
+                            ? '#818CF8'
+                            : '#64748B',
                     border: `1px solid ${
                       idx === 0
                         ? 'rgba(245, 158, 11, 0.4)'
                         : idx === 1
-                        ? 'rgba(56, 189, 248, 0.4)'
-                        : idx === 2
-                        ? 'rgba(129, 140, 248, 0.4)'
-                        : 'rgba(51, 65, 85, 0.4)'
+                          ? 'rgba(56, 189, 248, 0.4)'
+                          : idx === 2
+                            ? 'rgba(129, 140, 248, 0.4)'
+                            : 'rgba(51, 65, 85, 0.4)'
                     }`
                   }}
                 >
@@ -521,7 +590,14 @@ export const ModelPage: React.FC = () => {
                   >
                     {item.feature}
                   </div>
-                  <div style={{ fontSize: '10px', color: item.color, fontWeight: 500, marginTop: '2px' }}>
+                  <div
+                    style={{
+                      fontSize: '10px',
+                      color: item.color,
+                      fontWeight: 500,
+                      marginTop: '2px'
+                    }}
+                  >
                     {item.category}
                   </div>
                 </div>

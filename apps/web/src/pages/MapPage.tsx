@@ -73,7 +73,8 @@ export const MapPage: React.FC = () => {
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(180deg, rgba(6, 11, 24, 0.15) 0%, rgba(6, 11, 24, 0.9) 100%)',
+            background:
+              'linear-gradient(180deg, rgba(6, 11, 24, 0.15) 0%, rgba(6, 11, 24, 0.9) 100%)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'flex-end',
@@ -81,8 +82,23 @@ export const MapPage: React.FC = () => {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#06b6d4' }} />
-            <span style={{ fontSize: '11px', fontWeight: 700, color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            <span
+              style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                backgroundColor: '#06b6d4'
+              }}
+            />
+            <span
+              style={{
+                fontSize: '11px',
+                fontWeight: 700,
+                color: '#38bdf8',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em'
+              }}
+            >
               Spatial Risk Taxonomy &bull; 25 Admin Units &bull; Conformal Intervals
             </span>
           </div>

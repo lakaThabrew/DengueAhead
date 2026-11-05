@@ -80,7 +80,13 @@ export const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
         ? { x: getX(i), y: getY(d.observed), val: d.observed, index: i, point: d }
         : null
     )
-    .filter(Boolean) as { x: number; y: number; val: number; index: number; point: TimeSeriesDataPoint }[];
+    .filter(Boolean) as {
+    x: number;
+    y: number;
+    val: number;
+    index: number;
+    point: TimeSeriesDataPoint;
+  }[];
 
   const observedPath = observedPoints.reduce(
     (acc, p, i) => (i === 0 ? `M ${p.x},${p.y}` : `${acc} L ${p.x},${p.y}`),
@@ -112,7 +118,8 @@ export const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
   const forecastPoint = forecastIndex >= 0 ? data[forecastIndex] : null;
 
   // Key KPI values
-  const latestObserved = observedPoints.length > 0 ? observedPoints[observedPoints.length - 1] : null;
+  const latestObserved =
+    observedPoints.length > 0 ? observedPoints[observedPoints.length - 1] : null;
   const latestThreshold = latestObserved?.point.threshold ?? null;
   const isAboveThreshold =
     latestObserved && latestThreshold !== null && latestObserved.val > latestThreshold;
@@ -125,7 +132,8 @@ export const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
     <div
       style={{
         backgroundColor: '#070E22',
-        backgroundImage: 'radial-gradient(ellipse at 50% 0%, rgba(14, 165, 233, 0.08) 0%, #070E22 75%)',
+        backgroundImage:
+          'radial-gradient(ellipse at 50% 0%, rgba(14, 165, 233, 0.08) 0%, #070E22 75%)',
         borderRadius: '18px',
         border: '1px solid rgba(56, 189, 248, 0.22)',
         padding: '22px 26px',
@@ -142,7 +150,8 @@ export const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
           left: 0,
           right: 0,
           height: '2px',
-          background: 'linear-gradient(90deg, transparent 0%, #38BDF8 30%, #818CF8 70%, transparent 100%)',
+          background:
+            'linear-gradient(90deg, transparent 0%, #38BDF8 30%, #818CF8 70%, transparent 100%)',
           opacity: 0.85
         }}
       />
@@ -178,7 +187,15 @@ export const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
             </div>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <h4 style={{ fontSize: '16px', fontWeight: 800, color: '#F8FAFC', margin: 0, letterSpacing: '-0.01em' }}>
+                <h4
+                  style={{
+                    fontSize: '16px',
+                    fontWeight: 800,
+                    color: '#F8FAFC',
+                    margin: 0,
+                    letterSpacing: '-0.01em'
+                  }}
+                >
                   {title}
                 </h4>
                 <span
@@ -198,7 +215,8 @@ export const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
                 </span>
               </div>
               <p style={{ margin: '3px 0 0 0', fontSize: '12px', color: '#94A3B8' }}>
-                Multi-week epidemiological surveillance trajectory with 80% marginal conformal interval
+                Multi-week epidemiological surveillance trajectory with 80% marginal conformal
+                interval
               </p>
             </div>
           </div>
@@ -268,13 +286,22 @@ export const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
             <TrendingUp style={{ width: '13px', height: '13px' }} />
           </div>
           <div>
-            <div style={{ fontSize: '10px', color: '#94A3B8', fontWeight: 600, textTransform: 'uppercase' }}>
+            <div
+              style={{
+                fontSize: '10px',
+                color: '#94A3B8',
+                fontWeight: 600,
+                textTransform: 'uppercase'
+              }}
+            >
               Latest Observed
             </div>
             <div style={{ fontSize: '15px', fontWeight: 800, color: '#F8FAFC' }}>
               {latestObserved ? `${latestObserved.val} cases` : '—'}
               {latestObserved?.point.date && (
-                <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 500, marginLeft: '6px' }}>
+                <span
+                  style={{ fontSize: '11px', color: '#64748B', fontWeight: 500, marginLeft: '6px' }}
+                >
                   ({latestObserved.point.date})
                 </span>
               )}
@@ -299,18 +326,33 @@ export const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
             <ShieldCheck style={{ width: '13px', height: '13px' }} />
           </div>
           <div>
-            <div style={{ fontSize: '10px', color: '#94A3B8', fontWeight: 600, textTransform: 'uppercase' }}>
+            <div
+              style={{
+                fontSize: '10px',
+                color: '#94A3B8',
+                fontWeight: 600,
+                textTransform: 'uppercase'
+              }}
+            >
               Next Target (t+1)
             </div>
             <div style={{ fontSize: '15px', fontWeight: 800, color: '#38BDF8' }}>
               {forecastPoint?.predicted !== undefined && forecastPoint.predicted !== null
                 ? `${forecastPoint.predicted} cases`
                 : 'Pending'}
-              {typeof forecastPoint?.intervalLower === 'number' && typeof forecastPoint?.intervalUpper === 'number' && (
-                <span style={{ fontSize: '11px', color: '#94A3B8', fontWeight: 600, marginLeft: '6px' }}>
-                  [{forecastPoint.intervalLower} - {forecastPoint.intervalUpper}]
-                </span>
-              )}
+              {typeof forecastPoint?.intervalLower === 'number' &&
+                typeof forecastPoint?.intervalUpper === 'number' && (
+                  <span
+                    style={{
+                      fontSize: '11px',
+                      color: '#94A3B8',
+                      fontWeight: 600,
+                      marginLeft: '6px'
+                    }}
+                  >
+                    [{forecastPoint.intervalLower} - {forecastPoint.intervalUpper}]
+                  </span>
+                )}
             </div>
           </div>
         </div>
@@ -322,7 +364,9 @@ export const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
               width: '24px',
               height: '24px',
               borderRadius: '6px',
-              backgroundColor: isAboveThreshold ? 'rgba(245, 158, 11, 0.15)' : 'rgba(16, 185, 129, 0.15)',
+              backgroundColor: isAboveThreshold
+                ? 'rgba(245, 158, 11, 0.15)'
+                : 'rgba(16, 185, 129, 0.15)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -332,10 +376,23 @@ export const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
             <AlertTriangle style={{ width: '13px', height: '13px' }} />
           </div>
           <div>
-            <div style={{ fontSize: '10px', color: '#94A3B8', fontWeight: 600, textTransform: 'uppercase' }}>
+            <div
+              style={{
+                fontSize: '10px',
+                color: '#94A3B8',
+                fontWeight: 600,
+                textTransform: 'uppercase'
+              }}
+            >
               Seasonal Epidemic Threshold
             </div>
-            <div style={{ fontSize: '15px', fontWeight: 800, color: isAboveThreshold ? '#F59E0B' : '#10B981' }}>
+            <div
+              style={{
+                fontSize: '15px',
+                fontWeight: 800,
+                color: isAboveThreshold ? '#F59E0B' : '#10B981'
+              }}
+            >
               {latestThreshold !== null ? `${latestThreshold} cases` : '—'}
               {thresholdDeltaPct !== null && (
                 <span
@@ -345,7 +402,9 @@ export const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
                     marginLeft: '6px',
                     padding: '1px 6px',
                     borderRadius: '4px',
-                    backgroundColor: isAboveThreshold ? 'rgba(245, 158, 11, 0.15)' : 'rgba(16, 185, 129, 0.15)',
+                    backgroundColor: isAboveThreshold
+                      ? 'rgba(245, 158, 11, 0.15)'
+                      : 'rgba(16, 185, 129, 0.15)',
                     color: isAboveThreshold ? '#FBBF24' : '#34D399'
                   }}
                 >
@@ -389,7 +448,9 @@ export const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
                 <th style={{ padding: '10px 14px', fontWeight: 600 }}>Forecast ($t+1$)</th>
                 <th style={{ padding: '10px 14px', fontWeight: 600 }}>80% Conformal Band</th>
                 <th style={{ padding: '10px 14px', fontWeight: 600 }}>Epidemic Threshold</th>
-                <th style={{ padding: '10px 14px', fontWeight: 600, textAlign: 'right' }}>Status</th>
+                <th style={{ padding: '10px 14px', fontWeight: 600, textAlign: 'right' }}>
+                  Status
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -403,28 +464,63 @@ export const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
                       backgroundColor: i % 2 === 0 ? 'transparent' : 'rgba(255, 255, 255, 0.02)'
                     }}
                   >
-                    <td style={{ padding: '10px 14px', fontFamily: 'monospace', fontWeight: 600 }}>{d.date}</td>
-                    <td style={{ padding: '10px 14px', fontWeight: 700, color: '#F8FAFC' }}>{d.observed ?? '—'}</td>
+                    <td style={{ padding: '10px 14px', fontFamily: 'monospace', fontWeight: 600 }}>
+                      {d.date}
+                    </td>
+                    <td style={{ padding: '10px 14px', fontWeight: 700, color: '#F8FAFC' }}>
+                      {d.observed ?? '—'}
+                    </td>
                     <td style={{ padding: '10px 14px', color: '#38BDF8', fontWeight: 700 }}>
-                      {d.predicted !== undefined && d.predicted !== null ? `${d.predicted} cases` : '—'}
+                      {d.predicted !== undefined && d.predicted !== null
+                        ? `${d.predicted} cases`
+                        : '—'}
                     </td>
                     <td style={{ padding: '10px 14px', color: '#94A3B8', fontFamily: 'monospace' }}>
                       {d.intervalLower !== undefined && d.intervalUpper !== undefined
                         ? `[${d.intervalLower}, ${d.intervalUpper}]`
                         : '—'}
                     </td>
-                    <td style={{ padding: '10px 14px', color: '#F59E0B', fontWeight: 600 }}>{d.threshold ?? '—'}</td>
+                    <td style={{ padding: '10px 14px', color: '#F59E0B', fontWeight: 600 }}>
+                      {d.threshold ?? '—'}
+                    </td>
                     <td style={{ padding: '10px 14px', textAlign: 'right' }}>
                       {d.predicted !== undefined && d.predicted !== null ? (
-                        <span style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '4px', backgroundColor: 'rgba(37, 99, 235, 0.2)', color: '#38BDF8', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
+                        <span
+                          style={{
+                            fontSize: '10px',
+                            padding: '2px 8px',
+                            borderRadius: '4px',
+                            backgroundColor: 'rgba(37, 99, 235, 0.2)',
+                            color: '#38BDF8',
+                            border: '1px solid rgba(56, 189, 248, 0.3)'
+                          }}
+                        >
                           PROJECTION
                         </span>
                       ) : isOver ? (
-                        <span style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '4px', backgroundColor: 'rgba(245, 158, 11, 0.2)', color: '#FBBF24', border: '1px solid rgba(245, 158, 11, 0.4)' }}>
+                        <span
+                          style={{
+                            fontSize: '10px',
+                            padding: '2px 8px',
+                            borderRadius: '4px',
+                            backgroundColor: 'rgba(245, 158, 11, 0.2)',
+                            color: '#FBBF24',
+                            border: '1px solid rgba(245, 158, 11, 0.4)'
+                          }}
+                        >
                           ABOVE THRESHOLD
                         </span>
                       ) : (
-                        <span style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '4px', backgroundColor: 'rgba(16, 185, 129, 0.15)', color: '#34D399', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+                        <span
+                          style={{
+                            fontSize: '10px',
+                            padding: '2px 8px',
+                            borderRadius: '4px',
+                            backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                            color: '#34D399',
+                            border: '1px solid rgba(16, 185, 129, 0.3)'
+                          }}
+                        >
                           BASELINE
                         </span>
                       )}
@@ -469,8 +565,21 @@ export const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
               </radialGradient>
 
               {/* Conformal Hatch Pattern */}
-              <pattern id="conformalHatch" width="8" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
-                <line x1="0" y1="0" x2="0" y2="8" stroke="rgba(56, 189, 248, 0.35)" strokeWidth="1.2" />
+              <pattern
+                id="conformalHatch"
+                width="8"
+                height="8"
+                patternTransform="rotate(45 0 0)"
+                patternUnits="userSpaceOnUse"
+              >
+                <line
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="8"
+                  stroke="rgba(56, 189, 248, 0.35)"
+                  strokeWidth="1.2"
+                />
               </pattern>
 
               {/* Neon Glow Filters */}
@@ -850,7 +959,15 @@ export const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
                   marginBottom: '8px'
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#94A3B8', fontSize: '11px' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                    color: '#94A3B8',
+                    fontSize: '11px'
+                  }}
+                >
                   <Calendar style={{ width: '12px', height: '12px', color: '#38BDF8' }} />
                   <span>Epi Week</span>
                 </div>
@@ -860,38 +977,96 @@ export const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
               </div>
 
               {hoveredPoint.observed !== undefined && hoveredPoint.observed !== null && (
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '4px 0' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    margin: '4px 0'
+                  }}
+                >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#38BDF8' }} />
+                    <span
+                      style={{
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
+                        backgroundColor: '#38BDF8'
+                      }}
+                    />
                     <span style={{ color: '#CBD5E1' }}>Observed Cases:</span>
                   </div>
-                  <strong style={{ color: '#F8FAFC', fontSize: '13px' }}>{hoveredPoint.observed}</strong>
+                  <strong style={{ color: '#F8FAFC', fontSize: '13px' }}>
+                    {hoveredPoint.observed}
+                  </strong>
                 </div>
               )}
 
               {hoveredPoint.predicted !== undefined && hoveredPoint.predicted !== null && (
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '4px 0' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    margin: '4px 0'
+                  }}
+                >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#60A5FA' }} />
+                    <span
+                      style={{
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
+                        backgroundColor: '#60A5FA'
+                      }}
+                    />
                     <span style={{ color: '#38BDF8' }}>Forecast (t+1):</span>
                   </div>
-                  <strong style={{ color: '#38BDF8', fontSize: '13px' }}>{hoveredPoint.predicted} cases</strong>
+                  <strong style={{ color: '#38BDF8', fontSize: '13px' }}>
+                    {hoveredPoint.predicted} cases
+                  </strong>
                 </div>
               )}
 
-              {typeof hoveredPoint.intervalLower === 'number' && typeof hoveredPoint.intervalUpper === 'number' && (
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '4px 0' }}>
-                  <span style={{ color: '#94A3B8', fontSize: '11px', paddingLeft: '14px' }}>80% Coverage Band:</span>
-                  <span style={{ color: '#94A3B8', fontFamily: 'monospace', fontSize: '11px' }}>
-                    [{hoveredPoint.intervalLower}, {hoveredPoint.intervalUpper}]
-                  </span>
-                </div>
-              )}
+              {typeof hoveredPoint.intervalLower === 'number' &&
+                typeof hoveredPoint.intervalUpper === 'number' && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      margin: '4px 0'
+                    }}
+                  >
+                    <span style={{ color: '#94A3B8', fontSize: '11px', paddingLeft: '14px' }}>
+                      80% Coverage Band:
+                    </span>
+                    <span style={{ color: '#94A3B8', fontFamily: 'monospace', fontSize: '11px' }}>
+                      [{hoveredPoint.intervalLower}, {hoveredPoint.intervalUpper}]
+                    </span>
+                  </div>
+                )}
 
               {hoveredPoint.threshold !== undefined && hoveredPoint.threshold !== null && (
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '6px 0 2px 0', paddingTop: '4px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    margin: '6px 0 2px 0',
+                    paddingTop: '4px',
+                    borderTop: '1px solid rgba(255,255,255,0.06)'
+                  }}
+                >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#F59E0B' }} />
+                    <span
+                      style={{
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
+                        backgroundColor: '#F59E0B'
+                      }}
+                    />
                     <span style={{ color: '#FBBF24' }}>Seasonal 75th %:</span>
                   </div>
                   <strong style={{ color: '#FBBF24' }}>{hoveredPoint.threshold}</strong>
@@ -985,7 +1160,8 @@ export const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({
           >
             <Info style={{ width: '12px', height: '12px', color: '#38BDF8', flexShrink: 0 }} />
             <span>
-              Conformal interval generated via non-parametric split inference with 80% guaranteed finite-sample coverage under exchangeability.
+              Conformal interval generated via non-parametric split inference with 80% guaranteed
+              finite-sample coverage under exchangeability.
             </span>
           </div>
         </div>

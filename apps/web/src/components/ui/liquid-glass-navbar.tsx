@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 /**
  * Nimbus UI · Liquid Navbar — "Waterline"
@@ -10,56 +10,82 @@
  * by guglielmogiannattasio.it
  */
 
-import * as React from "react"
+import * as React from 'react';
 
-export type NimbusFx = "plane" | "drop" | "spin" | "glow" | "wave" | "pop" | "none"
+export type NimbusFx = 'plane' | 'drop' | 'spin' | 'glow' | 'wave' | 'pop' | 'none';
 
 export type LiquidNavItem = {
-  label: string
-  href?: string
-  icon?: React.ReactNode
+  label: string;
+  href?: string;
+  icon?: React.ReactNode;
   /** the little scene the icon plays when tapped */
-  fx?: NimbusFx
-}
+  fx?: NimbusFx;
+};
 
 export type LiquidNavbarProps = {
-  items?: LiquidNavItem[]
-  defaultActive?: number
-  active?: number
-  onChange?: (index: number, item: LiquidNavItem) => void
+  items?: LiquidNavItem[];
+  defaultActive?: number;
+  active?: number;
+  onChange?: (index: number, item: LiquidNavItem) => void;
   /** "light" water for bright backgrounds, "dark" for dark ones */
-  tone?: "light" | "dark"
+  tone?: 'light' | 'dark';
   /** icons only */
-  compact?: boolean
+  compact?: boolean;
   /** soft synthesized "plip" on tap (no audio files) */
-  sound?: boolean
-  className?: string
-  style?: React.CSSProperties
-}
+  sound?: boolean;
+  className?: string;
+  style?: React.CSSProperties;
+};
 
 /* ---------- icons ---------- */
 const I = (d: React.ReactNode) => (
-  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+  <svg
+    viewBox="0 0 24 24"
+    width="18"
+    height="18"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
     {d}
   </svg>
-)
+);
 export const NimbusIcons = {
-  home: I(<><path d="M3.5 11.2 12 4l8.5 7.2" /><path d="M6 9.6V20h12V9.6" /><path className="nv-door" d="M10 20v-5h4v5Z" /></>),
-  globe: I(<><circle cx="12" cy="12" r="8.5" /><path d="M3.5 12h17M12 3.5c2.6 2.4 2.6 14.6 0 17M12 3.5c-2.6 2.4-2.6 14.6 0 17" /></>),
+  home: I(
+    <>
+      <path d="M3.5 11.2 12 4l8.5 7.2" />
+      <path d="M6 9.6V20h12V9.6" />
+      <path className="nv-door" d="M10 20v-5h4v5Z" />
+    </>
+  ),
+  globe: I(
+    <>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M3.5 12h17M12 3.5c2.6 2.4 2.6 14.6 0 17M12 3.5c-2.6 2.4-2.6 14.6 0 17" />
+    </>
+  ),
   plane: I(<path d="M21 12.2 3.6 5.4l2.7 6.8-2.7 6.4L21 12.2Zm-14.7 0H13" />),
   drop: I(<path d="M12 3.5s6 6.4 6 10.6a6 6 0 0 1-12 0C6 9.9 12 3.5 12 3.5Z" />),
-  user: I(<><circle cx="12" cy="8.5" r="3.8" /><path d="M4.8 20c1.2-3.4 4-5 7.2-5s6 1.6 7.2 5" /></>),
-}
+  user: I(
+    <>
+      <circle cx="12" cy="8.5" r="3.8" />
+      <path d="M4.8 20c1.2-3.4 4-5 7.2-5s6 1.6 7.2 5" />
+    </>
+  )
+};
 
 const DEFAULT_ITEMS: LiquidNavItem[] = [
-  { label: "Home", icon: NimbusIcons.home, fx: "glow" },
-  { label: "Explore", icon: NimbusIcons.globe, fx: "spin" },
-  { label: "Flights", icon: NimbusIcons.plane, fx: "plane" },
-  { label: "Weather", icon: NimbusIcons.drop, fx: "drop" },
-  { label: "Profile", icon: NimbusIcons.user, fx: "wave" },
-]
+  { label: 'Home', icon: NimbusIcons.home, fx: 'glow' },
+  { label: 'Explore', icon: NimbusIcons.globe, fx: 'spin' },
+  { label: 'Flights', icon: NimbusIcons.plane, fx: 'plane' },
+  { label: 'Weather', icon: NimbusIcons.drop, fx: 'drop' },
+  { label: 'Profile', icon: NimbusIcons.user, fx: 'wave' }
+];
 
-const PAD = 14 // canvas bleed around the pill, for shadows and ripples
+const PAD = 14; // canvas bleed around the pill, for shadows and ripples
 
 /* ---------- styles ---------- */
 const NIMBUS_CSS = `
@@ -111,10 +137,10 @@ const NIMBUS_CSS = `
 .nimbus-nav[data-compact="true"] .nimbus-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 @media (max-width:520px){.nimbus-nav:not([data-compact="false"]) .nimbus-item{padding:0 13px}.nimbus-nav:not([data-compact="false"]) .nimbus-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}}
 @media (prefers-reduced-motion:reduce){.nv-ico svg,.nv-ico::before,.nv-ico::after,.nv-door{animation:none!important;transition:none}}
-`
+`;
 
 /* ---------- the water shader ---------- */
-const VERT = `attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}`
+const VERT = `attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}`;
 const FRAG = `precision highp float;
 uniform vec2 uRes;uniform float uDpr;uniform float uTime;uniform vec4 uPill;
 uniform vec4 uBlob[6];uniform float uSy[6];uniform vec4 uRip[6];uniform vec3 uMouse;uniform float uDark;uniform float uAmb;
@@ -157,11 +183,11 @@ void main(){
  la=dm*smoothstep(-2.,0.,dd)*.4;dc=mix(vec3(1.),irid,.35)*la+dc*(1.-la);da=la+da*(1.-la);
  c=dc+c*(1.-da);a=da+a*(1.-da);
  gl_FragColor=vec4(c,a);
-}`
+}`;
 
-type Body = { x: number; v: number }
-type Sat = { x: number; y: number; vx: number; vy: number; r: number; k: number }
-type Rip = { x: number; y: number; age: number; amp: number }
+type Body = { x: number; v: number };
+type Sat = { x: number; y: number; vx: number; vy: number; r: number; k: number };
+type Rip = { x: number; y: number; age: number; amp: number };
 
 function makeState() {
   return {
@@ -185,43 +211,66 @@ function makeState() {
     raf: 0,
     last: 0,
     time: 0,
-    glc: null as null | { gl: WebGLRenderingContext; u: Record<string, WebGLUniformLocation | null> },
-  }
+    glc: null as null | {
+      gl: WebGLRenderingContext;
+      u: Record<string, WebGLUniformLocation | null>;
+    }
+  };
 }
 
 function initGL(canvas: HTMLCanvasElement) {
-  const gl = canvas.getContext("webgl", { premultipliedAlpha: true, alpha: true, antialias: false }) as WebGLRenderingContext | null
-  if (!gl) return null
+  const gl = canvas.getContext('webgl', {
+    premultipliedAlpha: true,
+    alpha: true,
+    antialias: false
+  }) as WebGLRenderingContext | null;
+  if (!gl) return null;
   const sh = (type: number, src: string) => {
-    const s = gl.createShader(type)!
-    gl.shaderSource(s, src)
-    gl.compileShader(s)
-    return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null
-  }
-  const vs = sh(gl.VERTEX_SHADER, VERT)
-  const fs = sh(gl.FRAGMENT_SHADER, FRAG)
-  if (!vs || !fs) return null
-  const p = gl.createProgram()!
-  gl.attachShader(p, vs)
-  gl.attachShader(p, fs)
-  gl.linkProgram(p)
-  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) return null
-  gl.useProgram(p)
-  const buf = gl.createBuffer()
-  gl.bindBuffer(gl.ARRAY_BUFFER, buf)
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW)
-  const loc = gl.getAttribLocation(p, "a")
-  gl.enableVertexAttribArray(loc)
-  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0)
-  const u: Record<string, WebGLUniformLocation | null> = {}
-  for (const n of ["uRes", "uDpr", "uTime", "uPill", "uBlob", "uSy", "uRip", "uMouse", "uDark", "uAmb"]) u[n] = gl.getUniformLocation(p, n)
-  return { gl, u }
+    const s = gl.createShader(type)!;
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null;
+  };
+  const vs = sh(gl.VERTEX_SHADER, VERT);
+  const fs = sh(gl.FRAGMENT_SHADER, FRAG);
+  if (!vs || !fs) return null;
+  const p = gl.createProgram()!;
+  gl.attachShader(p, vs);
+  gl.attachShader(p, fs);
+  gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) return null;
+  gl.useProgram(p);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(p, 'a');
+  gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const u: Record<string, WebGLUniformLocation | null> = {};
+  for (const n of [
+    'uRes',
+    'uDpr',
+    'uTime',
+    'uPill',
+    'uBlob',
+    'uSy',
+    'uRip',
+    'uMouse',
+    'uDark',
+    'uAmb'
+  ])
+    u[n] = gl.getUniformLocation(p, n);
+  return { gl, u };
 }
 
 function supportsRefraction() {
-  if (typeof window === "undefined" || typeof CSS === "undefined") return false
-  const ua = navigator.userAgent
-  return /Chrome\/|Chromium\/|Edg\//.test(ua) && !/Firefox\//.test(ua) && !!(CSS as any).supports?.("backdrop-filter", "url(#a)")
+  if (typeof window === 'undefined' || typeof CSS === 'undefined') return false;
+  const ua = navigator.userAgent;
+  return (
+    /Chrome\/|Chromium\/|Edg\//.test(ua) &&
+    !/Firefox\//.test(ua) &&
+    !!(CSS as any).supports?.('backdrop-filter', 'url(#a)')
+  );
 }
 
 export function LiquidNavbar({
@@ -229,362 +278,453 @@ export function LiquidNavbar({
   defaultActive = 0,
   active,
   onChange,
-  tone = "light",
+  tone = 'light',
   compact,
   sound = false,
   className,
-  style,
+  style
 }: LiquidNavbarProps) {
-  const [inner, setInner] = React.useState(defaultActive)
-  const current = active ?? inner
-  const navRef = React.useRef<HTMLElement>(null)
-  const canvasRef = React.useRef<HTMLCanvasElement>(null)
-  const dropRef = React.useRef<HTMLSpanElement>(null)
-  const itemRefs = React.useRef<(HTMLElement | null)[]>([])
-  const iconRefs = React.useRef<(HTMLSpanElement | null)[]>([])
-  const audio = React.useRef<AudioContext | null>(null)
-  const st = React.useRef(makeState())
-  const [gl, setGl] = React.useState<"on" | "off">("on")
-  const [refract, setRefract] = React.useState(false)
-  const [fx, setFx] = React.useState({ i: -1, n: 0 })
-  const dark = tone === "dark" ? 1 : 0
-  const darkRef = React.useRef(dark)
-  darkRef.current = dark
+  const [inner, setInner] = React.useState(defaultActive);
+  const current = active ?? inner;
+  const navRef = React.useRef<HTMLElement>(null);
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
+  const dropRef = React.useRef<HTMLSpanElement>(null);
+  const itemRefs = React.useRef<(HTMLElement | null)[]>([]);
+  const iconRefs = React.useRef<(HTMLSpanElement | null)[]>([]);
+  const audio = React.useRef<AudioContext | null>(null);
+  const st = React.useRef(makeState());
+  const [gl, setGl] = React.useState<'on' | 'off'>('on');
+  const [refract, setRefract] = React.useState(false);
+  const [fx, setFx] = React.useState({ i: -1, n: 0 });
+  const dark = tone === 'dark' ? 1 : 0;
+  const darkRef = React.useRef(dark);
+  darkRef.current = dark;
 
   /* ---- drawing ---- */
   const draw = React.useCallback(() => {
-    const s = st.current
-    const T = s.t
-    const sep = Math.abs(s.a.x - s.b.x)
-    const thin = Math.min(sep / (2 * (s.q + T.r) || 1), 1)
-    const r = T.r * (1 - 0.3 * thin)
+    const s = st.current;
+    const T = s.t;
+    const sep = Math.abs(s.a.x - s.b.x);
+    const thin = Math.min(sep / (2 * (s.q + T.r) || 1), 1);
+    const r = T.r * (1 - 0.3 * thin);
     if (s.glc) {
-      const { gl: g, u } = s.glc
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
-      g.viewport(0, 0, g.drawingBufferWidth, g.drawingBufferHeight)
-      g.uniform2f(u.uRes, s.w + PAD * 2, s.h + PAD * 2)
-      g.uniform1f(u.uDpr, dpr)
-      g.uniform1f(u.uTime, s.time)
-      g.uniform4f(u.uPill, PAD, PAD, s.w, s.h)
-      const blobs = new Float32Array(24)
-      const sy = new Float32Array(6).fill(1)
-      const head = s.lead === 0 ? s.a : s.b, tail = s.lead === 0 ? s.b : s.a
-      blobs.set([head.x, T.cy, s.q * (1 - 0.25 * thin), T.r * (1 - 0.12 * thin), tail.x, T.cy, s.q * (1 - 0.8 * thin), T.r * (1 - 0.5 * thin)], 0)
-      sy[0] = sy[1] = s.sy.s
-      s.sats.slice(0, 4).forEach((d, i) => blobs.set([d.x, d.y, 0, d.r], 8 + i * 4))
-      g.uniform4fv(u.uBlob, blobs)
-      g.uniform1fv(u.uSy, sy)
-      const rips = new Float32Array(24)
-      s.rips.slice(-6).forEach((p, i) => rips.set([p.x, p.y, p.age, p.amp], i * 4))
-      g.uniform4fv(u.uRip, rips)
-      g.uniform3f(u.uMouse, s.mouse.x, s.mouse.y, s.mouse.s)
-      g.uniform1f(u.uDark, darkRef.current)
-      g.uniform1f(u.uAmb, s.reduce ? 0 : 1)
-      g.clearColor(0, 0, 0, 0)
-      g.clear(g.COLOR_BUFFER_BIT)
-      g.drawArrays(g.TRIANGLES, 0, 3)
+      const { gl: g, u } = s.glc;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      g.viewport(0, 0, g.drawingBufferWidth, g.drawingBufferHeight);
+      g.uniform2f(u.uRes, s.w + PAD * 2, s.h + PAD * 2);
+      g.uniform1f(u.uDpr, dpr);
+      g.uniform1f(u.uTime, s.time);
+      g.uniform4f(u.uPill, PAD, PAD, s.w, s.h);
+      const blobs = new Float32Array(24);
+      const sy = new Float32Array(6).fill(1);
+      const head = s.lead === 0 ? s.a : s.b,
+        tail = s.lead === 0 ? s.b : s.a;
+      blobs.set(
+        [
+          head.x,
+          T.cy,
+          s.q * (1 - 0.25 * thin),
+          T.r * (1 - 0.12 * thin),
+          tail.x,
+          T.cy,
+          s.q * (1 - 0.8 * thin),
+          T.r * (1 - 0.5 * thin)
+        ],
+        0
+      );
+      sy[0] = sy[1] = s.sy.s;
+      s.sats.slice(0, 4).forEach((d, i) => blobs.set([d.x, d.y, 0, d.r], 8 + i * 4));
+      g.uniform4fv(u.uBlob, blobs);
+      g.uniform1fv(u.uSy, sy);
+      const rips = new Float32Array(24);
+      s.rips.slice(-6).forEach((p, i) => rips.set([p.x, p.y, p.age, p.amp], i * 4));
+      g.uniform4fv(u.uRip, rips);
+      g.uniform3f(u.uMouse, s.mouse.x, s.mouse.y, s.mouse.s);
+      g.uniform1f(u.uDark, darkRef.current);
+      g.uniform1f(u.uAmb, s.reduce ? 0 : 1);
+      g.clearColor(0, 0, 0, 0);
+      g.clear(g.COLOR_BUFFER_BIT);
+      g.drawArrays(g.TRIANGLES, 0, 3);
     } else if (dropRef.current) {
-      const left = Math.min(s.a.x, s.b.x) - s.q - r - PAD
-      const width = sep + 2 * (s.q + r)
-      dropRef.current.style.width = `${width}px`
-      dropRef.current.style.transform = `translateX(${left}px) scaleY(${s.sy.s})`
+      const left = Math.min(s.a.x, s.b.x) - s.q - r - PAD;
+      const width = sep + 2 * (s.q + r);
+      dropRef.current.style.width = `${width}px`;
+      dropRef.current.style.transform = `translateX(${left}px) scaleY(${s.sy.s})`;
     }
-  }, [])
+  }, []);
 
   /* ---- physics ---- */
   const step = React.useCallback((dt: number, now: number) => {
-    const s = st.current
-    const T = s.t
-    s.time += dt
-    s.q += (T.q - s.q) * Math.min(1, dt * 12)
-    const bodies = [s.a, s.b]
-    let still = true
+    const s = st.current;
+    const T = s.t;
+    s.time += dt;
+    s.q += (T.q - s.q) * Math.min(1, dt * 12);
+    const bodies = [s.a, s.b];
+    let still = true;
     if (s.reduce) {
-      s.a.x = s.b.x = T.x; s.a.v = s.b.v = 0; s.sy.s = 1; s.sats = []
+      s.a.x = s.b.x = T.x;
+      s.a.v = s.b.v = 0;
+      s.sy.s = 1;
+      s.sats = [];
     } else {
       bodies.forEach((B, i) => {
-        const lead = i === s.lead
-        const k = lead ? 210 : 72
-        const c = lead ? 25 : 13
-        const f = !lead && now < s.lagFrom ? 0.08 : 1
-        B.v += (k * (T.x - B.x) - c * B.v) * dt * f
-        B.x += B.v * dt
-        const lo = PAD + 6 + s.q + T.r - 3, hi = PAD + s.w - 6 - s.q - T.r + 3
+        const lead = i === s.lead;
+        const k = lead ? 210 : 72;
+        const c = lead ? 25 : 13;
+        const f = !lead && now < s.lagFrom ? 0.08 : 1;
+        B.v += (k * (T.x - B.x) - c * B.v) * dt * f;
+        B.x += B.v * dt;
+        const lo = PAD + 6 + s.q + T.r - 3,
+          hi = PAD + s.w - 6 - s.q - T.r + 3;
         if (B.x < lo || B.x > hi) {
-          s.sy.v -= Math.min(Math.abs(B.v), 900) * 0.0016
-          B.x = Math.max(lo, Math.min(hi, B.x))
-          B.v *= -0.25
+          s.sy.v -= Math.min(Math.abs(B.v), 900) * 0.0016;
+          B.x = Math.max(lo, Math.min(hi, B.x));
+          B.v *= -0.25;
         }
-        if (Math.abs(T.x - B.x) > 0.3 || Math.abs(B.v) > 3) still = false
-      })
-      const L = bodies[s.lead]
-      const syT = 1 - 0.2 * Math.min(Math.abs(L.v) / 1500, 1)
-      s.sy.v += (280 * (syT - s.sy.s) - 9 * s.sy.v) * dt
-      s.sy.s += s.sy.v * dt
-      if (Math.abs(s.sy.s - 1) > 0.002 || Math.abs(s.sy.v) > 0.02) still = false
+        if (Math.abs(T.x - B.x) > 0.3 || Math.abs(B.v) > 3) still = false;
+      });
+      const L = bodies[s.lead];
+      const syT = 1 - 0.2 * Math.min(Math.abs(L.v) / 1500, 1);
+      s.sy.v += (280 * (syT - s.sy.s) - 9 * s.sy.v) * dt;
+      s.sy.s += s.sy.v * dt;
+      if (Math.abs(s.sy.s - 1) > 0.002 || Math.abs(s.sy.v) > 0.02) still = false;
       // break the neck: spawn droplets between head and tail
-      const sep = Math.abs(s.a.x - s.b.x)
-      const r = T.r * (1 - 0.3 * Math.min(sep / (2 * (T.q + T.r) || 1), 1))
+      const sep = Math.abs(s.a.x - s.b.x);
+      const r = T.r * (1 - 0.3 * Math.min(sep / (2 * (T.q + T.r) || 1), 1));
       if (!s.split && s.moving && sep - 2 * T.q - 2 * r > -6) {
-        s.split = true
-        const lo = bodies[1 - s.lead], hi = bodies[s.lead]
-        ;[0.3, 0.5, 0.72].forEach((t, j) => {
+        s.split = true;
+        const lo = bodies[1 - s.lead],
+          hi = bodies[s.lead];
+        [0.3, 0.5, 0.72].forEach((t, j) => {
           s.sats.push({
             x: lo.x + (hi.x - lo.x) * t + (Math.random() - 0.5) * 6,
             y: T.cy + (Math.random() - 0.5) * 10,
             vx: (lo.v + hi.v) * 0.45,
             vy: (Math.random() - 0.5) * 60,
             r: 5 + Math.random() * 3 - j * 0.5,
-            k: 70 + Math.random() * 90,
-          })
-        })
+            k: 70 + Math.random() * 90
+          });
+        });
       }
       s.sats = s.sats.filter((d) => {
-        d.vx += (d.k * (T.x - d.x) - 9 * d.vx) * dt
-        d.vy += (90 * (T.cy - d.y) - 7 * d.vy) * dt
-        d.x += d.vx * dt
-        d.y += d.vy * dt
-        d.x = Math.max(PAD + 8 + d.r, Math.min(PAD + s.w - 8 - d.r, d.x))
-        d.y = Math.max(T.cy - T.r + d.r, Math.min(T.cy + T.r - d.r, d.y))
-        if (Math.abs(T.x - d.x) < T.q + T.r * 0.5) d.r -= dt * 26
-        return d.r > 0.6
-      })
-      if (s.sats.length) still = false
+        d.vx += (d.k * (T.x - d.x) - 9 * d.vx) * dt;
+        d.vy += (90 * (T.cy - d.y) - 7 * d.vy) * dt;
+        d.x += d.vx * dt;
+        d.y += d.vy * dt;
+        d.x = Math.max(PAD + 8 + d.r, Math.min(PAD + s.w - 8 - d.r, d.x));
+        d.y = Math.max(T.cy - T.r + d.r, Math.min(T.cy + T.r - d.r, d.y));
+        if (Math.abs(T.x - d.x) < T.q + T.r * 0.5) d.r -= dt * 26;
+        return d.r > 0.6;
+      });
+      if (s.sats.length) still = false;
     }
     if (s.moving && still) {
-      s.moving = false
-      if (s.split || !s.reduce) s.rips.push({ x: T.x, y: T.cy, age: 0, amp: s.split ? 1.2 : 0.7 })
+      s.moving = false;
+      if (s.split || !s.reduce) s.rips.push({ x: T.x, y: T.cy, age: 0, amp: s.split ? 1.2 : 0.7 });
     }
-    s.rips.forEach((p) => (p.age += dt))
-    s.rips = s.rips.filter((p) => p.age < 2.4)
-    const target = s.mouse.on ? 1 : 0
-    s.mouse.s += (target - s.mouse.s) * Math.min(1, dt * 7)
-  }, [])
+    s.rips.forEach((p) => (p.age += dt));
+    s.rips = s.rips.filter((p) => p.age < 2.4);
+    const target = s.mouse.on ? 1 : 0;
+    s.mouse.s += (target - s.mouse.s) * Math.min(1, dt * 7);
+  }, []);
 
   const loop = React.useCallback(() => {
-    const s = st.current
-    if (s.raf) return
-    s.last = performance.now()
+    const s = st.current;
+    if (s.raf) return;
+    s.last = performance.now();
     const tick = (now: number) => {
-      const dt = Math.min((now - s.last) / 1000, 1 / 30)
-      s.last = now
-      step(dt, now)
-      draw()
-      const busy = s.moving || s.rips.length || s.sats.length || s.mouse.s > 0.01
+      const dt = Math.min((now - s.last) / 1000, 1 / 30);
+      s.last = now;
+      step(dt, now);
+      draw();
+      const busy = s.moving || s.rips.length || s.sats.length || s.mouse.s > 0.01;
       // ambient water keeps moving while visible; reduced-motion only animates on change
-      if (s.visible && (!s.reduce || busy)) s.raf = requestAnimationFrame(tick)
-      else s.raf = 0
-    }
-    s.raf = requestAnimationFrame(tick)
-  }, [draw, step])
+      if (s.visible && (!s.reduce || busy)) s.raf = requestAnimationFrame(tick);
+      else s.raf = 0;
+    };
+    s.raf = requestAnimationFrame(tick);
+  }, [draw, step]);
 
   /* ---- layout ---- */
   const measure = React.useCallback(() => {
-    const nav = navRef.current
-    const el = itemRefs.current[current]
-    if (!nav || !el) return
-    const s = st.current
-    s.w = nav.offsetWidth
-    s.h = nav.offsetHeight
-    const T = s.t
-    T.r = el.offsetHeight / 2
-    T.q = Math.max(0, el.offsetWidth / 2 - T.r)
-    T.cy = PAD + el.offsetTop + el.offsetHeight / 2
-    const nx = PAD + el.offsetLeft + el.offsetWidth / 2
+    const nav = navRef.current;
+    const el = itemRefs.current[current];
+    if (!nav || !el) return;
+    const s = st.current;
+    s.w = nav.offsetWidth;
+    s.h = nav.offsetHeight;
+    const T = s.t;
+    T.r = el.offsetHeight / 2;
+    T.q = Math.max(0, el.offsetWidth / 2 - T.r);
+    T.cy = PAD + el.offsetTop + el.offsetHeight / 2;
+    const nx = PAD + el.offsetLeft + el.offsetWidth / 2;
     if (!s.ready) {
-      s.a.x = s.b.x = nx
-      s.q = T.q
-      s.ready = true
+      s.a.x = s.b.x = nx;
+      s.q = T.q;
+      s.ready = true;
     } else if (Math.abs(nx - T.x) > 0.5) {
-      s.lead = Math.abs(nx - s.a.x) <= Math.abs(nx - s.b.x) ? 0 : 1
-      s.lagFrom = performance.now() + 70
-      s.moving = true
-      s.split = false
+      s.lead = Math.abs(nx - s.a.x) <= Math.abs(nx - s.b.x) ? 0 : 1;
+      s.lagFrom = performance.now() + 70;
+      s.moving = true;
+      s.split = false;
     }
-    T.x = nx
-    const cv = canvasRef.current
+    T.x = nx;
+    const cv = canvasRef.current;
     if (cv) {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
-      const W = s.w + PAD * 2, Hh = s.h + PAD * 2
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const W = s.w + PAD * 2,
+        Hh = s.h + PAD * 2;
       if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(Hh * dpr)) {
-        cv.width = Math.round(W * dpr)
-        cv.height = Math.round(Hh * dpr)
-        cv.style.width = `${W}px`
-        cv.style.height = `${Hh}px`
+        cv.width = Math.round(W * dpr);
+        cv.height = Math.round(Hh * dpr);
+        cv.style.width = `${W}px`;
+        cv.style.height = `${Hh}px`;
       }
     }
-    loop()
-  }, [current, loop])
+    loop();
+  }, [current, loop]);
 
   React.useEffect(() => {
-    setRefract(supportsRefraction())
-    const s = st.current
-    s.reduce = !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
-    const cv = canvasRef.current
-    s.glc = cv ? initGL(cv) : null
-    if (!s.glc) setGl("off")
-    const lost = (e: Event) => { e.preventDefault(); s.glc = null; setGl("off") }
-    cv?.addEventListener("webglcontextlost", lost)
-    const io = typeof IntersectionObserver !== "undefined"
-      ? new IntersectionObserver(([e]) => { s.visible = e.isIntersecting; if (s.visible) loop() })
-      : null
-    if (navRef.current && io) io.observe(navRef.current)
-    const vis = () => { s.visible = document.visibilityState === "visible"; if (s.visible) loop() }
-    document.addEventListener("visibilitychange", vis)
+    setRefract(supportsRefraction());
+    const s = st.current;
+    s.reduce = !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const cv = canvasRef.current;
+    s.glc = cv ? initGL(cv) : null;
+    if (!s.glc) setGl('off');
+    const lost = (e: Event) => {
+      e.preventDefault();
+      s.glc = null;
+      setGl('off');
+    };
+    cv?.addEventListener('webglcontextlost', lost);
+    const io =
+      typeof IntersectionObserver !== 'undefined'
+        ? new IntersectionObserver(([e]) => {
+            s.visible = e.isIntersecting;
+            if (s.visible) loop();
+          })
+        : null;
+    if (navRef.current && io) io.observe(navRef.current);
+    const vis = () => {
+      s.visible = document.visibilityState === 'visible';
+      if (s.visible) loop();
+    };
+    document.addEventListener('visibilitychange', vis);
     return () => {
-      cv?.removeEventListener("webglcontextlost", lost)
-      io?.disconnect()
-      document.removeEventListener("visibilitychange", vis)
-      cancelAnimationFrame(s.raf)
-      s.raf = 0
-    }
-  }, [loop])
+      cv?.removeEventListener('webglcontextlost', lost);
+      io?.disconnect();
+      document.removeEventListener('visibilitychange', vis);
+      cancelAnimationFrame(s.raf);
+      s.raf = 0;
+    };
+  }, [loop]);
 
-  React.useLayoutEffect(() => { measure() }, [measure, items.length, compact])
-  const measureRef = React.useRef(measure)
-  measureRef.current = measure
+  React.useLayoutEffect(() => {
+    measure();
+  }, [measure, items.length, compact]);
+  const measureRef = React.useRef(measure);
+  measureRef.current = measure;
   React.useEffect(() => {
-    let lastW = -1
-    const ro = typeof ResizeObserver !== "undefined"
-      ? new ResizeObserver(() => {
-          const w = navRef.current?.offsetWidth ?? 0
-          if (w !== lastW) { lastW = w; st.current.ready = false; measureRef.current() }
-        })
-      : null
-    if (navRef.current && ro) ro.observe(navRef.current)
-    return () => ro?.disconnect()
-  }, [])
-  React.useEffect(() => { loop() }, [tone, loop])
+    let lastW = -1;
+    const ro =
+      typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(() => {
+            const w = navRef.current?.offsetWidth ?? 0;
+            if (w !== lastW) {
+              lastW = w;
+              st.current.ready = false;
+              measureRef.current();
+            }
+          })
+        : null;
+    if (navRef.current && ro) ro.observe(navRef.current);
+    return () => ro?.disconnect();
+  }, []);
+  React.useEffect(() => {
+    loop();
+  }, [tone, loop]);
 
   /* ---- interaction ---- */
   const local = (clientX: number, clientY: number) => {
-    const r = navRef.current!.getBoundingClientRect()
-    return { x: clientX - r.left + PAD, y: clientY - r.top + PAD }
-  }
+    const r = navRef.current!.getBoundingClientRect();
+    return { x: clientX - r.left + PAD, y: clientY - r.top + PAD };
+  };
   const ripple = (x: number, y: number, amp: number) => {
-    const s = st.current
-    if (s.reduce) return
-    s.rips.push({ x, y, age: 0, amp })
-    loop()
-  }
+    const s = st.current;
+    if (s.reduce) return;
+    s.rips.push({ x, y, age: 0, amp });
+    loop();
+  };
   const iconCenter = (i: number) => {
-    const el = iconRefs.current[i]
-    if (!el) return null
-    const b = el.getBoundingClientRect()
-    return local(b.left + b.width / 2, b.top + b.height / 2)
-  }
+    const el = iconRefs.current[i];
+    if (!el) return null;
+    const b = el.getBoundingClientRect();
+    return local(b.left + b.width / 2, b.top + b.height / 2);
+  };
   const plip = () => {
-    if (!sound) return
+    if (!sound) return;
     try {
-      const AC = window.AudioContext || (window as any).webkitAudioContext
-      const ctx = (audio.current ||= new AC())
-      const t = ctx.currentTime
-      const o = ctx.createOscillator()
-      const g = ctx.createGain()
-      o.type = "sine"
-      o.frequency.setValueAtTime(420 + Math.random() * 80, t)
-      o.frequency.exponentialRampToValueAtTime(1500, t + 0.07)
-      g.gain.setValueAtTime(0.0001, t)
-      g.gain.exponentialRampToValueAtTime(0.16, t + 0.008)
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.16)
-      o.connect(g).connect(ctx.destination)
-      o.start(t)
-      o.stop(t + 0.18)
-    } catch {}
-  }
+      const AC = window.AudioContext || (window as any).webkitAudioContext;
+      const ctx = (audio.current ||= new AC());
+      const t = ctx.currentTime;
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(420 + Math.random() * 80, t);
+      o.frequency.exponentialRampToValueAtTime(1500, t + 0.07);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.16, t + 0.008);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
+      o.connect(g).connect(ctx.destination);
+      o.start(t);
+      o.stop(t + 0.18);
+    } catch {
+      return;
+    }
+  };
 
   const select = (i: number) => {
-    const kind = items[i]?.fx ?? (items[i]?.icon ? "pop" : "none")
-    setFx((f) => ({ i, n: f.n + 1 }))
-    plip()
-    const c = iconCenter(i)
-    if (c && kind === "drop") setTimeout(() => ripple(c.x, st.current.t.cy, 1.4), 430)
-    if (c && kind === "plane") ripple(c.x, c.y, 0.6)
+    const kind = items[i]?.fx ?? (items[i]?.icon ? 'pop' : 'none');
+    setFx((f) => ({ i, n: f.n + 1 }));
+    plip();
+    const c = iconCenter(i);
+    if (c && kind === 'drop') setTimeout(() => ripple(c.x, st.current.t.cy, 1.4), 430);
+    if (c && kind === 'plane') ripple(c.x, c.y, 0.6);
     if (i !== current) {
-      if (active === undefined) setInner(i)
-      onChange?.(i, items[i])
+      if (active === undefined) setInner(i);
+      onChange?.(i, items[i]);
     }
-  }
+  };
 
   const onKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return
-    e.preventDefault()
-    const n = (current + (e.key === "ArrowRight" ? 1 : -1) + items.length) % items.length
-    select(n)
-    itemRefs.current[n]?.focus()
-  }
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    e.preventDefault();
+    const n = (current + (e.key === 'ArrowRight' ? 1 : -1) + items.length) % items.length;
+    select(n);
+    itemRefs.current[n]?.focus();
+  };
 
   const onMove = (e: React.PointerEvent) => {
-    if (e.pointerType !== "mouse") return
-    const p = local(e.clientX, e.clientY)
-    const s = st.current
-    s.mouse.x = p.x
-    s.mouse.y = p.y
-    s.mouse.on = true
-    loop()
-  }
+    if (e.pointerType !== 'mouse') return;
+    const p = local(e.clientX, e.clientY);
+    const s = st.current;
+    s.mouse.x = p.x;
+    s.mouse.y = p.y;
+    s.mouse.on = true;
+    loop();
+  };
 
   return (
     <nav
       ref={navRef as any}
-      className={["nimbus-nav", className].filter(Boolean).join(" ")}
+      className={['nimbus-nav', className].filter(Boolean).join(' ')}
       data-tone={tone}
       data-gl={gl}
       data-compact={compact === undefined ? undefined : String(compact)}
-      data-refract={refract ? "on" : "off"}
+      data-refract={refract ? 'on' : 'off'}
       aria-label="Main"
       onKeyDown={onKeyDown}
       onPointerMove={onMove}
-      onPointerLeave={() => { st.current.mouse.on = false; loop() }}
-      onPointerDown={(e) => { const p = local(e.clientX, e.clientY); ripple(p.x, p.y, 0.8) }}
+      onPointerLeave={() => {
+        st.current.mouse.on = false;
+        loop();
+      }}
+      onPointerDown={(e) => {
+        const p = local(e.clientX, e.clientY);
+        ripple(p.x, p.y, 0.8);
+      }}
       style={style}
     >
       <style dangerouslySetInnerHTML={{ __html: NIMBUS_CSS }} />
-      <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
-        <filter id="nimbus-refract" x="0" y="0" width="100%" height="100%" colorInterpolationFilters="sRGB">
-          <feTurbulence type="fractalNoise" baseFrequency="0.006 0.02" numOctaves="2" seed="7" result="noise" />
+      <svg width="0" height="0" style={{ position: 'absolute' }} aria-hidden="true">
+        <filter
+          id="nimbus-refract"
+          x="0"
+          y="0"
+          width="100%"
+          height="100%"
+          colorInterpolationFilters="sRGB"
+        >
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.006 0.02"
+            numOctaves="2"
+            seed="7"
+            result="noise"
+          />
           <feGaussianBlur in="noise" stdDeviation="2" result="soft" />
-          <feDisplacementMap in="SourceGraphic" in2="soft" scale="60" xChannelSelector="R" yChannelSelector="G" />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="soft"
+            scale="60"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
         </filter>
       </svg>
       <span className="nimbus-glass" aria-hidden="true" />
       <canvas className="nimbus-water" ref={canvasRef} aria-hidden="true" />
       <span className="nimbus-drop" ref={dropRef} aria-hidden="true" />
       {items.map((it, i) => {
-        const kind = it.fx ?? "pop"
-        const playing = fx.i === i && kind !== "none"
+        const kind = it.fx ?? 'pop';
+        const playing = fx.i === i && kind !== 'none';
         const props = {
-          ref: (el: HTMLElement | null) => { itemRefs.current[i] = el },
-          className: "nimbus-item",
-          "aria-current": i === current ? ("page" as const) : undefined,
+          ref: (el: HTMLElement | null) => {
+            itemRefs.current[i] = el;
+          },
+          className: 'nimbus-item',
+          'aria-current': i === current ? ('page' as const) : undefined,
           onClick: (e: React.MouseEvent) => {
             if (it.href && e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
-              e.preventDefault()
+              e.preventDefault();
             }
-            select(i)
-          },
-        }
+            select(i);
+          }
+        };
         const content = (
           <>
             {it.icon && (
-              <span className="nv-ico" key={playing ? fx.n : 0} data-fx={playing ? kind : undefined} ref={(el) => { iconRefs.current[i] = el }}>
+              <span
+                className="nv-ico"
+                key={playing ? fx.n : 0}
+                data-fx={playing ? kind : undefined}
+                ref={(el) => {
+                  iconRefs.current[i] = el;
+                }}
+              >
                 {it.icon}
               </span>
             )}
             <span className="nimbus-label">{it.label}</span>
           </>
-        )
+        );
         return it.href ? (
-          <a key={it.label + i} {...(props as any)} href={it.href} aria-label={it.label} title={it.label}>{content}</a>
+          <a
+            key={it.label + i}
+            {...(props as any)}
+            href={it.href}
+            aria-label={it.label}
+            title={it.label}
+          >
+            {content}
+          </a>
         ) : (
-          <button key={it.label + i} {...(props as any)} type="button" aria-label={it.label} title={it.label}>{content}</button>
-        )
+          <button
+            key={it.label + i}
+            {...(props as any)}
+            type="button"
+            aria-label={it.label}
+            title={it.label}
+          >
+            {content}
+          </button>
+        );
       })}
     </nav>
-  )
+  );
 }
 
 /** alias for registries that import { Component } */
-export { LiquidNavbar as Component }
+export { LiquidNavbar as Component };
 
-export default LiquidNavbar
+export default LiquidNavbar;

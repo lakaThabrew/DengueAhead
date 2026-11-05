@@ -49,20 +49,38 @@ export default function Hero4() {
           item.prediction.status === 'EMERGING'
             ? 'Calibrated surge risk · High urban density'
             : item.prediction.status === 'PERSISTENT'
-            ? 'Continuous elevated transmission'
-            : 'Post-peak downward trajectory',
+              ? 'Continuous elevated transmission'
+              : 'Post-peak downward trajectory',
         status: item.prediction.status,
         color:
           item.prediction.status === 'EMERGING'
             ? 'amber'
             : item.prediction.status === 'PERSISTENT'
-            ? 'rose'
-            : 'sky'
+              ? 'rose'
+              : 'sky'
       }))
     : [
-        { areaId: 'LK-11', name: 'Colombo', desc: 'High urban density · Monsoon surge', status: 'EMERGING', color: 'amber' },
-        { areaId: 'LK-12', name: 'Gampaha', desc: 'Continuous elevated transmission', status: 'PERSISTENT', color: 'rose' },
-        { areaId: 'LK-21', name: 'Kandy', desc: 'Post-peak downward trajectory', status: 'COOLING', color: 'sky' }
+        {
+          areaId: 'LK-11',
+          name: 'Colombo',
+          desc: 'High urban density · Monsoon surge',
+          status: 'EMERGING',
+          color: 'amber'
+        },
+        {
+          areaId: 'LK-12',
+          name: 'Gampaha',
+          desc: 'Continuous elevated transmission',
+          status: 'PERSISTENT',
+          color: 'rose'
+        },
+        {
+          areaId: 'LK-21',
+          name: 'Kandy',
+          desc: 'Post-peak downward trajectory',
+          status: 'COOLING',
+          color: 'sky'
+        }
       ];
 
   // Forecast trend illustration (illustrative relative transmission index: 0-100)
@@ -72,7 +90,7 @@ export default function Hero4() {
     { label: 'W-2', val: 62, tag: '62%' },
     { label: 'W-1', val: 78, tag: '78%' },
     { label: 'W0', val: 90, tag: '90%' },
-    { label: 'W+1', val: 95, tag: '95%' },
+    { label: 'W+1', val: 95, tag: '95%' }
   ];
 
   useEffect(() => {
@@ -86,7 +104,7 @@ export default function Hero4() {
       }`}
       style={{
         fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-        isolation: 'isolate',
+        isolation: 'isolate'
       }}
       ref={heroRef}
     >
@@ -136,7 +154,7 @@ export default function Hero4() {
             className="absolute inset-0 z-0 bg-cover bg-center transition-all duration-700"
             style={{
               backgroundImage: `linear-gradient(180deg, rgba(5, 10, 20, 0.85) 0%, rgba(5, 10, 20, 0.92) 100%, rgba(5, 10, 20, 0.98) 100%), url('/images/hero-fogging.jpg')`,
-              backgroundPosition: 'center 25%',
+              backgroundPosition: 'center 25%'
             }}
           />
 
@@ -144,13 +162,13 @@ export default function Hero4() {
           <div
             className="pointer-events-none absolute top-0 right-10 w-[600px] h-[600px] rounded-full blur-[140px] opacity-25"
             style={{
-              background: 'radial-gradient(circle, #38bdf8 0%, #3b82f6 40%, transparent 70%)',
+              background: 'radial-gradient(circle, #38bdf8 0%, #3b82f6 40%, transparent 70%)'
             }}
           />
           <div
             className="pointer-events-none absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full blur-[140px] opacity-20"
             style={{
-              background: 'radial-gradient(circle, #f59e0b 0%, #d97706 40%, transparent 70%)',
+              background: 'radial-gradient(circle, #f59e0b 0%, #d97706 40%, transparent 70%)'
             }}
           />
 
@@ -175,7 +193,13 @@ export default function Hero4() {
 
                 {/* Subtitle with epidemiological grounding */}
                 <p className="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed font-normal mb-6">
-                  Combining weekly surveillance from Sri Lanka’s <strong className="text-white font-semibold">National Dengue Control Unit (NDCU)</strong> with <strong className="text-white font-semibold">Open-Meteo ERA5</strong> climate reanalysis, DengueAhead forecasts 7-day transmission spikes across all 25 districts with calibrated conformal uncertainty intervals.
+                  Combining weekly surveillance from Sri Lanka’s{' '}
+                  <strong className="text-white font-semibold">
+                    National Dengue Control Unit (NDCU)
+                  </strong>{' '}
+                  with <strong className="text-white font-semibold">Open-Meteo ERA5</strong> climate
+                  reanalysis, DengueAhead forecasts 7-day transmission spikes across all 25
+                  districts with calibrated conformal uncertainty intervals.
                 </p>
 
                 {/* Action Buttons — includes exact labels for test suite compatibility */}
@@ -184,7 +208,7 @@ export default function Hero4() {
                     onClick={() => navigate('/app/map')}
                     className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl font-bold text-sm text-white shadow-xl shadow-blue-600/30 hover:shadow-blue-500/50 hover:scale-[1.02] active:scale-[0.98] transition-all border-none cursor-pointer"
                     style={{
-                      background: 'linear-gradient(135deg, #2563eb 0%, #4338ca 100%)',
+                      background: 'linear-gradient(135deg, #2563eb 0%, #4338ca 100%)'
                     }}
                   >
                     <Compass className="w-4 h-4 text-sky-300" />
@@ -215,22 +239,36 @@ export default function Hero4() {
                       <div className="text-2xl sm:text-3xl font-black text-white tracking-tight">
                         {overview?.monitoredAreasCount ?? 25}
                       </div>
-                      <div className="text-[11px] font-bold text-sky-400 uppercase tracking-wider mt-1">Districts</div>
+                      <div className="text-[11px] font-bold text-sky-400 uppercase tracking-wider mt-1">
+                        Districts
+                      </div>
                       <div className="text-[11px] text-slate-400 mt-0.5">100% Coverage</div>
                     </div>
                     <div className="sm:px-4 pt-3 sm:pt-0 min-w-0">
-                      <div className="text-2xl sm:text-3xl font-black text-emerald-400 tracking-tight">0.118</div>
-                      <div className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider mt-1">Brier Score</div>
+                      <div className="text-2xl sm:text-3xl font-black text-emerald-400 tracking-tight">
+                        0.118
+                      </div>
+                      <div className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider mt-1">
+                        Brier Score
+                      </div>
                       <div className="text-[11px] text-slate-400 mt-0.5">Platt Calibrated</div>
                     </div>
                     <div className="sm:px-4 pt-3 sm:pt-0 min-w-0">
-                      <div className="text-2xl sm:text-3xl font-black text-amber-400 tracking-tight">80%</div>
-                      <div className="text-[11px] font-bold text-amber-400 uppercase tracking-wider mt-1">Conformal</div>
+                      <div className="text-2xl sm:text-3xl font-black text-amber-400 tracking-tight">
+                        80%
+                      </div>
+                      <div className="text-[11px] font-bold text-amber-400 uppercase tracking-wider mt-1">
+                        Conformal
+                      </div>
                       <div className="text-[11px] text-slate-400 mt-0.5">Finite Bound</div>
                     </div>
                     <div className="sm:pl-4 pt-3 sm:pt-0 min-w-0">
-                      <div className="text-2xl sm:text-3xl font-black text-indigo-400 tracking-tight">7-Day</div>
-                      <div className="text-[11px] font-bold text-indigo-400 uppercase tracking-wider mt-1">Lead Time</div>
+                      <div className="text-2xl sm:text-3xl font-black text-indigo-400 tracking-tight">
+                        7-Day
+                      </div>
+                      <div className="text-[11px] font-bold text-indigo-400 uppercase tracking-wider mt-1">
+                        Lead Time
+                      </div>
                       <div className="text-[11px] text-slate-400 mt-0.5">Weekly Forecast</div>
                     </div>
                   </div>
@@ -275,8 +313,8 @@ export default function Hero4() {
                             item.status === 'EMERGING'
                               ? 'border-amber-500/40 hover:border-amber-400'
                               : item.status === 'PERSISTENT'
-                              ? 'border-rose-500/40 hover:border-rose-400'
-                              : 'border-sky-500/40 hover:border-sky-400'
+                                ? 'border-rose-500/40 hover:border-rose-400'
+                                : 'border-sky-500/40 hover:border-sky-400'
                           } hover:bg-slate-950 transition-all cursor-pointer shadow-sm`}
                         >
                           <div className="flex items-center gap-2 min-w-0">
@@ -285,8 +323,8 @@ export default function Hero4() {
                                 item.status === 'EMERGING'
                                   ? 'bg-amber-500/20 text-amber-400'
                                   : item.status === 'PERSISTENT'
-                                  ? 'bg-rose-500/20 text-rose-400'
-                                  : 'bg-sky-500/20 text-sky-400'
+                                    ? 'bg-rose-500/20 text-rose-400'
+                                    : 'bg-sky-500/20 text-sky-400'
                               } flex items-center justify-center flex-shrink-0`}
                             >
                               {item.status === 'EMERGING' ? (
@@ -299,9 +337,14 @@ export default function Hero4() {
                             </div>
                             <div className="min-w-0">
                               <div className="text-xs font-bold text-white group-hover:text-sky-300 transition-colors truncate">
-                                {item.name} <span className="text-[10px] font-normal text-slate-400">({item.areaId})</span>
+                                {item.name}{' '}
+                                <span className="text-[10px] font-normal text-slate-400">
+                                  ({item.areaId})
+                                </span>
                               </div>
-                              <div className="text-[10px] text-slate-400 mt-0.5 truncate">{item.desc}</div>
+                              <div className="text-[10px] text-slate-400 mt-0.5 truncate">
+                                {item.desc}
+                              </div>
                             </div>
                           </div>
                           <span
@@ -309,8 +352,8 @@ export default function Hero4() {
                               item.status === 'EMERGING'
                                 ? 'bg-amber-500/25 text-amber-300 border border-amber-500/40'
                                 : item.status === 'PERSISTENT'
-                                ? 'bg-rose-500/25 text-rose-300 border border-rose-500/40'
-                                : 'bg-sky-500/25 text-sky-300 border border-sky-500/40'
+                                  ? 'bg-rose-500/25 text-rose-300 border border-rose-500/40'
+                                  : 'bg-sky-500/25 text-sky-300 border border-sky-500/40'
                             } flex-shrink-0 whitespace-nowrap`}
                           >
                             {item.status}
@@ -335,21 +378,26 @@ export default function Hero4() {
                     {/* Histogram bars with clear explicit height */}
                     <div className="flex items-end justify-between gap-1.5 h-20 pt-2 pb-1 border-b border-slate-800">
                       {forecastBars.map((b, i) => (
-                        <div key={b.label} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                        <div
+                          key={b.label}
+                          className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end"
+                        >
                           <span className="text-[9px] font-mono text-slate-400">{b.tag}</span>
                           <div
                             className={`w-full rounded-t-md transition-all ${
                               i === 5
                                 ? 'bg-gradient-to-t from-blue-600 via-sky-400 to-cyan-300 shadow-lg shadow-sky-400/40 ring-1 ring-sky-300'
                                 : i === 4
-                                ? 'bg-gradient-to-t from-rose-600 to-rose-400 shadow-sm shadow-rose-500/30'
-                                : i >= 2
-                                ? 'bg-gradient-to-t from-amber-600 to-amber-400 shadow-sm shadow-amber-500/20'
-                                : 'bg-slate-600'
+                                  ? 'bg-gradient-to-t from-rose-600 to-rose-400 shadow-sm shadow-rose-500/30'
+                                  : i >= 2
+                                    ? 'bg-gradient-to-t from-amber-600 to-amber-400 shadow-sm shadow-amber-500/20'
+                                    : 'bg-slate-600'
                             }`}
                             style={{ height: `${b.val}%`, minHeight: '8px' }}
                           />
-                          <span className="text-[10px] font-mono font-bold text-slate-300">{b.label}</span>
+                          <span className="text-[10px] font-mono font-bold text-slate-300">
+                            {b.label}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -379,7 +427,8 @@ export default function Hero4() {
           <div
             className="absolute top-0 left-0 right-0 h-[1px] pointer-events-none"
             style={{
-              background: 'linear-gradient(90deg, transparent 0%, rgba(56, 189, 248, 0.4) 50%, transparent 100%)',
+              background:
+                'linear-gradient(90deg, transparent 0%, rgba(56, 189, 248, 0.4) 50%, transparent 100%)'
             }}
           />
 
@@ -394,7 +443,9 @@ export default function Hero4() {
                 Driven by Biological &amp; Climatic Ground Truth
               </h2>
               <p className="text-base sm:text-lg text-slate-400 leading-relaxed max-w-2xl mx-auto">
-                Dengue transmission in Sri Lanka is tightly bound to vector life cycles, monsoon downpours, and urban micro-habitats. DengueAhead transforms these biological realities into 21 engineered predictive features.
+                Dengue transmission in Sri Lanka is tightly bound to vector life cycles, monsoon
+                downpours, and urban micro-habitats. DengueAhead transforms these biological
+                realities into 21 engineered predictive features.
               </p>
             </div>
 
@@ -420,7 +471,9 @@ export default function Hero4() {
                       Aedes aegypti Life Cycle
                     </h3>
                     <p className="text-sm text-slate-300 leading-relaxed mt-2">
-                      Diurnal vector with a temperature-governed 8–12 day extrinsic incubation period. DengueAhead incorporates multi-week historical case lags (1–8 weeks) to model virus replication within mosquito populations.
+                      Diurnal vector with a temperature-governed 8–12 day extrinsic incubation
+                      period. DengueAhead incorporates multi-week historical case lags (1–8 weeks)
+                      to model virus replication within mosquito populations.
                     </p>
                   </div>
                   <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs font-semibold text-slate-300">
@@ -450,7 +503,9 @@ export default function Hero4() {
                       Monsoon Precipitation &amp; Humidity
                     </h3>
                     <p className="text-sm text-slate-300 leading-relaxed mt-2">
-                      Southwest (Yala) and Northeast (Maha) monsoons supply the rainfall necessary for aquatic oviposition. Real-time ERA5 temperature and precipitation indices alert public health officers before outbreaks crest.
+                      Southwest (Yala) and Northeast (Maha) monsoons supply the rainfall necessary
+                      for aquatic oviposition. Real-time ERA5 temperature and precipitation indices
+                      alert public health officers before outbreaks crest.
                     </p>
                   </div>
                   <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs font-semibold text-slate-300">
@@ -480,7 +535,9 @@ export default function Hero4() {
                       Breeding Site &amp; Fogging Interventions
                     </h3>
                     <p className="text-sm text-slate-300 leading-relaxed mt-2">
-                      Pinpointing district risk allows Medical Officers of Health (MOH) to schedule targeted ULV thermal fogging and eliminate container breeding habitats prior to hospital admissions surges.
+                      Pinpointing district risk allows Medical Officers of Health (MOH) to schedule
+                      targeted ULV thermal fogging and eliminate container breeding habitats prior
+                      to hospital admissions surges.
                     </p>
                   </div>
                   <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs font-semibold text-slate-300">
@@ -499,15 +556,19 @@ export default function Hero4() {
           <div
             className="absolute top-0 left-0 right-0 h-[1px] pointer-events-none"
             style={{
-              background: 'linear-gradient(90deg, transparent 0%, rgba(99, 102, 241, 0.4) 50%, transparent 100%)',
+              background:
+                'linear-gradient(90deg, transparent 0%, rgba(99, 102, 241, 0.4) 50%, transparent 100%)'
             }}
           />
 
           <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
             <div className="text-center max-w-2xl mx-auto mb-10 space-y-3">
-              <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">System Architecture &amp; Methodology</h2>
+              <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                System Architecture &amp; Methodology
+              </h2>
               <p className="text-base text-slate-400 leading-relaxed">
-                End-to-end data pipeline from official epidemiological surveillance to calibrated operational forecasting.
+                End-to-end data pipeline from official epidemiological surveillance to calibrated
+                operational forecasting.
               </p>
             </div>
 
@@ -519,7 +580,9 @@ export default function Hero4() {
                 </div>
                 <h3 className="text-base font-bold text-white">NDCU Dengue Data</h3>
                 <p className="text-sm text-slate-300 leading-relaxed">
-                  Weekly dengue case counts ingested from the National Dengue Control Unit (NDCU) for all 25 Sri Lanka districts. SHA-256 snapshotting guarantees strict data provenance and immutability.
+                  Weekly dengue case counts ingested from the National Dengue Control Unit (NDCU)
+                  for all 25 Sri Lanka districts. SHA-256 snapshotting guarantees strict data
+                  provenance and immutability.
                 </p>
                 <div className="pt-3 border-t border-slate-800 text-xs font-semibold text-sky-400 flex items-center gap-1.5">
                   Surveillance Ingestion &bull; 25 Districts
@@ -533,7 +596,9 @@ export default function Hero4() {
                 </div>
                 <h3 className="text-base font-bold text-white">Feature Engineering</h3>
                 <p className="text-sm text-slate-300 leading-relaxed">
-                  21 engineered features including multi-week lagged case counts, seasonal epidemic indicators, and Open-Meteo ERA5 climate reanalysis variables (temperature, precipitation, relative humidity).
+                  21 engineered features including multi-week lagged case counts, seasonal epidemic
+                  indicators, and Open-Meteo ERA5 climate reanalysis variables (temperature,
+                  precipitation, relative humidity).
                 </p>
                 <div className="pt-3 border-t border-slate-800 text-xs font-semibold text-indigo-400 flex items-center gap-1.5">
                   Point-in-Time &bull; Zero Lookahead Leakage
@@ -547,7 +612,9 @@ export default function Hero4() {
                 </div>
                 <h3 className="text-base font-bold text-white">HGB Forecast + Calibration</h3>
                 <p className="text-sm text-slate-300 leading-relaxed">
-                  Histogram Gradient Boosting (HGB) model coupled with 80% split-conformal uncertainty intervals and Platt sigmoidal calibration (Brier score 0.118) for reliable hotspot probability estimation.
+                  Histogram Gradient Boosting (HGB) model coupled with 80% split-conformal
+                  uncertainty intervals and Platt sigmoidal calibration (Brier score 0.118) for
+                  reliable hotspot probability estimation.
                 </p>
                 <div className="pt-3 border-t border-slate-800 text-xs font-semibold text-emerald-400 flex items-center gap-1.5">
                   Calibrated Probabilities &bull; Finite Conformal
@@ -567,7 +634,8 @@ export default function Hero4() {
                 </div>
                 <h4 className="text-base font-bold text-white">Automated Ingestion</h4>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Weekly NDCU surveillance tables parsed, validated, and snapshotted with SHA-256 hashes to guarantee data provenance.
+                  Weekly NDCU surveillance tables parsed, validated, and snapshotted with SHA-256
+                  hashes to guarantee data provenance.
                 </p>
               </div>
 
@@ -577,7 +645,8 @@ export default function Hero4() {
                 </div>
                 <h4 className="text-base font-bold text-white">Platt Calibration</h4>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Sigmoidal probability calibration guarantees that a 70% hotspot risk score corresponds directly to a 70% empirical outbreak frequency.
+                  Sigmoidal probability calibration guarantees that a 70% hotspot risk score
+                  corresponds directly to a 70% empirical outbreak frequency.
                 </p>
               </div>
 
@@ -587,7 +656,8 @@ export default function Hero4() {
                 </div>
                 <h4 className="text-base font-bold text-white">Conformal Intervals</h4>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Non-parametric split conformal prediction intervals provide honest uncertainty bands so decision-makers never rely on point estimates alone.
+                  Non-parametric split conformal prediction intervals provide honest uncertainty
+                  bands so decision-makers never rely on point estimates alone.
                 </p>
               </div>
 
@@ -597,7 +667,8 @@ export default function Hero4() {
                 </div>
                 <h4 className="text-base font-bold text-white">Strict As-Of Cuts</h4>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Strict timestamp cutoffs eliminate lookahead bias during feature creation, ensuring backtests reflect genuine zero-leakage conditions.
+                  Strict timestamp cutoffs eliminate lookahead bias during feature creation,
+                  ensuring backtests reflect genuine zero-leakage conditions.
                 </p>
               </div>
             </div>
@@ -618,7 +689,8 @@ export default function Hero4() {
                   Ready to inspect real-time district forecasts?
                 </h3>
                 <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-                  Access 7-day predictive horizons, calibrated probability distributions, and conformal prediction bounds across all 25 Sri Lankan administrative districts.
+                  Access 7-day predictive horizons, calibrated probability distributions, and
+                  conformal prediction bounds across all 25 Sri Lankan administrative districts.
                 </p>
               </div>
 
@@ -627,7 +699,7 @@ export default function Hero4() {
                   onClick={() => navigate('/app/overview')}
                   className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-bold text-xs sm:text-sm text-white shadow-xl shadow-blue-600/30 hover:shadow-blue-500/50 hover:scale-[1.02] active:scale-[0.98] transition-all border-none cursor-pointer"
                   style={{
-                    background: 'linear-gradient(135deg, #2563eb 0%, #4f46e5 100%)',
+                    background: 'linear-gradient(135deg, #2563eb 0%, #4f46e5 100%)'
                   }}
                 >
                   <BarChart3 className="w-4 h-4" />
