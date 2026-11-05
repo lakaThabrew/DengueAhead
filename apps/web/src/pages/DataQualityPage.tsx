@@ -64,7 +64,8 @@ export const DataQualityPage: React.FC = () => {
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(180deg, rgba(6, 11, 24, 0.25) 0%, rgba(6, 11, 24, 0.92) 100%)',
+            background:
+              'linear-gradient(180deg, rgba(6, 11, 24, 0.25) 0%, rgba(6, 11, 24, 0.92) 100%)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'flex-end',
@@ -72,8 +73,23 @@ export const DataQualityPage: React.FC = () => {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10b981' }} />
-            <span style={{ fontSize: '11px', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            <span
+              style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                backgroundColor: '#10b981'
+              }}
+            />
+            <span
+              style={{
+                fontSize: '11px',
+                fontWeight: 700,
+                color: '#34d399',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em'
+              }}
+            >
               Multi-Source Ingestion &bull; SHA-256 Provenance &bull; Quarantine Gates
             </span>
           </div>
@@ -81,7 +97,8 @@ export const DataQualityPage: React.FC = () => {
             National Data Trust &amp; Surveillance Integrity
           </h2>
           <p style={{ fontSize: '13px', color: '#94a3b8', margin: 0, maxWidth: '640px' }}>
-            Real-time verification of NDCU epidemiological bulletins and Open-Meteo ERA5 atmospheric physics to guarantee trustworthy decision-support.
+            Real-time verification of NDCU epidemiological bulletins and Open-Meteo ERA5 atmospheric
+            physics to guarantee trustworthy decision-support.
           </p>
         </div>
       </div>
@@ -137,7 +154,8 @@ export const DataQualityPage: React.FC = () => {
               {health?.status ? health.status.toUpperCase() : 'CHECKING…'}
             </div>
             <div style={{ fontSize: '11px', color: 'var(--color-text-light)', marginTop: '4px' }}>
-              Service: <code style={{ color: '#38bdf8' }}>{health?.service ?? 'dengueahead-api'}</code>
+              Service:{' '}
+              <code style={{ color: '#38bdf8' }}>{health?.service ?? 'dengueahead-api'}</code>
             </div>
           </div>
 
@@ -241,7 +259,14 @@ export const DataQualityPage: React.FC = () => {
                         backgroundColor: isCurrent ? 'rgba(16, 185, 129, 0.05)' : 'transparent'
                       }}
                     >
-                      <td style={{ padding: '12px 12px', fontFamily: 'monospace', fontWeight: 600, color: '#f8fafc' }}>
+                      <td
+                        style={{
+                          padding: '12px 12px',
+                          fontFamily: 'monospace',
+                          fontWeight: 600,
+                          color: '#f8fafc'
+                        }}
+                      >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <span
                             style={{
@@ -255,10 +280,23 @@ export const DataQualityPage: React.FC = () => {
                           {src.sourceId}
                         </div>
                       </td>
-                      <td style={{ padding: '12px 12px', fontWeight: 700, color: isCurrent ? '#38bdf8' : '#94a3b8' }}>
+                      <td
+                        style={{
+                          padding: '12px 12px',
+                          fontWeight: 700,
+                          color: isCurrent ? '#38bdf8' : '#94a3b8'
+                        }}
+                      >
                         {src.observedPeriod}
                       </td>
-                      <td style={{ padding: '12px 12px', color: 'var(--color-text-muted)', fontFamily: 'monospace', fontSize: '12px' }}>
+                      <td
+                        style={{
+                          padding: '12px 12px',
+                          color: 'var(--color-text-muted)',
+                          fontFamily: 'monospace',
+                          fontSize: '12px'
+                        }}
+                      >
                         {src.retrievedAt}
                       </td>
                       <td
@@ -274,7 +312,9 @@ export const DataQualityPage: React.FC = () => {
                       <td style={{ padding: '12px 12px' }}>
                         <span
                           style={{
-                            backgroundColor: isCurrent ? 'rgba(16, 185, 129, 0.15)' : 'rgba(100, 116, 139, 0.15)',
+                            backgroundColor: isCurrent
+                              ? 'rgba(16, 185, 129, 0.15)'
+                              : 'rgba(100, 116, 139, 0.15)',
                             color: isCurrent ? '#34d399' : '#94a3b8',
                             border: `1px solid ${isCurrent ? 'rgba(16, 185, 129, 0.3)' : 'rgba(100, 116, 139, 0.3)'}`,
                             padding: '3px 8px',

@@ -140,7 +140,8 @@ a {
 }
 
 /* ── Select & input dark overrides ─────────────────────────────────────── */
-select, input {
+select,
+input {
   background-color: #0b1329 !important;
   color: #f8fafc !important;
   border-color: #1e293b !important;

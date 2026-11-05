@@ -103,7 +103,8 @@ export const MethodologyPage: React.FC = () => {
             style={{
               position: 'absolute',
               inset: 0,
-              background: 'linear-gradient(180deg, rgba(6, 11, 24, 0.2) 0%, rgba(6, 11, 24, 0.92) 100%)',
+              background:
+                'linear-gradient(180deg, rgba(6, 11, 24, 0.2) 0%, rgba(6, 11, 24, 0.92) 100%)',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'flex-end',
@@ -111,13 +112,29 @@ export const MethodologyPage: React.FC = () => {
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#38bdf8' }} />
-              <span style={{ fontSize: '12px', fontWeight: 700, color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              <span
+                style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  backgroundColor: '#38bdf8'
+                }}
+              />
+              <span
+                style={{
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  color: '#38bdf8',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em'
+                }}
+              >
                 Algorithmic Pipeline &bull; NDCU &bull; Reanalysis
               </span>
             </div>
             <p style={{ fontSize: '14px', color: '#e2e8f0', margin: 0, maxWidth: '640px' }}>
-              Multi-scale temporal models combining historical case lag autoregression with biological monsoon vector response thresholds.
+              Multi-scale temporal models combining historical case lag autoregression with
+              biological monsoon vector response thresholds.
             </p>
           </div>
         </div>
@@ -144,7 +161,9 @@ export const MethodologyPage: React.FC = () => {
             <p
               style={{ fontSize: '14px', color: '#94a3b8', lineHeight: 1.6, marginBottom: '16px' }}
             >
-              {'y_{i, t+1}'}: Total confirmed dengue cases reported in district <em>i</em> during target week <em>t+1</em>. Evaluated using Mean Absolute Error (MAE) and Root Mean Squared Error (RMSE).
+              {'y_{i, t+1}'}: Total confirmed dengue cases reported in district <em>i</em> during
+              target week <em>t+1</em>. Evaluated using Mean Absolute Error (MAE) and Root Mean
+              Squared Error (RMSE).
             </p>
             <h3
               style={{ fontSize: '16px', fontWeight: 700, color: '#f8fafc', marginBottom: '8px' }}
@@ -158,9 +177,7 @@ export const MethodologyPage: React.FC = () => {
             </p>
           </div>
 
-          <h3
-            style={{ fontSize: '16px', fontWeight: 700, color: '#f8fafc', marginBottom: '12px' }}
-          >
+          <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#f8fafc', marginBottom: '12px' }}>
             Taxonomy State Definitions
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -216,11 +233,19 @@ export const MethodologyPage: React.FC = () => {
                 style={{ width: '100%', height: '160px', objectFit: 'cover' }}
               />
               <div style={{ padding: '16px' }}>
-                <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#f8fafc', margin: '0 0 6px 0' }}>
+                <h4
+                  style={{
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    color: '#f8fafc',
+                    margin: '0 0 6px 0'
+                  }}
+                >
                   NDCU Weekly Surveillance
                 </h4>
                 <p style={{ fontSize: '12px', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
-                  Weekly district case tables ingested and verified under ISO bounds, tracking incubation waves.
+                  Weekly district case tables ingested and verified under ISO bounds, tracking
+                  incubation waves.
                 </p>
               </div>
             </div>
@@ -240,11 +265,19 @@ export const MethodologyPage: React.FC = () => {
                 style={{ width: '100%', height: '160px', objectFit: 'cover' }}
               />
               <div style={{ padding: '16px' }}>
-                <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#f8fafc', margin: '0 0 6px 0' }}>
+                <h4
+                  style={{
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    color: '#f8fafc',
+                    margin: '0 0 6px 0'
+                  }}
+                >
                   ERA5 Climate Telemetry
                 </h4>
                 <p style={{ fontSize: '12px', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
-                  Daily rainfall accumulation, peak temperature, and relative humidity aggregated across district centroids.
+                  Daily rainfall accumulation, peak temperature, and relative humidity aggregated
+                  across district centroids.
                 </p>
               </div>
             </div>
@@ -264,11 +297,19 @@ export const MethodologyPage: React.FC = () => {
                 style={{ width: '100%', height: '160px', objectFit: 'cover' }}
               />
               <div style={{ padding: '16px' }}>
-                <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#f8fafc', margin: '0 0 6px 0' }}>
+                <h4
+                  style={{
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    color: '#f8fafc',
+                    margin: '0 0 6px 0'
+                  }}
+                >
                   PHI Surveillance Ground Truth
                 </h4>
                 <p style={{ fontSize: '12px', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
-                  Weekly district health office bulletin filings with cryptographic SHA-256 tamper-proof provenance.
+                  Weekly district health office bulletin filings with cryptographic SHA-256
+                  tamper-proof provenance.
                 </p>
               </div>
             </div>

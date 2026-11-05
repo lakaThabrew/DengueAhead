@@ -26,14 +26,54 @@ const API_BASE: string =
 
 export const APP_NAV_ITEMS: (LiquidNavItem & { path: string })[] = [
   { label: 'Home', path: '/', icon: <Home style={{ width: 17, height: 17 }} />, fx: 'glow' },
-  { label: 'Overview', path: '/app/overview', icon: <BarChart3 style={{ width: 17, height: 17 }} />, fx: 'pop' },
-  { label: 'Risk Map', path: '/app/map', icon: <Compass style={{ width: 17, height: 17 }} />, fx: 'spin' },
-  { label: 'Compare', path: '/app/compare', icon: <Layers style={{ width: 17, height: 17 }} />, fx: 'wave' },
-  { label: 'History', path: '/app/history', icon: <TrendingUp style={{ width: 17, height: 17 }} />, fx: 'plane' },
-  { label: 'Model Card', path: '/app/model', icon: <Cpu style={{ width: 17, height: 17 }} />, fx: 'glow' },
-  { label: 'Data & Trust', path: '/app/data-quality', icon: <ShieldCheck style={{ width: 17, height: 17 }} />, fx: 'drop' },
-  { label: 'Methodology', path: '/methodology', icon: <FileText style={{ width: 17, height: 17 }} />, fx: 'wave' },
-  { label: 'About Team', path: '/about', icon: <Users style={{ width: 17, height: 17 }} />, fx: 'pop' }
+  {
+    label: 'Overview',
+    path: '/app/overview',
+    icon: <BarChart3 style={{ width: 17, height: 17 }} />,
+    fx: 'pop'
+  },
+  {
+    label: 'Risk Map',
+    path: '/app/map',
+    icon: <Compass style={{ width: 17, height: 17 }} />,
+    fx: 'spin'
+  },
+  {
+    label: 'Compare',
+    path: '/app/compare',
+    icon: <Layers style={{ width: 17, height: 17 }} />,
+    fx: 'wave'
+  },
+  {
+    label: 'History',
+    path: '/app/history',
+    icon: <TrendingUp style={{ width: 17, height: 17 }} />,
+    fx: 'plane'
+  },
+  {
+    label: 'Model Card',
+    path: '/app/model',
+    icon: <Cpu style={{ width: 17, height: 17 }} />,
+    fx: 'glow'
+  },
+  {
+    label: 'Data & Trust',
+    path: '/app/data-quality',
+    icon: <ShieldCheck style={{ width: 17, height: 17 }} />,
+    fx: 'drop'
+  },
+  {
+    label: 'Methodology',
+    path: '/methodology',
+    icon: <FileText style={{ width: 17, height: 17 }} />,
+    fx: 'wave'
+  },
+  {
+    label: 'About Team',
+    path: '/about',
+    icon: <Users style={{ width: 17, height: 17 }} />,
+    fx: 'pop'
+  }
 ];
 
 interface AppNavbarProps {
@@ -91,9 +131,7 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({
             }}
           />
           <span style={{ letterSpacing: '0.01em' }}>
-            <strong style={{ color: '#38BDF8', fontWeight: 700 }}>
-              DengueAhead Intelligence:
-            </strong>{' '}
+            <strong style={{ color: '#38BDF8', fontWeight: 700 }}>DengueAhead Intelligence:</strong>{' '}
             Non-clinical decision-support system. Does not diagnose, prescribe, or autonomously
             direct medical interventions.{' '}
             <button
@@ -358,7 +396,11 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({
             }}
             aria-label="Toggle navigation menu"
           >
-            {mobileMenuOpen ? <X style={{ width: 18, height: 18 }} /> : <Menu style={{ width: 18, height: 18 }} />}
+            {mobileMenuOpen ? (
+              <X style={{ width: 18, height: 18 }} />
+            ) : (
+              <Menu style={{ width: 18, height: 18 }} />
+            )}
           </button>
         </div>
       </header>
@@ -415,4 +457,3 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({
     </div>
   );
 };
-

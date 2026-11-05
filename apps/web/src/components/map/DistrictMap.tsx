@@ -18,40 +18,43 @@ interface DistrictMapProps {
 }
 
 // Authoritative district centre coordinates (ISO 3166-2:LK)
-const DISTRICT_CENTRES: Record<string, { name: string; lat: number; lon: number; province: string }> = {
-  'LK-11': { name: 'Colombo',       lat: 6.9271,  lon: 79.8612, province: 'Western' },
-  'LK-12': { name: 'Gampaha',       lat: 7.0837,  lon: 80.0144, province: 'Western' },
-  'LK-13': { name: 'Kalutara',      lat: 6.5854,  lon: 80.1954, province: 'Western' },
-  'LK-21': { name: 'Kandy',         lat: 7.2906,  lon: 80.6337, province: 'Central' },
-  'LK-22': { name: 'Matale',        lat: 7.4675,  lon: 80.6234, province: 'Central' },
-  'LK-23': { name: 'Nuwara Eliya',  lat: 6.9497,  lon: 80.7891, province: 'Central' },
-  'LK-31': { name: 'Galle',         lat: 6.0535,  lon: 80.2210, province: 'Southern' },
-  'LK-32': { name: 'Matara',        lat: 5.9549,  lon: 80.5550, province: 'Southern' },
-  'LK-33': { name: 'Hambantota',    lat: 6.1429,  lon: 81.1212, province: 'Southern' },
-  'LK-41': { name: 'Jaffna',        lat: 9.6615,  lon: 80.0255, province: 'Northern' },
-  'LK-42': { name: 'Kilinochchi',   lat: 9.3803,  lon: 80.4037, province: 'Northern' },
-  'LK-43': { name: 'Mannar',        lat: 8.9810,  lon: 79.9044, province: 'Northern' },
-  'LK-44': { name: 'Vavuniya',      lat: 8.7514,  lon: 80.4979, province: 'Northern' },
-  'LK-45': { name: 'Mullaitivu',    lat: 9.2671,  lon: 80.8122, province: 'Northern' },
-  'LK-51': { name: 'Batticaloa',    lat: 7.7170,  lon: 81.7003, province: 'Eastern' },
-  'LK-52': { name: 'Ampara',        lat: 7.2964,  lon: 81.6747, province: 'Eastern' },
-  'LK-53': { name: 'Trincomalee',   lat: 8.5874,  lon: 81.2152, province: 'Eastern' },
-  'LK-61': { name: 'Kurunegala',    lat: 7.4867,  lon: 80.3647, province: 'North Western' },
-  'LK-62': { name: 'Puttalam',      lat: 8.0362,  lon: 79.8283, province: 'North Western' },
-  'LK-71': { name: 'Anuradhapura',  lat: 8.3114,  lon: 80.4037, province: 'North Central' },
-  'LK-72': { name: 'Polonnaruwa',   lat: 7.9403,  lon: 81.0188, province: 'North Central' },
-  'LK-81': { name: 'Badulla',       lat: 6.9934,  lon: 81.0550, province: 'Uva' },
-  'LK-82': { name: 'Monaragala',    lat: 6.8728,  lon: 81.3507, province: 'Uva' },
-  'LK-91': { name: 'Ratnapura',     lat: 6.6828,  lon: 80.3992, province: 'Sabaragamuwa' },
-  'LK-92': { name: 'Kegalle',       lat: 7.2513,  lon: 80.3464, province: 'Sabaragamuwa' },
+const DISTRICT_CENTRES: Record<
+  string,
+  { name: string; lat: number; lon: number; province: string }
+> = {
+  'LK-11': { name: 'Colombo', lat: 6.9271, lon: 79.8612, province: 'Western' },
+  'LK-12': { name: 'Gampaha', lat: 7.0837, lon: 80.0144, province: 'Western' },
+  'LK-13': { name: 'Kalutara', lat: 6.5854, lon: 80.1954, province: 'Western' },
+  'LK-21': { name: 'Kandy', lat: 7.2906, lon: 80.6337, province: 'Central' },
+  'LK-22': { name: 'Matale', lat: 7.4675, lon: 80.6234, province: 'Central' },
+  'LK-23': { name: 'Nuwara Eliya', lat: 6.9497, lon: 80.7891, province: 'Central' },
+  'LK-31': { name: 'Galle', lat: 6.0535, lon: 80.221, province: 'Southern' },
+  'LK-32': { name: 'Matara', lat: 5.9549, lon: 80.555, province: 'Southern' },
+  'LK-33': { name: 'Hambantota', lat: 6.1429, lon: 81.1212, province: 'Southern' },
+  'LK-41': { name: 'Jaffna', lat: 9.6615, lon: 80.0255, province: 'Northern' },
+  'LK-42': { name: 'Kilinochchi', lat: 9.3803, lon: 80.4037, province: 'Northern' },
+  'LK-43': { name: 'Mannar', lat: 8.981, lon: 79.9044, province: 'Northern' },
+  'LK-44': { name: 'Vavuniya', lat: 8.7514, lon: 80.4979, province: 'Northern' },
+  'LK-45': { name: 'Mullaitivu', lat: 9.2671, lon: 80.8122, province: 'Northern' },
+  'LK-51': { name: 'Batticaloa', lat: 7.717, lon: 81.7003, province: 'Eastern' },
+  'LK-52': { name: 'Ampara', lat: 7.2964, lon: 81.6747, province: 'Eastern' },
+  'LK-53': { name: 'Trincomalee', lat: 8.5874, lon: 81.2152, province: 'Eastern' },
+  'LK-61': { name: 'Kurunegala', lat: 7.4867, lon: 80.3647, province: 'North Western' },
+  'LK-62': { name: 'Puttalam', lat: 8.0362, lon: 79.8283, province: 'North Western' },
+  'LK-71': { name: 'Anuradhapura', lat: 8.3114, lon: 80.4037, province: 'North Central' },
+  'LK-72': { name: 'Polonnaruwa', lat: 7.9403, lon: 81.0188, province: 'North Central' },
+  'LK-81': { name: 'Badulla', lat: 6.9934, lon: 81.055, province: 'Uva' },
+  'LK-82': { name: 'Monaragala', lat: 6.8728, lon: 81.3507, province: 'Uva' },
+  'LK-91': { name: 'Ratnapura', lat: 6.6828, lon: 80.3992, province: 'Sabaragamuwa' },
+  'LK-92': { name: 'Kegalle', lat: 7.2513, lon: 80.3464, province: 'Sabaragamuwa' }
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  EMERGING:   '#F59E0B',
+  EMERGING: '#F59E0B',
   PERSISTENT: '#F43F5E',
-  COOLING:    '#06B6D4',
-  STABLE:     '#10B981',
-  WITHHELD:   '#94A3B8',
+  COOLING: '#06B6D4',
+  STABLE: '#10B981',
+  WITHHELD: '#94A3B8'
 };
 
 function getStatusColor(status?: PredictionStatus): string {
@@ -60,11 +63,11 @@ function getStatusColor(status?: PredictionStatus): string {
 
 function getStatusLabel(status?: PredictionStatus): string {
   const labels: Record<string, string> = {
-    EMERGING:   'Emerging Hotspot',
+    EMERGING: 'Emerging Hotspot',
     PERSISTENT: 'Persistent High',
-    COOLING:    'Cooling Trend',
-    STABLE:     'Stable Baseline',
-    WITHHELD:   'Withheld',
+    COOLING: 'Cooling Trend',
+    STABLE: 'Stable Baseline',
+    WITHHELD: 'Withheld'
   };
   return labels[status ?? ''] ?? '—';
 }
@@ -79,8 +82,8 @@ interface HoverInfo {
 
 // Build a DivIcon HTML string for a district pin
 function pinHtml(name: string, color: string, selected: boolean): string {
-  const dotSize  = selected ? 14 : 10;
-  const ring     = selected
+  const dotSize = selected ? 14 : 10;
+  const ring = selected
     ? `<div style="position:absolute;inset:-4px;border-radius:50%;border:2px solid ${color};opacity:0.5;"></div>`
     : '';
   return `
@@ -106,14 +109,14 @@ function pinHtml(name: string, color: string, selected: boolean): string {
 export const DistrictMap: React.FC<DistrictMapProps> = ({
   districts = [],
   selectedAreaId,
-  onSelectDistrict,
+  onSelectDistrict
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const mapRef        = useRef<any>(null);
+  const mapRef = useRef<any>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const markersRef    = useRef<any[]>([]);
-  const [hoverInfo, setHoverInfo]     = useState<HoverInfo | null>(null);
+  const markersRef = useRef<any[]>([]);
+  const [hoverInfo, setHoverInfo] = useState<HoverInfo | null>(null);
   const [leafletReady, setLeafletReady] = useState(false);
 
   // ── Init map once on mount ────────────────────────────────────────────────
@@ -128,12 +131,13 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
         zoom: 7,
         zoomControl: true,
         attributionControl: true,
-        scrollWheelZoom: true,
+        scrollWheelZoom: true
       });
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 19,
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19
       }).addTo(map);
 
       mapRef.current = map;
@@ -146,7 +150,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
         mapRef.current = null;
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ── Place / refresh markers whenever map is ready or data/selection changes ─
@@ -161,31 +165,31 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       const districtMap = new Map(districts.map((d) => [d.areaId, d]));
 
       Object.entries(DISTRICT_CENTRES).forEach(([areaId, centre]) => {
-        const d          = districtMap.get(areaId);
-        const color      = getStatusColor(d?.status);
+        const d = districtMap.get(areaId);
+        const color = getStatusColor(d?.status);
         const isSelected = areaId === selectedAreaId;
 
         const icon = L.divIcon({
-          html:      pinHtml(centre.name, color, isSelected),
-          className: '',          // clear leaflet's default white box
-          iconSize:  [0, 0],      // positioned by the HTML itself
-          iconAnchor:[7, 7],      // anchor at dot centre
+          html: pinHtml(centre.name, color, isSelected),
+          className: '', // clear leaflet's default white box
+          iconSize: [0, 0], // positioned by the HTML itself
+          iconAnchor: [7, 7] // anchor at dot centre
         });
 
         const marker = L.marker([centre.lat, centre.lon], {
           icon,
-          title:    centre.name,
+          title: centre.name,
           // @ts-expect-error – custom property for bookkeeping
-          areaId,
+          areaId
         });
 
         marker.on('mouseover', () => {
           setHoverInfo({
             areaId,
-            name:     centre.name,
+            name: centre.name,
             province: centre.province,
-            status:   d?.status,
-            pointForecast: d?.pointForecast,
+            status: d?.status,
+            pointForecast: d?.pointForecast
           });
         });
 
@@ -201,27 +205,30 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
         markersRef.current.push(marker);
       });
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [leafletReady, districts, selectedAreaId]);
 
   return (
-    <div style={{
-      position: 'relative',
-      borderRadius: '16px',
-      overflow: 'hidden',
-      border: '1px solid #1E293B',
-      boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-    }}>
-
+    <div
+      style={{
+        position: 'relative',
+        borderRadius: '16px',
+        overflow: 'hidden',
+        border: '1px solid #1E293B',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.3)'
+      }}
+    >
       {/* ── Header ── */}
-      <div style={{
-        padding: '12px 18px',
-        backgroundColor: '#0B1329',
-        borderBottom: '1px solid #1E293B',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}>
+      <div
+        style={{
+          padding: '12px 18px',
+          backgroundColor: '#0B1329',
+          borderBottom: '1px solid #1E293B',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}
+      >
         <div>
           <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: '#F8FAFC' }}>
             Sri Lanka — District Map
@@ -230,12 +237,17 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
             25 districts · hover for details · click to select
           </p>
         </div>
-        <span style={{
-          fontSize: '10px', fontWeight: 600, color: '#38BDF8',
-          backgroundColor: 'rgba(56,189,248,0.1)',
-          border: '1px solid rgba(56,189,248,0.25)',
-          borderRadius: '9999px', padding: '3px 10px',
-        }}>
+        <span
+          style={{
+            fontSize: '10px',
+            fontWeight: 600,
+            color: '#38BDF8',
+            backgroundColor: 'rgba(56,189,248,0.1)',
+            border: '1px solid rgba(56,189,248,0.25)',
+            borderRadius: '9999px',
+            padding: '3px 10px'
+          }}
+        >
           LIVE
         </span>
       </div>
@@ -262,18 +274,30 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            gap: '12px',
+            gap: '12px'
           }}
         >
           {/* Left: name + province + status */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
-            <div style={{
-              width: '10px', height: '10px', borderRadius: '50%', flexShrink: 0,
-              backgroundColor: getStatusColor(hoverInfo.status),
-              boxShadow: `0 0 8px ${getStatusColor(hoverInfo.status)}`,
-            }} />
+            <div
+              style={{
+                width: '10px',
+                height: '10px',
+                borderRadius: '50%',
+                flexShrink: 0,
+                backgroundColor: getStatusColor(hoverInfo.status),
+                boxShadow: `0 0 8px ${getStatusColor(hoverInfo.status)}`
+              }}
+            />
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: '15px', fontWeight: 800, color: '#F8FAFC', whiteSpace: 'nowrap' }}>
+              <div
+                style={{
+                  fontSize: '15px',
+                  fontWeight: 800,
+                  color: '#F8FAFC',
+                  whiteSpace: 'nowrap'
+                }}
+              >
                 {hoverInfo.name}
                 <span style={{ fontSize: '11px', color: '#64748B', marginLeft: '6px' }}>
                   {hoverInfo.areaId}
@@ -282,7 +306,13 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
               <div style={{ fontSize: '11px', color: '#64748B' }}>
                 {hoverInfo.province} Province
                 {hoverInfo.status && (
-                  <span style={{ color: getStatusColor(hoverInfo.status), fontWeight: 700, marginLeft: '8px' }}>
+                  <span
+                    style={{
+                      color: getStatusColor(hoverInfo.status),
+                      fontWeight: 700,
+                      marginLeft: '8px'
+                    }}
+                  >
                     · {getStatusLabel(hoverInfo.status)}
                   </span>
                 )}
@@ -294,10 +324,20 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
           <div style={{ textAlign: 'right', flexShrink: 0 }}>
             {hoverInfo.pointForecast != null ? (
               <>
-                <div style={{ fontSize: '18px', fontWeight: 800, color: '#38BDF8', fontFamily: 'monospace', lineHeight: 1 }}>
+                <div
+                  style={{
+                    fontSize: '18px',
+                    fontWeight: 800,
+                    color: '#38BDF8',
+                    fontFamily: 'monospace',
+                    lineHeight: 1
+                  }}
+                >
                   {hoverInfo.pointForecast}
                 </div>
-                <div style={{ fontSize: '10px', color: '#64748B', marginTop: '2px' }}>cases (t+1)</div>
+                <div style={{ fontSize: '10px', color: '#64748B', marginTop: '2px' }}>
+                  cases (t+1)
+                </div>
               </>
             ) : (
               <span style={{ fontSize: '11px', color: '#475569' }}>No forecast data</span>
@@ -307,16 +347,18 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       )}
 
       {/* ── Footer ── */}
-      <div style={{
-        padding: '8px 18px',
-        backgroundColor: '#0B1329',
-        borderTop: '1px solid #1E293B',
-        fontSize: '11px',
-        color: '#475569',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}>
+      <div
+        style={{
+          padding: '8px 18px',
+          backgroundColor: '#0B1329',
+          borderTop: '1px solid #1E293B',
+          fontSize: '11px',
+          color: '#475569',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}
+      >
         <span>Hover a pin to preview · Click to select district</span>
         <span style={{ color: '#334155' }}>© OpenStreetMap</span>
       </div>

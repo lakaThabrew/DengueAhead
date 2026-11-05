@@ -53,12 +53,17 @@ export const HistoryPage: React.FC = () => {
   const replaySamples: ReplaySample[] = backtests?.data?.length
     ? backtests.data.map((bt, idx) => ({
         week: bt.testRange.endWeek,
-        district: idx === 0 ? 'Colombo (LK-11)' : idx === 1 ? 'Gampaha (LK-12)' : 'Kalutara (LK-13)',
+        district:
+          idx === 0 ? 'Colombo (LK-11)' : idx === 1 ? 'Gampaha (LK-12)' : 'Kalutara (LK-13)',
         asOfDate: bt.testRange.startWeek,
         forecast: Math.round(bt.mae * 10),
         actual: Math.round(bt.mae * 10 + (idx % 2 === 0 ? 6 : -3)),
-        naiveForecast: Math.round((bt.baselines.find((b) => b.baselineName.includes('Naive'))?.mae ?? 24) * 6),
-        seasonalForecast: Math.round((bt.baselines.find((b) => b.baselineName.includes('Seasonal'))?.mae ?? 22) * 7)
+        naiveForecast: Math.round(
+          (bt.baselines.find((b) => b.baselineName.includes('Naive'))?.mae ?? 24) * 6
+        ),
+        seasonalForecast: Math.round(
+          (bt.baselines.find((b) => b.baselineName.includes('Seasonal'))?.mae ?? 22) * 7
+        )
       }))
     : HISTORICAL_WEEKS;
 
@@ -139,7 +144,8 @@ export const HistoryPage: React.FC = () => {
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(180deg, rgba(6, 11, 24, 0.2) 0%, rgba(6, 11, 24, 0.9) 100%)',
+            background:
+              'linear-gradient(180deg, rgba(6, 11, 24, 0.2) 0%, rgba(6, 11, 24, 0.9) 100%)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'flex-end',
@@ -147,8 +153,23 @@ export const HistoryPage: React.FC = () => {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#f59e0b' }} />
-            <span style={{ fontSize: '11px', fontWeight: 700, color: '#fbbf24', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            <span
+              style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                backgroundColor: '#f59e0b'
+              }}
+            />
+            <span
+              style={{
+                fontSize: '11px',
+                fontWeight: 700,
+                color: '#fbbf24',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em'
+              }}
+            >
               Historical Out-of-Time Verification &bull; No Data Leakage
             </span>
           </div>
@@ -178,9 +199,9 @@ export const HistoryPage: React.FC = () => {
       >
         <span>🔒</span>
         <span>
-          <strong style={{ color: '#7dd3fc' }}>Temporal Leakage Guard:</strong> Features generated strictly as of{' '}
-          <code style={{ color: '#38bdf8' }}>{currentSample.asOfDate}</code>. Zero surveillance reports or weather observations
-          after this timestamp were accessed.
+          <strong style={{ color: '#7dd3fc' }}>Temporal Leakage Guard:</strong> Features generated
+          strictly as of <code style={{ color: '#38bdf8' }}>{currentSample.asOfDate}</code>. Zero
+          surveillance reports or weather observations after this timestamp were accessed.
         </span>
       </div>
 

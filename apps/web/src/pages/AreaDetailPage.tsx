@@ -139,17 +139,36 @@ export const AreaDetailPage: React.FC<AreaDetailPageProps> = ({ areaId: propArea
               style={{
                 position: 'absolute',
                 inset: 0,
-                background: 'linear-gradient(180deg, rgba(6, 11, 24, 0.15) 0%, rgba(6, 11, 24, 0.88) 100%)',
+                background:
+                  'linear-gradient(180deg, rgba(6, 11, 24, 0.15) 0%, rgba(6, 11, 24, 0.88) 100%)',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'flex-end',
                 padding: '20px 24px'
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#f59e0b' }} />
-                <span style={{ fontSize: '11px', fontWeight: 700, color: '#fbbf24', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                  Micro-Habitat Ecology &bull; Feature Importance Drivers &bull; Conformal Uncertainty
+              <div
+                style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}
+              >
+                <span
+                  style={{
+                    width: '8px',
+                    height: '8px',
+                    borderRadius: '50%',
+                    backgroundColor: '#f59e0b'
+                  }}
+                />
+                <span
+                  style={{
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    color: '#fbbf24',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.08em'
+                  }}
+                >
+                  Micro-Habitat Ecology &bull; Feature Importance Drivers &bull; Conformal
+                  Uncertainty
                 </span>
               </div>
               <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#ffffff', margin: 0 }}>
@@ -168,70 +187,75 @@ export const AreaDetailPage: React.FC<AreaDetailPageProps> = ({ areaId: propArea
               boxShadow: 'var(--shadow-sm)'
             }}
           >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
-              flexWrap: 'wrap',
-              gap: '16px'
-            }}
-          >
-            <div>
-              <div
-                style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '4px' }}
-              >
-                <h1
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                flexWrap: 'wrap',
+                gap: '16px'
+              }}
+            >
+              <div>
+                <div
                   style={{
-                    fontSize: '28px',
-                    fontWeight: 800,
-                    color: 'var(--color-navy)',
-                    margin: 0
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    marginBottom: '4px'
                   }}
                 >
-                  {area.name} District
-                </h1>
-                {prediction && <StatusBadge status={prediction.status} />}
-              </div>
-              <div
-                style={{
-                  fontSize: '13px',
-                  color: 'var(--color-text-muted)',
-                  display: 'flex',
-                  gap: '16px',
-                  flexWrap: 'wrap'
-                }}
-              >
-                <span>
-                  Area ID: <code style={{ fontWeight: 600 }}>{area.areaId}</code>
-                </span>
-                <span>
-                  Level: <strong style={{ textTransform: 'capitalize' }}>{area.level}</strong>
-                </span>
-                {area.population && (
+                  <h1
+                    style={{
+                      fontSize: '28px',
+                      fontWeight: 800,
+                      color: 'var(--color-navy)',
+                      margin: 0
+                    }}
+                  >
+                    {area.name} District
+                  </h1>
+                  {prediction && <StatusBadge status={prediction.status} />}
+                </div>
+                <div
+                  style={{
+                    fontSize: '13px',
+                    color: 'var(--color-text-muted)',
+                    display: 'flex',
+                    gap: '16px',
+                    flexWrap: 'wrap'
+                  }}
+                >
                   <span>
-                    Population: <strong>{area.population.toLocaleString()}</strong>
+                    Area ID: <code style={{ fontWeight: 600 }}>{area.areaId}</code>
                   </span>
-                )}
-                {area.centroid && (
                   <span>
-                    Centroid: ({area.centroid.latitude.toFixed(4)}°N,{' '}
-                    {area.centroid.longitude.toFixed(4)}°E)
+                    Level: <strong style={{ textTransform: 'capitalize' }}>{area.level}</strong>
                   </span>
-                )}
+                  {area.population && (
+                    <span>
+                      Population: <strong>{area.population.toLocaleString()}</strong>
+                    </span>
+                  )}
+                  {area.centroid && (
+                    <span>
+                      Centroid: ({area.centroid.latitude.toFixed(4)}°N,{' '}
+                      {area.centroid.longitude.toFixed(4)}°E)
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
 
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => navigate(`/app/compare?areaIds=${area.areaId}`)}
-            >
-              Compare with Another District
-            </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => navigate(`/app/compare?areaIds=${area.areaId}`)}
+              >
+                Compare with Another District
+              </Button>
+            </div>
           </div>
-        </div>
-      </>
+        </>
       ) : null}
 
       {/* Current Forecast KPI Card */}
@@ -373,7 +397,8 @@ export const AreaDetailPage: React.FC<AreaDetailPageProps> = ({ areaId: propArea
         <div
           style={{
             backgroundColor: '#070E22',
-            backgroundImage: 'radial-gradient(ellipse at 50% 0%, rgba(56, 189, 248, 0.08) 0%, #070E22 80%)',
+            backgroundImage:
+              'radial-gradient(ellipse at 50% 0%, rgba(56, 189, 248, 0.08) 0%, #070E22 80%)',
             borderRadius: '18px',
             border: '1px solid rgba(56, 189, 248, 0.22)',
             padding: '24px 28px',
@@ -391,7 +416,8 @@ export const AreaDetailPage: React.FC<AreaDetailPageProps> = ({ areaId: propArea
               left: 0,
               right: 0,
               height: '2px',
-              background: 'linear-gradient(90deg, transparent 0%, #38BDF8 30%, #818CF8 70%, transparent 100%)',
+              background:
+                'linear-gradient(90deg, transparent 0%, #38BDF8 30%, #818CF8 70%, transparent 100%)',
               opacity: 0.85
             }}
           />
@@ -411,7 +437,8 @@ export const AreaDetailPage: React.FC<AreaDetailPageProps> = ({ areaId: propArea
             </h3>
           </div>
           <p style={{ fontSize: '13px', color: '#94A3B8', margin: '4px 0 18px 0' }}>
-            Covariates with highest local attribution score for this specific district forecast horizon.
+            Covariates with highest local attribution score for this specific district forecast
+            horizon.
           </p>
 
           <div
@@ -433,10 +460,19 @@ export const AreaDetailPage: React.FC<AreaDetailPageProps> = ({ areaId: propArea
                     padding: '14px',
                     borderRadius: '12px',
                     border: `1px solid ${isSurge ? 'rgba(244, 63, 94, 0.3)' : 'rgba(52, 211, 153, 0.3)'}`,
-                    boxShadow: isSurge ? '0 0 15px rgba(244, 63, 94, 0.08)' : '0 0 15px rgba(52, 211, 153, 0.08)'
+                    boxShadow: isSurge
+                      ? '0 0 15px rgba(244, 63, 94, 0.08)'
+                      : '0 0 15px rgba(52, 211, 153, 0.08)'
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginBottom: '6px'
+                    }}
+                  >
                     <div
                       style={{
                         fontSize: '12px',
@@ -454,7 +490,14 @@ export const AreaDetailPage: React.FC<AreaDetailPageProps> = ({ areaId: propArea
                     )}
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: '6px' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'baseline',
+                      justifyContent: 'space-between',
+                      marginBottom: '6px'
+                    }}
+                  >
                     <div
                       style={{
                         fontSize: '15px',

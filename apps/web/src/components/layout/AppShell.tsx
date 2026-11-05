@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  BarChart3,
-  Compass,
-  Layers,
-  TrendingUp,
-  Cpu,
-  ShieldCheck,
-  Shield
-} from 'lucide-react';
+import { BarChart3, Compass, Layers, TrendingUp, Cpu, ShieldCheck, Shield } from 'lucide-react';
 import { navigate } from '../../lib/router.js';
 import { AppNavbar } from './AppNavbar.js';
 import { AppFooter } from './AppFooter.js';
@@ -127,10 +119,12 @@ export const AppShell: React.FC<AppShellProps> = ({ children, currentPath }) => 
         </nav>
 
         {/* Main Content Area */}
-        <main id="main-content" className="app-main" style={{ display: 'flex', flexDirection: 'column', minHeight: '100%' }}>
-          <div style={{ flex: 1, paddingBottom: '32px' }}>
-            {children}
-          </div>
+        <main
+          id="main-content"
+          className="app-main"
+          style={{ display: 'flex', flexDirection: 'column', minHeight: '100%' }}
+        >
+          <div style={{ flex: 1, paddingBottom: '32px' }}>{children}</div>
           <div style={{ margin: '0 -32px -32px -32px' }}>
             <AppFooter />
           </div>

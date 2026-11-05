@@ -68,9 +68,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
               {icon}
             </div>
           )}
-          <span style={{ fontSize: '13px', color: '#94A3B8', fontWeight: 600 }}>
-            {label}
-          </span>
+          <span style={{ fontSize: '13px', color: '#94A3B8', fontWeight: 600 }}>{label}</span>
         </div>
 
         {trendSymbol && (
@@ -110,9 +108,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
       </div>
 
       {subtitle && (
-        <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 500 }}>
-          {subtitle}
-        </span>
+        <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 500 }}>{subtitle}</span>
       )}
     </div>
   );

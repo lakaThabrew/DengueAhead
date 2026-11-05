@@ -9,7 +9,7 @@ export default defineConfig({
     host: true
   },
   optimizeDeps: {
-    include: ['leaflet'],
+    include: ['leaflet']
   },
   test: {
     globals: true,

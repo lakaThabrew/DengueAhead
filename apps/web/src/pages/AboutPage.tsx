@@ -31,10 +31,10 @@ export const AboutPage: React.FC = () => {
           About DengueAhead
         </h1>
         <p style={{ fontSize: '16px', color: '#94a3b8', marginBottom: '32px', lineHeight: 1.6 }}>
-          DengueAhead is developed by team <strong style={{ color: '#f8fafc' }}>EchoBinary</strong> for the{' '}
-          <strong style={{ color: '#38bdf8' }}>ModelX 2.0 Competition</strong> (Health &amp; Wellbeing Domain). Our objective is
-          to deliver early, reproducible, and verifiable operational warnings of emerging dengue
-          surges across Sri Lanka.
+          DengueAhead is developed by team <strong style={{ color: '#f8fafc' }}>EchoBinary</strong>{' '}
+          for the <strong style={{ color: '#38bdf8' }}>ModelX 2.0 Competition</strong> (Health &amp;
+          Wellbeing Domain). Our objective is to deliver early, reproducible, and verifiable
+          operational warnings of emerging dengue surges across Sri Lanka.
         </p>
 
         {/* Visual Field Operation Hero Banner */}
@@ -57,7 +57,8 @@ export const AboutPage: React.FC = () => {
             style={{
               position: 'absolute',
               inset: 0,
-              background: 'linear-gradient(180deg, rgba(6, 11, 24, 0.2) 0%, rgba(6, 11, 24, 0.92) 100%)',
+              background:
+                'linear-gradient(180deg, rgba(6, 11, 24, 0.2) 0%, rgba(6, 11, 24, 0.92) 100%)',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'flex-end',
@@ -65,13 +66,29 @@ export const AboutPage: React.FC = () => {
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10b981' }} />
-              <span style={{ fontSize: '12px', fontWeight: 700, color: '#10b981', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              <span
+                style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  backgroundColor: '#10b981'
+                }}
+              />
+              <span
+                style={{
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  color: '#10b981',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em'
+                }}
+              >
                 Field Intelligence &bull; Ministry of Health &bull; PHI Network
               </span>
             </div>
             <p style={{ fontSize: '14px', color: '#e2e8f0', margin: 0, maxWidth: '640px' }}>
-              Bridging macro climate satellite reanalysis with active ground vector inspections by Public Health Inspectors across Sri Lanka.
+              Bridging macro climate satellite reanalysis with active ground vector inspections by
+              Public Health Inspectors across Sri Lanka.
             </p>
           </div>
         </div>
@@ -99,11 +116,14 @@ export const AboutPage: React.FC = () => {
               style={{ width: '100%', height: '170px', objectFit: 'cover' }}
             />
             <div style={{ padding: '18px' }}>
-              <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#f8fafc', margin: '0 0 6px 0' }}>
+              <h3
+                style={{ fontSize: '15px', fontWeight: 700, color: '#f8fafc', margin: '0 0 6px 0' }}
+              >
                 Conformal ML &amp; Safety
               </h3>
               <p style={{ fontSize: '13px', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
-                Engineered with HistGradientBoosting (HGB) models, non-parametric 80% conformal coverage, and automated data delay quarantines.
+                Engineered with HistGradientBoosting (HGB) models, non-parametric 80% conformal
+                coverage, and automated data delay quarantines.
               </p>
             </div>
           </div>
@@ -122,11 +142,14 @@ export const AboutPage: React.FC = () => {
               style={{ width: '100%', height: '170px', objectFit: 'cover' }}
             />
             <div style={{ padding: '18px' }}>
-              <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#f8fafc', margin: '0 0 6px 0' }}>
+              <h3
+                style={{ fontSize: '15px', fontWeight: 700, color: '#f8fafc', margin: '0 0 6px 0' }}
+              >
                 Logistical Public Health Impact
               </h3>
               <p style={{ fontSize: '13px', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
-                Equipping regional Medical Officers of Health (MOH) with 7-day advance warnings to dispatch thermal fogging and larvicide preemptively.
+                Equipping regional Medical Officers of Health (MOH) with 7-day advance warnings to
+                dispatch thermal fogging and larvicide preemptively.
               </p>
             </div>
           </div>
@@ -155,16 +178,18 @@ export const AboutPage: React.FC = () => {
             }}
           >
             <li>
-              <strong style={{ color: '#f8fafc' }}>Epidemiological Surveillance:</strong> National Dengue Control Unit (NDCU),
-              Ministry of Health, Sri Lanka. Weekly epidemiological bulletins.
+              <strong style={{ color: '#f8fafc' }}>Epidemiological Surveillance:</strong> National
+              Dengue Control Unit (NDCU), Ministry of Health, Sri Lanka. Weekly epidemiological
+              bulletins.
             </li>
             <li>
-              <strong style={{ color: '#f8fafc' }}>Weather Reanalysis:</strong> Open-Meteo Historical Weather API (ERA5
-              reanalysis) — licensed under CC BY 4.0.
+              <strong style={{ color: '#f8fafc' }}>Weather Reanalysis:</strong> Open-Meteo
+              Historical Weather API (ERA5 reanalysis) — licensed under CC BY 4.0.
             </li>
             <li>
-              <strong style={{ color: '#f8fafc' }}>Geographical Boundaries:</strong> Centroids and canonical district mappings
-              derived from official survey data without external tile dependencies.
+              <strong style={{ color: '#f8fafc' }}>Geographical Boundaries:</strong> Centroids and
+              canonical district mappings derived from official survey data without external tile
+              dependencies.
             </li>
           </ul>
         </section>

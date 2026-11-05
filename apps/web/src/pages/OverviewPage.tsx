@@ -64,7 +64,8 @@ export const OverviewPage: React.FC = () => {
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(180deg, rgba(6, 11, 24, 0.2) 0%, rgba(6, 11, 24, 0.88) 100%)',
+            background:
+              'linear-gradient(180deg, rgba(6, 11, 24, 0.2) 0%, rgba(6, 11, 24, 0.88) 100%)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'flex-end',
@@ -72,8 +73,23 @@ export const OverviewPage: React.FC = () => {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#38bdf8' }} />
-            <span style={{ fontSize: '11px', fontWeight: 700, color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            <span
+              style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                backgroundColor: '#38bdf8'
+              }}
+            />
+            <span
+              style={{
+                fontSize: '11px',
+                fontWeight: 700,
+                color: '#38bdf8',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em'
+              }}
+            >
               Sri Lanka MoH &bull; National Surveillance Console
             </span>
           </div>
@@ -138,7 +154,9 @@ export const OverviewPage: React.FC = () => {
                 borderRadius: '4px',
                 backgroundColor: isStale ? 'rgba(245, 158, 11, 0.15)' : 'rgba(16, 185, 129, 0.15)',
                 color: isStale ? '#f59e0b' : '#34d399',
-                border: isStale ? '1px solid rgba(245, 158, 11, 0.3)' : '1px solid rgba(16, 185, 129, 0.3)'
+                border: isStale
+                  ? '1px solid rgba(245, 158, 11, 0.3)'
+                  : '1px solid rgba(16, 185, 129, 0.3)'
               }}
             >
               {meta.sourceFreshnessStatus}

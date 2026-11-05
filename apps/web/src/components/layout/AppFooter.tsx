@@ -31,12 +31,16 @@ export const AppFooter: React.FC = () => {
                 <span className="font-extrabold text-lg text-white tracking-tight">
                   Dengue<span className="text-sky-400">Ahead</span>
                 </span>
-                <p className="text-[11px] text-slate-400 font-medium">Sri Lanka Vector Surveillance System</p>
+                <p className="text-[11px] text-slate-400 font-medium">
+                  Sri Lanka Vector Surveillance System
+                </p>
               </div>
             </div>
 
             <p className="text-xs text-slate-300 leading-relaxed max-w-md">
-              An evidence-driven epidemiological early-warning platform engineered for Sri Lanka's 25 administrative districts. Integrates weekly national surveillance with ERA5 climate physics to deliver honest, calibrated hotspot forecasts.
+              An evidence-driven epidemiological early-warning platform engineered for Sri Lanka's
+              25 administrative districts. Integrates weekly national surveillance with ERA5 climate
+              physics to deliver honest, calibrated hotspot forecasts.
             </p>
 
             {/* Status Badge */}
@@ -53,30 +57,47 @@ export const AppFooter: React.FC = () => {
 
           {/* Col 2: Machine Learning Intelligence (2 cols) */}
           <div className="lg:col-span-2 space-y-3">
-            <p className="text-xs font-bold uppercase tracking-wider text-white">Machine Learning</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-white">
+              Machine Learning
+            </p>
             <ul className="space-y-2 text-xs p-0 m-0 list-none">
               <li>
-                <button onClick={() => navigate('/app/model')} className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left text-slate-400">
+                <button
+                  onClick={() => navigate('/app/model')}
+                  className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left text-slate-400"
+                >
                   HistGradientBoosting
                 </button>
               </li>
               <li>
-                <button onClick={() => navigate('/methodology')} className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left text-slate-400">
+                <button
+                  onClick={() => navigate('/methodology')}
+                  className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left text-slate-400"
+                >
                   Platt Calibration
                 </button>
               </li>
               <li>
-                <button onClick={() => navigate('/methodology')} className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left text-slate-400">
+                <button
+                  onClick={() => navigate('/methodology')}
+                  className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left text-slate-400"
+                >
                   Conformal Bounds (80%)
                 </button>
               </li>
               <li>
-                <button onClick={() => navigate('/app/model')} className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left text-slate-400">
+                <button
+                  onClick={() => navigate('/app/model')}
+                  className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left text-slate-400"
+                >
                   Confusion Matrix
                 </button>
               </li>
               <li>
-                <button onClick={() => navigate('/methodology')} className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left text-slate-400">
+                <button
+                  onClick={() => navigate('/methodology')}
+                  className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left text-slate-400"
+                >
                   Strict As-Of Cutoffs
                 </button>
               </li>
@@ -85,30 +106,47 @@ export const AppFooter: React.FC = () => {
 
           {/* Col 3: Surveillance & Data (2 cols) */}
           <div className="lg:col-span-2 space-y-3">
-            <p className="text-xs font-bold uppercase tracking-wider text-white">Data Infrastructure</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-white">
+              Data Infrastructure
+            </p>
             <ul className="space-y-2 text-xs p-0 m-0 list-none">
               <li>
-                <button onClick={() => navigate('/app/data-quality')} className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left text-slate-400">
+                <button
+                  onClick={() => navigate('/app/data-quality')}
+                  className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left text-slate-400"
+                >
                   NDCU Surveillance Tables
                 </button>
               </li>
               <li>
-                <button onClick={() => navigate('/app/data-quality')} className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left text-slate-400">
+                <button
+                  onClick={() => navigate('/app/data-quality')}
+                  className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left text-slate-400"
+                >
                   Open-Meteo ERA5 Reanalysis
                 </button>
               </li>
               <li>
-                <button onClick={() => navigate('/app/data-quality')} className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left text-slate-400">
+                <button
+                  onClick={() => navigate('/app/data-quality')}
+                  className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left text-slate-400"
+                >
                   SHA-256 Provenance
                 </button>
               </li>
               <li>
-                <button onClick={() => navigate('/app/data-quality')} className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left text-slate-400">
+                <button
+                  onClick={() => navigate('/app/data-quality')}
+                  className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left text-slate-400"
+                >
                   Quarantine Pipeline
                 </button>
               </li>
               <li>
-                <button onClick={() => navigate('/app/compare')} className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left text-slate-400">
+                <button
+                  onClick={() => navigate('/app/compare')}
+                  className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left text-slate-400"
+                >
                   District Comparator
                 </button>
               </li>
@@ -117,22 +155,33 @@ export const AppFooter: React.FC = () => {
 
           {/* Col 4: Platform & Legal (3 cols) */}
           <div className="lg:col-span-3 space-y-3">
-            <p className="text-xs font-bold uppercase tracking-wider text-white">Platform &amp; Legal</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-white">
+              Platform &amp; Legal
+            </p>
             <ul className="space-y-2 text-xs p-0 m-0 list-none">
               <li>
-                <button onClick={() => navigate('/app/overview')} className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left flex items-center gap-1.5 text-slate-400">
+                <button
+                  onClick={() => navigate('/app/overview')}
+                  className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left flex items-center gap-1.5 text-slate-400"
+                >
                   <BarChart3 className="w-3.5 h-3.5 text-sky-400" />
                   Overview Dashboard
                 </button>
               </li>
               <li>
-                <button onClick={() => navigate('/app/map')} className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left flex items-center gap-1.5 text-slate-400">
+                <button
+                  onClick={() => navigate('/app/map')}
+                  className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left flex items-center gap-1.5 text-slate-400"
+                >
                   <Compass className="w-3.5 h-3.5 text-emerald-400" />
                   Interactive Map
                 </button>
               </li>
               <li>
-                <button onClick={() => navigate('/about')} className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left flex items-center gap-1.5 text-slate-400">
+                <button
+                  onClick={() => navigate('/about')}
+                  className="hover:text-white transition-colors bg-transparent border-none p-0 cursor-pointer text-left flex items-center gap-1.5 text-slate-400"
+                >
                   <FileText className="w-3.5 h-3.5 text-indigo-400" />
                   Technical Report &amp; Team
                 </button>
@@ -183,19 +232,32 @@ export const AppFooter: React.FC = () => {
         {/* Bottom Legal Copyright Line */}
         <div className="pt-6 border-t border-slate-900 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
           <p className="m-0">
-            &copy; 2026 EchoBinary. Released under the MIT License. Non-clinical public health intelligence system.
+            &copy; 2026 EchoBinary. Released under the MIT License. Non-clinical public health
+            intelligence system.
           </p>
           <div className="flex items-center gap-6 text-[11px]">
-            <button onClick={() => navigate('/methodology')} className="hover:text-slate-300 bg-transparent border-none p-0 cursor-pointer text-slate-500">
+            <button
+              onClick={() => navigate('/methodology')}
+              className="hover:text-slate-300 bg-transparent border-none p-0 cursor-pointer text-slate-500"
+            >
               Methodology
             </button>
-            <button onClick={() => navigate('/app/data-quality')} className="hover:text-slate-300 bg-transparent border-none p-0 cursor-pointer text-slate-500">
+            <button
+              onClick={() => navigate('/app/data-quality')}
+              className="hover:text-slate-300 bg-transparent border-none p-0 cursor-pointer text-slate-500"
+            >
               Data Provenance
             </button>
-            <button onClick={() => navigate('/about')} className="hover:text-slate-300 bg-transparent border-none p-0 cursor-pointer text-slate-500">
+            <button
+              onClick={() => navigate('/about')}
+              className="hover:text-slate-300 bg-transparent border-none p-0 cursor-pointer text-slate-500"
+            >
               AI Disclosure
             </button>
-            <button onClick={() => navigate('/about')} className="hover:text-slate-300 bg-transparent border-none p-0 cursor-pointer text-slate-500">
+            <button
+              onClick={() => navigate('/about')}
+              className="hover:text-slate-300 bg-transparent border-none p-0 cursor-pointer text-slate-500"
+            >
               Non-Clinical Disclaimer
             </button>
           </div>
@@ -204,4 +266,3 @@ export const AppFooter: React.FC = () => {
     </footer>
   );
 };
-
