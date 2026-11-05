@@ -64,9 +64,8 @@ def test_predict_valid_as_of_runs(runner: CliRunner) -> None:
     )
     # Phase 4: predict is fully implemented.
     # Without the area map it exits 1 (config error), not 3 (not implemented).
-    assert (
-        result.exit_code != 3
-    ), f"predict should no longer exit 3 (was a stub); got {result.exit_code}"
+    msg = f"predict should no longer exit 3 (was a stub); got {result.exit_code}"
+    assert result.exit_code != 3, msg
 
 
 def test_build_features_help(runner: CliRunner) -> None:
