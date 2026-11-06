@@ -186,3 +186,193 @@ timeline
 7. **2:35:** Run terminal test simulating stale data. Refresh `/app/overview`. Show `WITHHELD` status chip and amber alert banner.
 8. **2:50:** Switch to GitHub README and Team EchoBinary closing slide.
 9. **3:00:** Conclude recording cleanly at 03:00.00.
+
+
+---
+
+## 5. Dedicated Voiceover & Teleprompter Audio Recording Scripts
+
+This section provides a **direct teleprompter voiceover guide** for recording your narration audio track. Each part includes exact start/end timestamps, target duration, on-screen cues, vocal delivery directions (pitch, pauses, emphasis), phonetic pronunciations, and verbatim script lines.
+
+### 🎙️ Audio Recording Guidelines
+- **Delivery Style:** Confident, objective, scientifically grounded, calm public-health authority.
+- **Pacing:** Moderate (~140 to 150 words per minute). Never rush; let pauses align with screen transitions.
+- **Audio Spec:** 48,000 Hz, 24-bit WAV, Mono/Stereo, -16 LUFS integrated loudness.
+
+---
+
+### Part 1: The Problem & The Decision Window
+- **Timecode:** `0:00 – 0:20` (Total: 20 seconds)
+- **Word Count:** 47 words (~141 wpm)
+- **Screen View:** Landing Page (`http://localhost:5173/`) $	o$ Smooth scroll past Hero Command Center $	o$ Click "Explore Risk Map" $	o$ Overview Dashboard (`/app/overview`).
+- **Synchronized Visual Action:**
+  - `0:00 - 0:05`: Mouse cursor hovers briefly over the **Non-Clinical Safety Disclaimer** banner at the top of the landing page.
+  - `0:05 - 0:11`: Scroll gently to the headline *"See the next hotspot before it emerges"*.
+  - `0:11 - 0:15`: Click the primary CTA button **"Explore Risk Map"**. Liquid glass navigation lights up.
+  - `0:15 - 0:20`: Overview dashboard loads, revealing the 6 KPI metric cards and Top Emerging Hotspots table.
+- **Vocal Delivery:** Empathetic yet serious opening. Moderate pace. Crisp diction.
+- **Phonetics:** *DengueAhead* = `"Deng-gay-a-head"` | *Surveillance* = `"Ser-VAY-lance"`
+- **Verbatim Audio Script:**
+  > *"In Sri Lanka, dengue surveillance is traditionally **reactive**. [PAUSE 0.5s]*  
+  > *By the time hospitalizations peak in weekly health bulletins, transmission happened **weeks earlier**. [PAUSE 0.5s]*  
+  > *DengueAhead gives Regional Medical Officers a **one- to two-week proactive decision window** to deploy vector control before clinical outbreaks emerge. [PAUSE 0.5s]*  
+  > *Let's see how it works."*
+
+---
+
+### Part 2: Automated Crawler, Recency Weights & Provenance
+- **Timecode:** `0:20 – 0:45` (Total: 25 seconds)
+- **Word Count:** 62 words (~148 wpm)
+- **Screen View:** Data Quality Page (`/app/data-quality`) $	o$ Split terminal running ingestion CLI.
+- **Synchronized Visual Action:**
+  - `0:20 - 0:26`: On `/app/data-quality`, mouse highlights the Source Manifest entries: `ndcu-weekly` (MoH Sri Lanka) and `open-meteo-daily` (ERA5).
+  - `0:26 - 0:31`: Cursor zooms into the SHA-256 cryptographic hash pills and the zero-synthetic audit badge.
+  - `0:31 - 0:38`: Split screen with terminal. Show `dengueahead ingest --source ndcu-weekly --year 2026 --week 44` discovering the MoH PDF bulletin and aggregating Kalmunai RDHS + Ampara into `LK-52`.
+  - `0:38 - 0:45`: Terminal highlights `compute_recency_weights` (8-week half-life exponential decay) across 4 years of historical data.
+- **Vocal Delivery:** Technical, precise, confident. Emphasize data integrity and zero synthetic data.
+- **Phonetics:** *Kalmunai* = `"Kal-MOO-nye"` | *Ampara* = `"UHM-pa-ra"` | *SHA-256* = `"Shah-Two-Fifty-Six"` | *ERA5* = `"Ee-Ar-Ay-Five"`
+- **Verbatim Audio Script:**
+  > *"DengueAhead is grounded in verified, real-world data: [PAUSE 0.3s] weekly bulletins from the National Dengue Control Unit and lagged weather reanalysis from Open-Meteo. [PAUSE 0.5s]*  
+  > *Our automated crawler parses official weekly PDF reports, aggregates regional health divisions into canonical districts, and hashes every raw payload with **SHA-256**. [PAUSE 0.5s]*  
+  > *Models train across **four years** of dual-monsoon history with exponential recency weighting—**strictly zero simulated numbers**."*
+
+---
+
+### Part 3: 25-District Risk Map & District Drilldown
+- **Timecode:** `0:45 – 1:20` (Total: 35 seconds)
+- **Word Count:** 85 words (~145 wpm)
+- **Screen View:** 25-District Risk Map (`/app/map`) $	o$ Click "EMERGING" filter $	o$ Select Gampaha (`LK-12`) $	o$ Area Detail Page (`/app/areas/LK-12`).
+- **Synchronized Visual Action:**
+  - `0:45 - 0:52`: Navigate to `/app/map`. 25-district SVG choropleth map displays operational colors.
+  - `0:52 - 0:58`: Click the "EMERGING" status filter chip. Map isolates 4 escalating districts in amber.
+  - `0:58 - 1:04`: Click on Gampaha District (`LK-12`). Smooth transition to Area Detail view.
+  - `1:04 - 1:12`: Cursor traces the SVG Time-Series Chart: solid blue (past cases), dotted line (seasonal epidemic threshold), dashed orange (142 case forecast), and amber shaded band (80% conformal interval).
+  - `1:12 - 1:20`: Scroll to the Feature Drivers panel. Highlight 3-week rainfall and temperature bars; point to the non-causal disclaimer.
+- **Vocal Delivery:** Analytical, explanatory, steady cadence. Keep tone measured when explaining uncertainty bounds and non-causal drivers.
+- **Phonetics:** *Gampaha* = `"GUM-pa-ha"` (`LK-12`) | *Conformal* = `"Con-FOR-mal"` | *Larval* = `"LAR-vuhl"`
+- **Verbatim Audio Script:**
+  > *"On our Risk Map, all twenty-five districts are mapped to actionable operational states. [PAUSE 0.4s]*  
+  > *Filtering for 'Emerging' isolates four districts currently below epidemic levels but predicted to escalate next week. [PAUSE 0.5s]*  
+  > *Drilling into Gampaha, our time-series chart contrasts historical cases against next week's forecast of **142 cases**, bounded by an **eighty percent conformal uncertainty interval**. [PAUSE 0.5s]*  
+  > *Below, feature drivers show that three-week cumulative rainfall and rising minimum temperatures are driving this elevation—interpreted strictly as **non-causal statistical associations** to guide larval site inspections."*
+
+---
+
+### Part 4: Multi-District Comparative Analytics
+- **Timecode:** `1:20 – 1:45` (Total: 25 seconds)
+- **Word Count:** 58 words (~140 wpm)
+- **Screen View:** Comparative Analytics Page (`/app/compare`).
+- **Synchronized Visual Action:**
+  - `1:20 - 1:25`: Click "Compare" in the liquid glass navbar (`/app/compare`).
+  - `1:25 - 1:33`: Select Colombo (`LK-11`), Gampaha (`LK-12`), and Kalutara (`LK-13`). The comparison matrix populates instantly.
+  - `1:33 - 1:40`: Cursor highlights side-by-side metric tiles: current vs forecasted weekly case delta and 3-week rainfall anomaly indicators.
+  - `1:40 - 1:45`: Hover over operational recommendation chips showing tailored interventions across urban and suburban zones.
+- **Vocal Delivery:** Strategic, decision-oriented, practical public-health perspective.
+- **Phonetics:** *Kalutara* = `"KA-loo-ta-ra"` (`LK-13`) | *Bti* = `"Bee-Tee-Eye"` | *Larvicide* = `"LAR-vi-side"`
+- **Verbatim Audio Script:**
+  > *"In our Multi-District Comparison view, health planners evaluate high-risk regions side-by-side. [PAUSE 0.4s]*  
+  > *Comparing Western Province neighbors—Colombo, Gampaha, and Kalutara—reveals differing transmission velocities and localized rainfall anomalies. [PAUSE 0.5s]*  
+  > *This allows regional directors to optimize vector-control logistics, prepositioning larvicide in emerging hotspots while maintaining space-spraying equipment in persistently high-burden municipal zones."*
+
+---
+
+### Part 5: Historical As-Of Replay & Baseline Comparison
+- **Timecode:** `1:45 – 2:15` (Total: 30 seconds)
+- **Word Count:** 75 words (~150 wpm)
+- **Screen View:** Historical Replay Page (`/app/history`).
+- **Synchronized Visual Action:**
+  - `1:45 - 1:52`: Navigate to `/app/history`. Select cutoff week `2024-W22` from the calendar dropdown.
+  - `1:52 - 1:58`: Show the chart in "blinded" state: the forecast curve is visible, but actual future cases are concealed to simulate live operations.
+  - `1:58 - 2:05`: Cursor hovers over and clicks the green button **"Reveal Actual Outcome"**.
+  - `2:05 - 2:10`: The actual observed case trajectory animates onto the chart, tracking snugly within the model's conformal interval.
+  - `2:10 - 2:15`: Highlight the baseline comparison cards below the chart, showing DengueAhead beating persistence and 4-week rolling mean.
+- **Vocal Delivery:** Engaging, clear, triumphant yet grounded proof of empirical validity.
+- **Phonetics:** *Out-of-time* = `"Out-of-time"` | *Monsoon* = `"Mon-SOON"` | *Preposition* = `"Pree-po-ZISH-un"`
+- **Verbatim Audio Script:**
+  > *"To verify that our models generalize without future data leakage, Historical Replay evaluates forecasts **strictly as of past calendar cutoffs**. [PAUSE 0.4s]*  
+  > *Here at Week 22 of 2024, DengueAhead flagged an impending post-monsoon surge in the Western Province while cases were still low. [PAUSE 0.5s]*  
+  > *Revealing actual outcomes demonstrates how the model anticipated the surge **two weeks in advance**, outperforming both persistence and seasonal baselines to give field teams critical lead time."*
+
+---
+
+### Part 6: Empirical Evaluation & Transparent Limitations
+- **Timecode:** `2:15 – 2:35` (Total: 20 seconds)
+- **Word Count:** 52 words (~156 wpm)
+- **Screen View:** Model Card & Evaluation Page (`/app/model`).
+- **Synchronized Visual Action:**
+  - `2:15 - 2:21`: Navigate to `/app/model`. Display the Model Card header for `dengueahead-hgb-v1`.
+  - `2:21 - 2:27`: Highlight the benchmark results table: cursor highlights the **24.6% MAE reduction** ($18.7$ vs $24.8$) and **82% Top-5 Precision**.
+  - `2:27 - 2:31`: Briefly show the Platt Sigmoid calibration curve and Brier score ($0.118$).
+  - `2:31 - 2:35`: Expand the "Known Limitations" accordion: hover over district-level resolution and dry-season uncalibrated fallbacks.
+- **Vocal Delivery:** Authoritative, transparent, scientifically honest.
+- **Phonetics:** *HistGradientBoosting* = `"Hist-Gradient-Boosting"` | *MAE* = `"M-A-E"` | *Precision* = `"Pre-SIZH-un"`
+- **Verbatim Audio Script:**
+  > *"Our Model Card documents rigorous empirical performance across four years of backtesting. [PAUSE 0.3s]*  
+  > *HistGradientBoosting achieves a **24.6% error reduction** over persistence, with **82% precision** in identifying Top-5 hotspots. [PAUSE 0.4s]*  
+  > *But we are transparent about limitations: predictions are district-level, and probabilities in low-incidence dry seasons safely degrade to **uncalibrated ranks**."*
+
+---
+
+### Part 7: Chaos Ingestion, Fail-Safe Withheld Gating & Conclusion
+- **Timecode:** `2:35 – 3:00` (Total: 25 seconds)
+- **Word Count:** 58 words (~139 wpm)
+- **Screen View:** Terminal stale-data simulation $	o$ Overview Dashboard (`/app/overview`) with alert $	o$ GitHub Repository (`README.md`) $	o$ Team EchoBinary Slide.
+- **Synchronized Visual Action:**
+  - `2:35 - 2:41`: Terminal simulates stale data (>14 days). Refresh `/app/overview`: prominent amber banner appears: *"Source data is STALE (>14 days)"*.
+  - `2:41 - 2:46`: District forecast cards immediately switch to gray `WITHHELD` chips with numbers safely suppressed to `null`.
+  - `2:46 - 2:53`: Smooth transition to public GitHub repository: scroll past 175 passing tests badge, Docker quickstart, and full docs suite.
+  - `2:53 - 3:00`: End on the clean Team EchoBinary title card with ModelX 2.0 competition logo. Hold screen cleanly until 03:00.00.
+- **Vocal Delivery:** Resonant, strong, reassuring finish. Concluding with warmth and pride.
+- **Phonetics:** *Withheld* = `"With-HELD"` | *EchoBinary* = `"Echo-BY-nuh-ree"` | *ModelX* = `"Model-Ex"`
+- **Verbatim Audio Script:**
+  > *"True public-health reliability means **failing safely**. [PAUSE 0.3s]*  
+  > *When data feeds are delayed beyond 14 days, DengueAhead raises a staleness alarm and suppresses numeric forecasts to **'WITHHELD'**—preventing guesswork. [PAUSE 0.5s]*  
+  > *DengueAhead delivers proactive foresight, cryptographic provenance, and transparent AI intelligence. [PAUSE 0.4s]*  
+  > *Explore our open-source codebase on GitHub. We are **Team EchoBinary for ModelX 2.0**. Thank you."*
+
+---
+
+## 6. Quick Teleprompter Master Sheet (Continuous Read)
+
+Print or place this continuous script on a second monitor while recording your voiceover track:
+
+```text
+[0:00 - 0:20 | Part 1: Landing Page & Problem]
+"In Sri Lanka, dengue surveillance is traditionally reactive.
+By the time hospitalizations peak in weekly health bulletins, transmission happened weeks earlier.
+DengueAhead gives Regional Medical Officers a one- to two-week proactive decision window to deploy vector control before clinical outbreaks emerge.
+Let's see how it works."
+
+[0:20 - 0:45 | Part 2: Provenance & Automated Pipeline]
+"DengueAhead is grounded in verified, real-world data: weekly bulletins from the National Dengue Control Unit and lagged weather reanalysis from Open-Meteo.
+Our automated crawler parses official weekly PDF reports, aggregates regional health divisions into canonical districts, and hashes every raw payload with SHA-256.
+Models train across four years of dual-monsoon history with exponential recency weighting—strictly zero simulated numbers."
+
+[0:45 - 1:20 | Part 3: Risk Map & Gampaha Drilldown]
+"On our Risk Map, all twenty-five districts are mapped to actionable operational states.
+Filtering for 'Emerging' isolates four districts currently below epidemic levels but predicted to escalate next week.
+Drilling into Gampaha, our time-series chart contrasts historical cases against next week's forecast of 142 cases, bounded by an eighty percent conformal uncertainty interval.
+Below, feature drivers show that three-week cumulative rainfall and rising minimum temperatures are driving this elevation—interpreted strictly as non-causal statistical associations to guide larval site inspections."
+
+[1:20 - 1:45 | Part 4: Comparative Analytics]
+"In our Multi-District Comparison view, health planners evaluate high-risk regions side-by-side.
+Comparing Western Province neighbors—Colombo, Gampaha, and Kalutara—reveals differing transmission velocities and localized rainfall anomalies.
+This allows regional directors to optimize vector-control logistics, prepositioning larvicide in emerging hotspots while maintaining space-spraying equipment in persistently high-burden municipal zones."
+
+[1:45 - 2:15 | Part 5: Historical As-Of Replay]
+"To verify that our models generalize without future data leakage, Historical Replay evaluates forecasts strictly as of past calendar cutoffs.
+Here at Week 22 of 2024, DengueAhead flagged an impending post-monsoon surge in the Western Province while cases were still low.
+Revealing actual outcomes demonstrates how the model anticipated the surge two weeks in advance, outperforming both persistence and seasonal baselines to give field teams critical lead time."
+
+[2:15 - 2:35 | Part 6: Model Card & Empirical Evaluation]
+"Our Model Card documents rigorous empirical performance across four years of backtesting.
+HistGradientBoosting achieves a 24.6% error reduction over persistence, with 82% precision in identifying Top-5 hotspots.
+But we are transparent about limitations: predictions are district-level, and probabilities in low-incidence dry seasons safely degrade to uncalibrated ranks."
+
+[2:35 - 3:00 | Part 7: Chaos Staleness & Conclusion]
+"True public-health reliability means failing safely.
+When data feeds are delayed beyond 14 days, DengueAhead raises a staleness alarm and suppresses numeric forecasts to 'WITHHELD'—preventing guesswork.
+DengueAhead delivers proactive foresight, cryptographic provenance, and transparent AI intelligence.
+Explore our open-source codebase on GitHub. We are Team EchoBinary for ModelX 2.0. Thank you."
+```
+
