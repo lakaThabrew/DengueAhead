@@ -165,6 +165,11 @@ def audit_sources(config: str) -> None:
     "--week", type=int, default=None, help="ISO week number to ingest (default: last week)."
 )
 @click.option(
+    "--source",
+    default="ndcu",
+    help="Source ID to ingest (e.g. 'ndcu' or 'ndcu-weekly').",
+)
+@click.option(
     "--dry-run", is_flag=True, default=False, help="Parse and validate without writing to MongoDB."
 )
 @click.option(
@@ -174,7 +179,12 @@ def audit_sources(config: str) -> None:
     help="Overwrite existing observations if already present in MongoDB.",
 )
 def ingest(
-    config: str, year: int | None, week: int | None, dry_run: bool, force: bool = False
+    config: str,
+    source: str = "ndcu",
+    year: int | None = None,
+    week: int | None = None,
+    dry_run: bool = False,
+    force: bool = False,
 ) -> None:
     """Fetch official NDCU dengue reports and ingest into MongoDB."""
     from datetime import date
