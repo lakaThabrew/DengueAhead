@@ -167,7 +167,15 @@ def audit_sources(config: str) -> None:
 @click.option(
     "--dry-run", is_flag=True, default=False, help="Parse and validate without writing to MongoDB."
 )
-def ingest(config: str, year: int | None, week: int | None, dry_run: bool) -> None:
+@click.option(
+    "--force",
+    is_flag=True,
+    default=False,
+    help="Overwrite existing observations if already present in MongoDB.",
+)
+def ingest(
+    config: str, year: int | None, week: int | None, dry_run: bool, force: bool = False
+) -> None:
     """Fetch official NDCU dengue reports and ingest into MongoDB."""
     from datetime import date
 
@@ -343,7 +351,7 @@ def ingest(config: str, year: int | None, week: int | None, dry_run: bool) -> No
     inserted = 0
     skipped = 0
     for obs in final_observations:
-        ur = upsert_observation(db, obs)
+        ur = upsert_observation(db, obs, replace=force)
         if ur.inserted:
             inserted += 1
         else:

@@ -1,10 +1,10 @@
 {
-  "auditedAt": "2026-11-04T18:00:46.242035+00:00",
+  "auditedAt": "2026-11-06T11:04:16.087098+00:00",
   "sources": [
     {
       "sourceId": "ndcu",
       "baseUrl": "https://www.dengue.health.gov.lk/weekly-report/",
-      "auditedAt": "2026-11-04T18:00:46.242035+00:00",
+      "auditedAt": "2026-11-06T11:04:16.087098+00:00",
       "httpStatus": 200,
       "contentType": "text/html; charset=UTF-8",
       "robotsAllowed": true,
@@ -14,7 +14,7 @@
     {
       "sourceId": "open_meteo",
       "baseUrl": "https://archive-api.open-meteo.com/v1/archive",
-      "auditedAt": "2026-11-04T18:00:47.708624+00:00",
+      "auditedAt": "2026-11-06T11:04:20.603841+00:00",
       "httpStatus": 200,
       "contentType": "application/json; charset=utf-8",
       "robotsAllowed": true,

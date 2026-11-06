@@ -10,11 +10,16 @@ from dengueahead.ingestion.ndcu_parser import ParsedObservation
 from dengueahead.repositories.source_snapshots import UpsertResult
 
 
-def upsert_observation(db: Database, obs: ParsedObservation, revision: int = 1) -> UpsertResult:  # type: ignore[type-arg]
-    """Upsert a dengue_weekly document keyed on ``(areaId, weekStart, revision)``.
+def upsert_observation(
+    db: Database,  # type: ignore[type-arg]
+    obs: ParsedObservation,
+    revision: int = 1,
+    replace: bool = False,
+) -> UpsertResult:
+    """Upsert a dengue_weekly document keyed on ``(areaId, weekStart)``.
 
-    Uses ``$setOnInsert`` — a published revision is never silently overwritten.
-    To correct data, increment the *revision* number.
+    Uses ``$setOnInsert`` by default — a published observation is never silently overwritten.
+    Pass ``replace=True`` to update an existing observation with newly fetched data.
     """
     doc = {
         "areaId": obs.area_id,
@@ -29,13 +34,13 @@ def upsert_observation(db: Database, obs: ParsedObservation, revision: int = 1) 
         "revision": revision,
         "qualityFlags": obs.quality_flags,
     }
+    update_op = {"$set": doc} if replace else {"$setOnInsert": doc}
     result = db["dengue_weekly"].update_one(
         {
             "areaId": obs.area_id,
             "weekStart": obs.week_start.isoformat(),
-            "revision": revision,
         },
-        {"$setOnInsert": doc},
+        update_op,
         upsert=True,
     )
     return UpsertResult(
