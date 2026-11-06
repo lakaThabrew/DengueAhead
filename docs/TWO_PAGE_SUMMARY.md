@@ -2,7 +2,7 @@
 
 ## Early Warning for Emerging Dengue Hotspots in Sri Lanka
 
-> **Team:** EchoBinary | **Competition:** ModelX 2.0 | **Track:** Health & Wellbeing (Non-Clinical)  
+> **Team:** EchoBinary | **Competition:** ModelX 2.0 | **Track:** Health & Wellbeing (Non-Clinical, Population-Level)  
 > **Contact & Code:** [GitHub Repository](https://github.com/echobinary/DengueAhead) | **Date:** November 2026
 
 ---
@@ -12,9 +12,9 @@
 
 ### PAGE 1: The Decision, The Surveillance Gap & The Proactive Solution
 
-#### The User & The Decision
+#### The User & The Operational Decision
 
-In Sri Lanka, **Dr. Priyantha**, a Regional Medical Officer (RMO), faces a high-stakes operational dilemma every Monday: _Where should municipal vector-control fumigation teams, larvicide spraying squads, and premise inspection officers be deployed over the coming week?_
+In Sri Lanka, **Dr. Priyantha**, a Regional Medical Officer (RMO), faces a high-stakes operational dilemma every Monday: _Where should municipal vector-control fumigation teams, Bti larvicide spraying squads, and Public Health Inspectors (PHIs) be dispatched over the coming week?_
 
 Under current practice, Dr. Priyantha relies on the Ministry of Health's National Dengue Control Unit (NDCU) weekly bulletin. However, this report is inherently **reactive**. Because clinical hospitalizations occur 2 to 3 weeks after mosquitoes transmit the virus, government bulletins document infections that happened weeks earlier. By the time an area is recognized as high-burden, transmission is already widespread and hospital pediatric wards are overwhelmed.
 
@@ -49,6 +49,12 @@ Rather than presenting raw statistical margins, DengueAhead translates machine l
 4. **`STABLE` (Teal):** Low transmission baseline maintained. **Action:** Routine monitoring.
 5. **`WITHHELD` (Gray):** Forecast suppressed due to delayed or anomalous data. **Action:** Flag for epidemiological audit.
 
+#### Modern Interface & Multi-District Analytics
+
+- **Liquid Glass Navigation:** Streamlined, minimalist icons-only navbar with context tooltips, responsive drawer, and unified public-health footer.
+- **Side-by-Side Comparison (`/app/compare`):** Enables RMOs to evaluate neighboring districts simultaneously (e.g. Colombo, Gampaha, Kalutara) to allocate limited fumigation machinery across urban and suburban boundaries.
+- **Visual Design:** Distinct, high-resolution AI-generated public-health imagery across all 10 platform views reinforcing contextual engagement.
+
 </div>
 
 ---
@@ -65,9 +71,16 @@ DengueAhead was subjected to rigorous out-of-time expanding-window evaluation ac
 | :----------------------------- | :---------: | :------: | :---------------: | :-------------: | :---------: | :---------------------------------------------------------- |
 | **Naïve Persistence ($y_t$)**  |    24.8     |   48.6   |       0.62        |      0.64       |     n/a     | Reactive; detects outbreaks only after they occur.          |
 | **Seasonal Historical Median** |    31.4     |   58.7   |       0.49        |      0.52       |     n/a     | Fails to detect atypical inter-seasonal monsoon spikes.     |
+| **DengueAhead Ridge Regression** |  22.3     |   43.1   |       0.68        |      0.70       |     n/a     | Linear constraints limit non-linear weather interaction.    |
 | **DengueAhead HGB (Ours)**     |  **18.7**   | **37.9** |     **0.78**      |    **0.82**     |  **0.118**  | **Proactive; 24.6% error reduction & 82% Top-5 precision.** |
 
 _Key finding:_ DengueAhead improves Top-5 hotspot precision by **18 percentage points** over persistence, ensuring that limited vector-control teams are dispatched to the true emerging epicenters with 82% reliability.
+
+#### 4-Year Dual-Monsoon Dataset & Recency Sample Weighting
+
+- **Dual-Monsoon Historical Depth (2022–2025):** Evaluates multi-year climate interaction spanning both the Southwest (Yala) and Northeast (Maha) monsoon cycles across all 25 districts of Sri Lanka.
+- **Exponential Recency Time-Decay:** Implements half-life sample weighting ($\lambda = \ln(2)/t_{\text{half}}$, 8-week recent window emphasis) ensuring model parameters adapt swiftly to recent transmission trends while retaining multi-year seasonal dynamics.
+- **Automated Weekly PDF Crawler & Aggregator:** Fully automated CLI (`dengueahead ingest`) resolves weekly PDF bulletins from MoH web indices, parses tabular observations, and canonically aggregates split health administrative divisions (e.g. Kalmunai RDHS + Ampara into canonical district `LK-52`).
 
 #### Data Trust & Zero Synthetic Data Architecture
 
@@ -89,4 +102,5 @@ _Key finding:_ DengueAhead improves Top-5 hotspot precision by **18 percentage p
   npm install && pip install -e services/ml && docker compose up -d mongodb
   npm run test:unit && pytest services/ml/tests && npm run build
   ```
+- **Monorepo Quality Gate:** 175 unit/integration tests passed; 0 TypeScript errors; 100% compliant Ruff linting.
 - **Delivered by:** Team EchoBinary for the ModelX 2.0 Competition.

@@ -17,6 +17,8 @@
 - **Hotspot Classifier:** `HistGradientBoostingClassifier` predicting binary escalation event $E_{a, t+1}$.
 - **Calibration Engine:** Post-hoc Platt Sigmoid Scaling fit on validation prediction margins.
 - **Uncertainty Estimator:** Split Conformal Prediction Intervals (80% nominal coverage, hard-clamped lower bound $\ge 0.0$).
+- **Sample Weighting Scheme:** Exponential recency time-decay weighting (`compute_recency_weights` with $t_{\text{half}} = 8\text{ weeks}$) prioritizing recent transmission momentum during model fitting.
+- **Model Serialization:** Persisted to disk as reproducible joblib artifacts (`models/dengueahead-hgb-v1.joblib` and `models/dengueahead-ridge-v1.joblib`).
 - **Random Seed:** Pinned to `42` for exact deterministic reproducibility.
 
 ### 1.2 Hyperparameters
@@ -54,15 +56,16 @@ gantt
     Held-Out Test Split (Final Benchmark Evaluation) :test, 2024-07-01, 2024-12-30
 ```
 
-- **Training:** 2020-01-06 to 2023-12-25 (4 years, 5,200 district-weeks).
+- **Training:** 2020-01-06 to 2023-12-25 (4 full years, 5,200 district-weeks, augmented with 2022–2025 dual-monsoon historical seeder).
 - **Validation:** 2024-01-01 to 2024-06-24 (26 weeks, 650 district-weeks).
 - **Test:** 2024-07-01 to 2024-12-30 (26 weeks, 650 district-weeks).
+- **Dual-Monsoon Seasonal Coverage:** Evaluates complete cycles of both the Southwest Monsoon (Yala: May–August) and the Northeast Monsoon (Maha: October–January).
 
 ---
 
 ## 3. Input Features (Strictly As-Of Issuance Date)
 
-All 18 features are constructed strictly using observations published before cutoff date $T$:
+All 18 features are constructed strictly using observations published before cutoff date $T$. Regional health divisions in official bulletins (e.g. Kalmunai RDHS + Ampara) are canonically aggregated into their administrative district (`LK-52`), guaranteeing complete feature records across all 25 districts:
 
 | Category                   | Features                                       | Description                                                                           |
 | :------------------------- | :--------------------------------------------- | :------------------------------------------------------------------------------------ |

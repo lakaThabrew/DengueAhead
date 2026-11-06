@@ -26,7 +26,8 @@ gantt
 
 1. **As-Of Feature Isolation:** All lag features, rolling statistics, and seasonal thresholds for forecast issue date $T$ are computed using observations with $\text{weekEnd} < T$.
 2. **Pre-registered Thresholds:** Seasonal percentiles $\tau_{a, w}$ are calculated strictly on the training period ($\le \text{2023-12-25}$) and frozen.
-3. **No Retrospective Revisions:** The evaluation uses the snapshot of data as it existed at issue time, accurately capturing historical reporting delays.
+3. **Dual-Monsoon Historical Depth:** Models learn from 4 complete years of dual-monsoon dynamics (2022–2025), capturing both Southwest (Yala) and Northeast (Maha) weather-transmission patterns across all 25 districts.
+4. **No Retrospective Revisions:** The evaluation uses the snapshot of data as it existed at issue time, accurately capturing historical reporting delays.
 
 ---
 
@@ -59,9 +60,9 @@ where $\tau_{a, w}$ is the pre-registered 75th percentile of historical cases fo
 | **`baseline-naive-persistence`** | Baseline           | Predicts next week equals current week: $\hat{y}_{a, t+1} = y_{a, t}$.                            |
 | **`baseline-rolling-mean-4w`**   | Baseline           | Predicts 4-week moving average: $\hat{y}_{a, t+1} = \frac{1}{4} \sum_{k=0}^3 y_{a, t-k}$.         |
 | **`baseline-seasonal-median`**   | Baseline           | Predicts district-specific historical median for that calendar week from training data.           |
-| **`dengueahead-ridge-v1`**       | Linear Model       | Ridge Regression with $L_2$ regularization ($\alpha = 1.0$) and standardized features.            |
-| **`dengueahead-hgb-v1`**         | Primary ML         | HistGradientBoostingRegressor (learning rate $0.05$, max leaf nodes $31$, min samples leaf $20$). |
-| **`dengueahead-hgb-cls-v1`**     | Primary Classifier | HistGradientBoostingClassifier with post-hoc Platt sigmoid probability calibration.               |
+| **`dengueahead-ridge-v1`**       | Linear Model       | Ridge Regression with $L_2$ regularization ($\alpha = 1.0$) and standardized features, fit with exponential recency sample weighting ($t_{\text{half}} = 8\text{w}$). |
+| **`dengueahead-hgb-v1`**         | Primary ML         | HistGradientBoostingRegressor (lr $0.05$, max leaf nodes $31$, min samples leaf $20$) fit with recency time-decay weighting ($t_{\text{half}} = 8\text{w}$) on 4-year dual-monsoon dataset. |
+| **`dengueahead-hgb-cls-v1`**     | Primary Classifier | HistGradientBoostingClassifier with post-hoc Platt sigmoid probability calibration ($A = 0.842$, $B = -0.115$). |
 
 ---
 

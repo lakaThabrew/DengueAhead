@@ -119,11 +119,11 @@ To prevent future observation leakage, the pipeline enforces a strict temporal c
 2. The feature builder filters all surveillance and weather records using `observedPeriod <= T` and `availableAt <= T`.
 3. Records published or revised after $T$ are strictly invisible to the feature generation step.
 
-### 3.2 Data Anomaly Quarantine
+### 3.2 Automated Weekly PDF Bulletin Crawler & Canonical Aggregation
 
-- Ingested HTML tables from the National Dengue Control Unit are parsed by `ndcu_parser.py`.
-- If an ingested table has invalid columns, unparseable case strings, or negative case numbers, it is quarantined to `data/quarantine/` with diagnostic logs.
-- Predictions for affected districts are cleanly marked as `WITHHELD` with `qualityFlags: ['DATA_QUARANTINED']` and `null` numeric values.
+- **Automated Web Crawler & PDF Discovery:** Ingests weekly epidemiological bulletins via `services/ml/dengueahead/cli/main.py` (`dengueahead ingest --source ndcu-weekly --year <YYYY> --week <WW>`). The pipeline scans MoH index pages, resolves target PDF bulletins, and extracts tabular observations.
+- **Canonical Health Division Aggregator:** MoH bulletins often report sub-divisions such as *Kalmunai RDHS* alongside *Ampara RDHS*. DengueAhead automatically aggregates these sub-regions into the canonical administrative district `LK-52` (Ampara District), standardizing Monaragala and peripheral division aliases for 100% district coverage.
+- **Data Anomaly Quarantine:** If an ingested table has invalid columns, unparseable case strings, or negative numbers, it is quarantined to `data/quarantine/` with diagnostic logs. Affected forecasts are cleanly marked as `WITHHELD` with `qualityFlags: ['DATA_QUARANTINED']` and `null` numeric values.
 
 ---
 
@@ -136,10 +136,12 @@ To prevent future observation leakage, the pipeline enforces a strict temporal c
   $$E_{a, t+1} = \mathbb{I}(y_{a, t+1} > \tau_{a, w}) \land \mathbb{I}(y_{a, t} \le \tau_{a, w})$$
   where $\tau_{a, w}$ is the district-specific 75th percentile of historical cases for calendar week $w$ computed strictly from training split data.
 
-### 4.2 Model Selection & Rejection
+### 4.2 Model Selection, Recency Weighting & Rejection
 
 - **HistGradientBoosting:** Chosen for native support for missing weather values, non-linear weather-epidemiology interactions, and robustness on tabular time-series data.
-- **Baselines Included:** Naïve Persistence ($y_t$), 4-Week Rolling Mean, Seasonal Median, and Negative Binomial GLM.
+- **Exponential Recency Sample Weighting:** Implements time-decay sample weighting (`compute_recency_weights` with $t_{\text{half}} = 8\text{ weeks}$) during model training, ensuring that gradient boosting trees adapt rapidly to recent transmission momentum while retaining 4 full years (2022–2025) of dual-monsoon (Yala and Maha) climate interactions.
+- **Model Serialization:** Fully trained pipelines are persisted as reproducible joblib artifacts in `models/dengueahead-hgb-v1.joblib` and `models/dengueahead-ridge-v1.joblib`.
+- **Baselines Included:** Naïve Persistence ($y_t$), 4-Week Rolling Mean, Seasonal Median, and Ridge Regression ($L_2$).
 - **Rejected Architectures:** Deep recurrent networks (LSTM/GRU) and Transformers were evaluated and rejected due to high risk of overfitting on short temporal horizons (25 districts $\times$ 5 years $\approx$ 6,500 rows) and lack of interpretability.
 
 ### 4.3 Calibration & Uncertainty
@@ -202,8 +204,9 @@ The frontend (`apps/web`) is built with React 18 and Vite:
   - _App-level Boundary:_ Catches uncaught application exceptions, preventing white-screen crashes.
   - _Route-level Boundary:_ Confines view render failures (e.g. SVG chart error) to the main content container while keeping navigation headers and sidebars functional.
 - **Network Retry Policy:** `apiFetch` implements exponential backoff with randomized jitter (2 retries on network drops or HTTP 503 errors).
-- **Responsive Navigation:** Accessible responsive layout supporting desktops ($1440\text{px}$), tablets ($768\text{px}$), and mobile devices ($360\text{px}$) with full keyboard navigation and zero horizontal overflow.
-- **Custom Visualizations:** Clean SVG-based Choropleth map of Sri Lanka's 25 districts and SVG Time-Series charts with distinct styling for observed historical cases (solid line), seasonal threshold (dotted line), forecast (dashed line), and conformal uncertainty band (shaded area).
+- **Liquid Glass Navigation & Public Health Visuals:** Minimalist icons-only liquid glass navbar with context tooltips, responsive mobile slide-out drawer, and unified public-health footer. Features distinct, high-resolution AI visual assets across all 10 platform views.
+- **Responsive Layout:** Accessible layout supporting desktops ($1440\text{px}$), tablets ($768\text{px}$), and mobile devices ($360\text{px}$) with full keyboard navigation and zero horizontal overflow.
+- **Custom Visualizations:** Clean SVG-based Choropleth map of Sri Lanka's 25 districts, multi-district comparison analytics (`/app/compare`), and SVG Time-Series charts with distinct styling for observed historical cases (solid line), seasonal threshold (dotted line), forecast (dashed line), and conformal uncertainty band (shaded area).
 
 ---
 

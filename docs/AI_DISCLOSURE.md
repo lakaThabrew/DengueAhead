@@ -21,6 +21,7 @@ AI was used as an **agentic pair-programmer and engineering accelerator**, opera
 | :------------------------------- | :-------------- | :----------------------------------------------------------------------------------- | :-------------------------------------------------------------------------- |
 | **Antigravity Coding Assistant** | Google DeepMind | Agentic pair programming, monorepo orchestration, automated test execution           | Full development lifecycle across all phases (Phase 0 through Phase 7)      |
 | **Gemini LLM Family**            | Google          | Code synthesis, test case drafting, technical documentation compilation, refactoring | TypeScript contracts, Python ML algorithms, React components, documentation |
+| **`image-generator` Subagent**   | Antigravity AI  | Public health visual asset generation (photorealistic domain imagery)                | Distinct imagery across all 10 platform views (saved to `apps/web/public/`) |
 
 ---
 
@@ -57,6 +58,7 @@ flowchart TD
 - Generating comprehensive unit test cases for edge conditions (`UI-01` to `UI-08`, `SYS-01` to `SYS-08`).
 - Drafting technical report sections and formatting markdown tables.
 - Generating SVG path mathematics and coordinate mappings for Sri Lanka district boundaries.
+- Generating distinct, high-resolution AI visual assets for all 10 platform views (hero command center, GIS map, PHI field inspection, lab diagnostics, comparative analytics, audit pipeline, time-travel replay, ML architecture, epidemiology methodology, and collaborative public health), eliminating repetitive stock placeholders.
 
 ### What Remained 100% Under Human Strategic Authority:
 

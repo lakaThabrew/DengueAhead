@@ -50,7 +50,7 @@ Normalized weekly case counts published by the National Dengue Control Unit (NDC
 
 | Field              | Type                   | Required | Nullable | Description                                                                          |
 | :----------------- | :--------------------- | :------: | :------: | :----------------------------------------------------------------------------------- |
-| `areaId`           | `string`               |    ✅    |    ❌    | District identifier matching `areas.areaId`.                                         |
+| `areaId`           | `string`               |    ✅    |    ❌    | District identifier matching `areas.areaId` (`LK-11` to `LK-92`). Peripheral health divisions (e.g. Kalmunai RDHS) are canonically aggregated into their administrative district (`LK-52`). |
 | `weekStart`        | `string` (YYYY-MM-DD)  |    ✅    |    ❌    | Monday start date of the epidemiological reporting week.                             |
 | `weekEnd`          | `string` (YYYY-MM-DD)  |    ✅    |    ❌    | Sunday end date of the epidemiological reporting week.                               |
 | `reportingWeek`    | `number` (int 1–53)    |    ✅    |    ❌    | ISO 8601 calendar epidemiological week number.                                       |
@@ -133,6 +133,7 @@ Audit trail of model training, validation, and evaluation runs.
 | `brierScore`              | `number` (float 0–1)     |    ❌    |    ✅    | Brier score of calibrated probabilities.                                 |
 | `baselines`               | `object[]`               |    ✅    |    ❌    | Array of benchmark baseline metric objects.                              |
 | `outperformsBaseline`     | `boolean`                |    ✅    |    ❌    | Whether model outperformed the best baseline on pre-registered criteria. |
+| `sampleWeighting`         | `string`                 |    ❌    |    ✅    | Description of sample weighting scheme (e.g., `"exponential_decay_half_life_8w"`). |
 | `notes`                   | `string`                 |    ❌    |    ❌    | Additional contextual or limitation notes.                               |
 
 ---

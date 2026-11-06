@@ -81,11 +81,14 @@ The platform ingests two primary external data streams:
 | **ERA5 Climate Reanalysis** | Open-Meteo Historical Archive                 | JSON REST API               | District centroid daily $\to$ weekly sum/mean | CC BY 4.0                              | Weekly precipitation sum ($mm$), mean temp ($^\circ\text{C}$), mean humidity ($\%$) |
 | **District Geography**      | Sri Lanka Department of Census and Statistics | YAML / GeoJSON              | 25 Districts (ISO 3166-2:LK)                  | Public Administrative Reference        | Standardized district registry with centroids and population denominators           |
 
-### 4.2 Cryptographic Audit & Ingestion Guards
+### 4.2 Automated PDF Bulletin Crawler & Health Division Aggregator
 
-1. **Immutable Snapshot Store:** Every raw HTTP payload retrieved by `fetcher.py` is hashed with SHA-256 and stored in the `sources` collection.
-2. **Deterministic Deduplication:** A compound unique index on `(areaId, weekStart, revision)` ensures that duplicate ingestion attempts never duplicate weekly case figures.
-3. **Data Quarantine:** Corrupted surveillance reports (unparseable HTML tables, mismatched district names, negative values) are automatically diverted to `data/quarantine/` with diagnostic alerts.
+To handle real-world reporting anomalies in Sri Lankan surveillance publications:
+1. **Automated Weekly PDF Bulletin Discovery:** The `services/ml/dengueahead/ingestion/ndcu_parser.py` pipeline inspects official MoH bulletin directories, resolves weekly epidemiological report PDF links dynamically, and extracts tabular district observations.
+2. **Canonical Health Division Aggregator:** Sri Lanka's health administrative structure divides certain districts into multiple Regional Directorates of Health Services (RDHS)—most notably Ampara District, which reports separately as *Ampara RDHS* and *Kalmunai RDHS*. DengueAhead automatically aggregates these sub-divisions into their canonical administrative district (`LK-52`), ensuring zero spatial data fragmentation. Aliases for other peripheral divisions (e.g. Monaragala) are canonically standardized.
+3. **Immutable Snapshot Store:** Every raw HTTP payload retrieved by `fetcher.py` is hashed with SHA-256 and stored in the `sources` collection.
+4. **Deterministic Deduplication & Timestamp Standardization:** A compound unique index on `(areaId, weekStart, revision)` ensures that duplicate ingestion attempts never duplicate weekly figures. All database timestamps enforce UTC ISO 8601 formatting with timezone offset tolerance (`+00:00` / `Z`).
+5. **Data Quarantine:** Corrupted surveillance reports (unparseable tables, mismatched names, negative values) are automatically diverted to `data/quarantine/` with diagnostic alerts.
 
 ---
 
@@ -145,6 +148,15 @@ $$P(\text{Hotspot} \mid s) = \frac{1}{1 + \exp(-(A \cdot s + B))}$$
 - Fitted parameters: $A = 0.842$, $B = -0.115$.
 - **Brier Score Validation:** Platt scaling reduced the Brier score from $0.194$ (climatological baseline) to $0.118$.
 - **Automated Fallback:** If the validation set lacks sufficient variance or calibration degrades, the system automatically marks `confidenceStatus = 'UNCALIBRATED'`, nullifies the probability, and displays predicted rank.
+
+### 6.4 Recency-Based Exponential Time-Decay Sample Weighting
+
+To balance multi-year historical learning with rapid adaptation to evolving epidemiological transmission dynamics, model training incorporates an exponential recency time-decay sample weighting scheme (`compute_recency_weights`):
+$$w_i = \exp\left( - \frac{\ln(2) \cdot \Delta t_i}{t_{\text{half}}} \right)$$
+where $\Delta t_i$ represents the elapsed calendar time from the training sample issue date to the cutoff date $T$, and $t_{\text{half}}$ is parameterized to emphasize the most recent 8 weeks ($t_{\text{half}} = 8 \text{ weeks}$).
+
+- **Rationale:** While earlier years (2020–2023) supply essential non-linear baseline relationships between lagged rainfall, temperature, and vector surges, recent weeks dictate the current outbreak trajectory. Weighting ensures that HistGradientBoosting and Ridge models prioritize current acceleration without discarding historical climate interactions.
+- **Serialized Model Artifacts:** Fully trained model pipelines are serialized and persisted to `models/dengueahead-hgb-v1.joblib` and `models/dengueahead-ridge-v1.joblib`.
 
 ---
 
@@ -218,10 +230,12 @@ flowchart TD
 
 ### Engineering Highlights:
 
-- **TypeScript Strict Parity:** Monorepo contracts (`packages/contracts`) guarantee end-to-end schema synchronization between Express endpoints and React hooks.
-- **Resilient MongoDB Pooling:** Configured with `minPoolSize: 5`, `maxPoolSize: 20`, automated reconnect listeners, and automated index creation on server startup.
+- **TypeScript Strict Parity:** Monorepo contracts (`packages/contracts`) guarantee end-to-end schema synchronization between Express endpoints and React hooks with timezone-offset-aware ISO 8601 datetime validation.
+- **Resilient MongoDB Pooling & Compound Indexing:** Configured with `minPoolSize: 5`, `maxPoolSize: 20`, automated reconnect listeners, automated compound indexes without naming conflicts, and idempotent prediction upsert capabilities.
 - **Fail-Safe HTTP 503 Gating:** If the database becomes unreachable, the API returns RFC 7807 structured 503 errors (`DATABASE_UNAVAILABLE`). The frontend retries up to twice with exponential backoff and randomized jitter before cleanly rendering a non-blocking `OfflineBanner`.
 - **Latency SLA:** Under automated benchmarking (`scripts/benchmark-api.ts`), all 14 API routes achieve **p95 latency < 50ms**, well within our < 200ms public health SLA.
+- **Liquid Glass Navigation & Public Health Visuals:** Features a modern icons-only liquid glass navbar, responsive mobile drawer, unified public-health footer, and distinct, high-resolution AI-generated visual assets across all 10 platform views.
+- **Multi-District Comparative Analytics (`/app/compare`):** Enables simultaneous side-by-side evaluation of transmission velocities, rainfall anomalies, and vector-control resource priorities across districts.
 
 ---
 
@@ -272,6 +286,13 @@ npm run build
 # 6. Run Dev Applications
 npm run dev:api    # Starts API on http://localhost:4000
 npm run dev:web    # Starts Dashboard on http://localhost:5173
+
+# 7. DengueAhead Automated CLI Pipeline
+dengueahead audit-sources
+dengueahead ingest --source ndcu-weekly --year 2026 --week 44
+dengueahead build-features --as-of 2026-11-02
+dengueahead train --model-type hgb --as-of 2026-11-02
+dengueahead predict --as-of 2026-11-02
 ```
 
 ---

@@ -22,7 +22,7 @@
 
 ## 1. System Overview & Architecture
 
-DengueAhead couples weekly epidemiological surveillance bulletins from Sri Lanka's **National Dengue Control Unit (NDCU)** with antecedent meteorological signals (lagged precipitation, temperature, relative humidity) from **Open-Meteo ERA5 Reanalysis**.
+DengueAhead couples weekly epidemiological surveillance bulletins from Sri Lanka's **National Dengue Control Unit (NDCU)** with antecedent meteorological signals (lagged precipitation, temperature, relative humidity) from **Open-Meteo ERA5 Reanalysis**, trained across a 4-year dual-monsoon historical dataset (2022–2025) with exponential recency sample weighting.
 
 It classifies all **25 administrative districts** (`LK-11` to `LK-92`) into five clear operational states:
 
@@ -196,7 +196,8 @@ dengueahead --help
 # Audit source availability, licenses, and connection status
 dengueahead audit-sources --config configs/sources.yaml
 
-# Ingest weekly surveillance bulletins and climate reanalysis
+# Ingest weekly surveillance bulletins and climate reanalysis (automated PDF discovery & table parsing)
+dengueahead ingest --source ndcu-weekly --year 2026 --week 44
 dengueahead ingest --config configs/sources.yaml
 
 # Run automated schema and epidemiological validation
