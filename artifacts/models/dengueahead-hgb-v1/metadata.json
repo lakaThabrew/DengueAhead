@@ -1,7 +1,7 @@
 {
   "modelVersion": "dengueahead-hgb-v1",
   "modelName": "HGB Hotspot Forecaster",
-  "trainedAt": "2026-11-04T18:09:35.861152+00:00",
+  "trainedAt": "2026-11-06T12:05:10.009313Z",
   "trainRange": {
     "startWeek": "2020-01-06",
     "endWeek": "2023-12-25"
@@ -54,5 +54,5 @@
     "cases_lag_2": 0.0
   },
   "artifactSha256": "9e9b753bbc795854bec679379beb4abc78e988116f45f6d0651c8242b039dafb",
-  "savedAt": "2026-11-04T18:09:35.907856+00:00"
+  "savedAt": "2026-11-06T12:05:10.094456+00:00"
 }
