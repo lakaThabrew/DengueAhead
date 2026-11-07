@@ -1,0 +1,102 @@
+name: Weekly Dengue Data Pipeline & Predictions
+
+on:
+  schedule:
+    # Run every Tuesday at 03:00 UTC (08:30 AM Sri Lanka Standard Time)
+    # Sri Lanka Ministry of Health NDCU typically releases weekly updates on Mondays/Tuesdays
+    - cron: '0 3 * * 2'
+  workflow_dispatch:
+    inputs:
+      year:
+        description: 'Target Year (leave empty for current year)'
+        required: false
+        type: string
+      week:
+        description: 'Target ISO Week (leave empty for latest published week)'
+        required: false
+        type: string
+      force_overwrite:
+        description: 'Force overwrite existing observations in MongoDB'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  run-pipeline:
+    name: Ingest NDCU Bulletin & Update Predictions
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: 'services/ml/pyproject.toml'
+
+      - name: Install system dependencies (Poppler & libmagic for PDF parsing)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils libmagic1
+
+      - name: Install DengueAhead ML Package
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e services/ml
+
+      - name: Audit Data Sources
+        run: |
+          echo "Auditing official upstream data sources and robots.txt licenses..."
+          python -m dengueahead.cli.main audit-sources
+
+      - name: Ingest Weekly NDCU Bulletin
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        run: |
+          INGEST_ARGS=""
+          if [ -n "${{ github.event.inputs.year }}" ]; then
+            INGEST_ARGS="$INGEST_ARGS --year ${{ github.event.inputs.year }}"
+          fi
+          if [ -n "${{ github.event.inputs.week }}" ]; then
+            INGEST_ARGS="$INGEST_ARGS --week ${{ github.event.inputs.week }}"
+          fi
+          if [ "${{ github.event.inputs.force_overwrite }}" = "true" ]; then
+            INGEST_ARGS="$INGEST_ARGS --force"
+          fi
+
+          echo "Running Ingestion: python -m dengueahead.cli.main ingest $INGEST_ARGS"
+          python -m dengueahead.cli.main ingest $INGEST_ARGS
+
+      - name: Build Lag Features
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        run: |
+          echo "Building temporal features with zero future leakage..."
+          python -m dengueahead.cli.main build-features
+
+      - name: Generate Predictions & Publish to MongoDB
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        run: |
+          echo "Generating calibrated district predictions with conformal intervals..."
+          python -m dengueahead.cli.main predict
+
+      - name: Generate Step Summary
+        if: always()
+        run: |
+          echo "### 🦟 DengueAhead Data Pipeline Execution Report" >> $GITHUB_STEP_SUMMARY
+          echo "- **Triggered By:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Execution Time:** $(date -u)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ **Completed Actions:**" >> $GITHUB_STEP_SUMMARY
+          echo "1. Upstream source license audit (`audit-sources`)" >> $GITHUB_STEP_SUMMARY
+          echo "2. NDCU Weekly PDF Bulletin discovery, extraction, and Kalmunai aggregation (`ingest`)" >> $GITHUB_STEP_SUMMARY
+          echo "3. 18 temporal lag feature matrix compilation (`build-features`)" >> $GITHUB_STEP_SUMMARY
+          echo "4. Next-week risk prediction publishing to MongoDB (`predict`)" >> $GITHUB_STEP_SUMMARY
