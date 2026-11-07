@@ -73,55 +73,16 @@ Evaluated across Sri Lanka's 25 districts using an **expanding-window temporal s
 
 ---
 
-## 3. Web Application Routes & REST API Surface
+## 3. Quickstart & Clean-Room Setup
 
-### 3.1 Frontend Navigation Routes (`apps/web` on Port 5173)
-
-| Route Path           | Page Name                | Primary Function & Guardrails                                                                                 |
-| :------------------- | :----------------------- | :------------------------------------------------------------------------------------------------------------ |
-| `/`                  | **Landing Page**         | Product mission, 3-step pipeline explainer, non-clinical safety disclaimer, and data attribution.             |
-| `/app/overview`      | **Overview Dashboard**   | Latest issuance status, 6 summary KPI cards, Top Emerging Hotspots table, stale source alarm banner.          |
-| `/app/map`           | **25-District Risk Map** | Interactive SVG choropleth map + keyboard-accessible registry table with real-time text filter.               |
-| `/app/areas/:areaId` | **District Detail**      | Profile header, next-week forecast, custom SVG time-series chart with conformal intervals, feature drivers.   |
-| `/app/compare`       | **Area Comparison**      | Side-by-side metric matrix for up to 3 districts with URL synchronization and unit consistency guards.        |
-| `/app/history`       | **Historical Replay**    | Select past calendar weeks, evaluate as-of forecast, and click _"Reveal Actual Outcome"_ to inspect accuracy. |
-| `/app/model`         | **Model & Evaluation**   | Model Card (`dengueahead-hgb-v1`), baseline benchmarks, feature importance weights, and calibration curve.    |
-| `/app/data-quality`  | **Data Quality & Audit** | Source manifest, SHA-256 integrity fingerprints, last observed timestamps, and service health checks.         |
-| `/methodology`       | **Methodology**          | Target formulations, seasonal threshold definitions, operational taxonomy, and non-clinical scope.            |
-| `/about`             | **About & Team**         | Team EchoBinary background, ModelX 2.0 context, and GitHub repository links.                                  |
-| `*`                  | **404 Recovery**         | Error Boundary catch-all providing recovery navigation back to Overview.                                      |
-
-### 3.2 Backend REST Endpoints (`apps/api` on Port 4000)
-
-| Endpoint                         | Method | Response Contract                                                     | Latency SLA |
-| :------------------------------- | :----- | :-------------------------------------------------------------------- | :---------: |
-| `/api/v1/health`                 | `GET`  | Service liveness, uptime, and memory diagnostics                      |   < 20ms    |
-| `/api/v1/readiness`              | `GET`  | Database connectivity and collection access probe (503 failover)      |   < 30ms    |
-| `/api/v1/meta`                   | `GET`  | Active model version, issue timestamp, source freshness status        |   < 25ms    |
-| `/api/v1/overview`               | `GET`  | Aggregated district risk state counts and top emerging hotspots       |   < 45ms    |
-| `/api/v1/areas`                  | `GET`  | Registry of 25 administrative districts with centroids and population |   < 30ms    |
-| `/api/v1/areas/:areaId`          | `GET`  | District metadata and profile                                         |   < 25ms    |
-| `/api/v1/areas/:areaId/series`   | `GET`  | Historical observed case counts and weather time series               |   < 40ms    |
-| `/api/v1/areas/:areaId/forecast` | `GET`  | Latest next-week forecast, conformal intervals, and feature drivers   |   < 35ms    |
-| `/api/v1/predictions`            | `GET`  | Published predictions filtered by issue date, target week, or status  |   < 45ms    |
-| `/api/v1/compare`                | `GET`  | Aligned comparative metrics for up to 3 requested district IDs        |   < 40ms    |
-| `/api/v1/backtests`              | `GET`  | Historical replay predictions and corresponding actual observations   |   < 50ms    |
-| `/api/v1/evaluation`             | `GET`  | Evaluation metrics array across candidate models and baselines        |   < 30ms    |
-| `/api/v1/sources`                | `GET`  | Cryptographic data source registry with SHA-256 hashes                |   < 25ms    |
-| `/api/v1/methodology`            | `GET`  | Public epidemiological formulations and taxonomy definitions          |   < 20ms    |
-
----
-
-## 4. Quickstart & Clean-Room Setup
-
-### 4.1 Prerequisites
+### 3.1 Prerequisites
 
 - **Node.js:** $\ge 20.0.0$ (v22 LTS recommended)
 - **Python:** $\ge 3.10$ ($3.12$ recommended)
 - **MongoDB:** $\ge 6.0$ running locally (`mongodb://localhost:27017`)
 - **Git**
 
-### 4.2 Step-by-Step Installation
+### 3.2 Step-by-Step Installation
 
 ```bash
 # 1. Clone the repository
@@ -141,7 +102,7 @@ pip install -e services/ml
 npm run seed
 ```
 
-### 4.3 Run Development Applications
+### 3.3 Run Development Applications
 
 ```bash
 # Start Express API backend (http://localhost:4000)
@@ -156,7 +117,7 @@ npm run dev
 
 ---
 
-## 5. Verification & Automated Quality Gates
+## 4. Verification & Automated Quality Gates
 
 DengueAhead enforces strict continuous integration gates. Execute all verification suites locally:
 
@@ -185,7 +146,7 @@ powershell scripts/e2e-smoke-test.ps1
 
 ---
 
-## 6. Python ML CLI Toolchain (`dengueahead`)
+## 5. Python ML CLI Toolchain (`dengueahead`)
 
 The `services/ml` package exposes the `dengueahead` CLI entrypoint:
 
@@ -218,7 +179,7 @@ dengueahead predict --as-of 2024-06-24 --publish
 
 ---
 
-## 7. Monorepo Directory Layout
+## 6. Monorepo Directory Layout
 
 ```text
 DengueAhead/
@@ -254,6 +215,43 @@ DengueAhead/
 │   └── DEMO_SCRIPT.md           # Deliverable D: 180s video demo script & storyboard
 └── scripts/                     # Benchmarking, secret audit, and E2E smoke runners
 ```
+---
+## 7. Web Application Routes & REST API Surface
+
+### 7.1 Frontend Navigation Routes (`apps/web` on Port 5173)
+
+| Route Path           | Page Name                | Primary Function & Guardrails                                                                                 |
+| :------------------- | :----------------------- | :------------------------------------------------------------------------------------------------------------ |
+| `/`                  | **Landing Page**         | Product mission, 3-step pipeline explainer, non-clinical safety disclaimer, and data attribution.             |
+| `/app/overview`      | **Overview Dashboard**   | Latest issuance status, 6 summary KPI cards, Top Emerging Hotspots table, stale source alarm banner.          |
+| `/app/map`           | **25-District Risk Map** | Interactive SVG choropleth map + keyboard-accessible registry table with real-time text filter.               |
+| `/app/areas/:areaId` | **District Detail**      | Profile header, next-week forecast, custom SVG time-series chart with conformal intervals, feature drivers.   |
+| `/app/compare`       | **Area Comparison**      | Side-by-side metric matrix for up to 3 districts with URL synchronization and unit consistency guards.        |
+| `/app/history`       | **Historical Replay**    | Select past calendar weeks, evaluate as-of forecast, and click _"Reveal Actual Outcome"_ to inspect accuracy. |
+| `/app/model`         | **Model & Evaluation**   | Model Card (`dengueahead-hgb-v1`), baseline benchmarks, feature importance weights, and calibration curve.    |
+| `/app/data-quality`  | **Data Quality & Audit** | Source manifest, SHA-256 integrity fingerprints, last observed timestamps, and service health checks.         |
+| `/methodology`       | **Methodology**          | Target formulations, seasonal threshold definitions, operational taxonomy, and non-clinical scope.            |
+| `/about`             | **About & Team**         | Team EchoBinary background, ModelX 2.0 context, and GitHub repository links.                                  |
+| `*`                  | **404 Recovery**         | Error Boundary catch-all providing recovery navigation back to Overview.                                      |
+
+### 7.2 Backend REST Endpoints (`apps/api` on Port 4000)
+
+| Endpoint                         | Method | Response Contract                                                     | Latency SLA |
+| :------------------------------- | :----- | :-------------------------------------------------------------------- | :---------: |
+| `/api/v1/health`                 | `GET`  | Service liveness, uptime, and memory diagnostics                      |   < 20ms    |
+| `/api/v1/readiness`              | `GET`  | Database connectivity and collection access probe (503 failover)      |   < 30ms    |
+| `/api/v1/meta`                   | `GET`  | Active model version, issue timestamp, source freshness status        |   < 25ms    |
+| `/api/v1/overview`               | `GET`  | Aggregated district risk state counts and top emerging hotspots       |   < 45ms    |
+| `/api/v1/areas`                  | `GET`  | Registry of 25 administrative districts with centroids and population |   < 30ms    |
+| `/api/v1/areas/:areaId`          | `GET`  | District metadata and profile                                         |   < 25ms    |
+| `/api/v1/areas/:areaId/series`   | `GET`  | Historical observed case counts and weather time series               |   < 40ms    |
+| `/api/v1/areas/:areaId/forecast` | `GET`  | Latest next-week forecast, conformal intervals, and feature drivers   |   < 35ms    |
+| `/api/v1/predictions`            | `GET`  | Published predictions filtered by issue date, target week, or status  |   < 45ms    |
+| `/api/v1/compare`                | `GET`  | Aligned comparative metrics for up to 3 requested district IDs        |   < 40ms    |
+| `/api/v1/backtests`              | `GET`  | Historical replay predictions and corresponding actual observations   |   < 50ms    |
+| `/api/v1/evaluation`             | `GET`  | Evaluation metrics array across candidate models and baselines        |   < 30ms    |
+| `/api/v1/sources`                | `GET`  | Cryptographic data source registry with SHA-256 hashes                |   < 25ms    |
+| `/api/v1/methodology`            | `GET`  | Public epidemiological formulations and taxonomy definitions          |   < 20ms    |
 
 ---
 
