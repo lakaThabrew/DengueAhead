@@ -122,7 +122,7 @@ To prevent future observation leakage, the pipeline enforces a strict temporal c
 ### 3.2 Automated Weekly PDF Bulletin Crawler & Canonical Aggregation
 
 - **Automated Web Crawler & PDF Discovery:** Ingests weekly epidemiological bulletins via `services/ml/dengueahead/cli/main.py` (`dengueahead ingest --source ndcu-weekly --year <YYYY> --week <WW>`). The pipeline scans MoH index pages, resolves target PDF bulletins, and extracts tabular observations.
-- **Canonical Health Division Aggregator:** MoH bulletins often report sub-divisions such as *Kalmunai RDHS* alongside *Ampara RDHS*. DengueAhead automatically aggregates these sub-regions into the canonical administrative district `LK-52` (Ampara District), standardizing Monaragala and peripheral division aliases for 100% district coverage.
+- **Canonical Health Division Aggregator:** MoH bulletins often report sub-divisions such as _Kalmunai RDHS_ alongside _Ampara RDHS_. DengueAhead automatically aggregates these sub-regions into the canonical administrative district `LK-52` (Ampara District), standardizing Monaragala and peripheral division aliases for 100% district coverage.
 - **Data Anomaly Quarantine:** If an ingested table has invalid columns, unparseable case strings, or negative numbers, it is quarantined to `data/quarantine/` with diagnostic logs. Affected forecasts are cleanly marked as `WITHHELD` with `qualityFlags: ['DATA_QUARANTINED']` and `null` numeric values.
 
 ---

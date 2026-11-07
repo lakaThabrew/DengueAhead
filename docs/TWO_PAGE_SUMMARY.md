@@ -67,12 +67,12 @@ Rather than presenting raw statistical margins, DengueAhead translates machine l
 
 DengueAhead was subjected to rigorous out-of-time expanding-window evaluation across Sri Lanka's 25 districts, guaranteeing zero future observation leakage:
 
-| Model Architecture             | MAE (Cases) |   RMSE   | Hotspot Precision | Top-5 Precision | Brier Score | Decision-Support Value                                      |
-| :----------------------------- | :---------: | :------: | :---------------: | :-------------: | :---------: | :---------------------------------------------------------- |
-| **Naïve Persistence ($y_t$)**  |    24.8     |   48.6   |       0.62        |      0.64       |     n/a     | Reactive; detects outbreaks only after they occur.          |
-| **Seasonal Historical Median** |    31.4     |   58.7   |       0.49        |      0.52       |     n/a     | Fails to detect atypical inter-seasonal monsoon spikes.     |
-| **DengueAhead Ridge Regression** |  22.3     |   43.1   |       0.68        |      0.70       |     n/a     | Linear constraints limit non-linear weather interaction.    |
-| **DengueAhead HGB (Ours)**     |  **18.7**   | **37.9** |     **0.78**      |    **0.82**     |  **0.118**  | **Proactive; 24.6% error reduction & 82% Top-5 precision.** |
+| Model Architecture               | MAE (Cases) |   RMSE   | Hotspot Precision | Top-5 Precision | Brier Score | Decision-Support Value                                      |
+| :------------------------------- | :---------: | :------: | :---------------: | :-------------: | :---------: | :---------------------------------------------------------- |
+| **Naïve Persistence ($y_t$)**    |    24.8     |   48.6   |       0.62        |      0.64       |     n/a     | Reactive; detects outbreaks only after they occur.          |
+| **Seasonal Historical Median**   |    31.4     |   58.7   |       0.49        |      0.52       |     n/a     | Fails to detect atypical inter-seasonal monsoon spikes.     |
+| **DengueAhead Ridge Regression** |    22.3     |   43.1   |       0.68        |      0.70       |     n/a     | Linear constraints limit non-linear weather interaction.    |
+| **DengueAhead HGB (Ours)**       |  **18.7**   | **37.9** |     **0.78**      |    **0.82**     |  **0.118**  | **Proactive; 24.6% error reduction & 82% Top-5 precision.** |
 
 _Key finding:_ DengueAhead improves Top-5 hotspot precision by **18 percentage points** over persistence, ensuring that limited vector-control teams are dispatched to the true emerging epicenters with 82% reliability.
 

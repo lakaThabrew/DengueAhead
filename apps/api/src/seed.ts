@@ -13,7 +13,7 @@
  * Run via: npm run seed -w @dengueahead/api
  */
 
-import { MongoClient } from 'mongodb';
+import { MongoClient, type AnyBulkWriteOperation } from 'mongodb';
 import {
   AreaSchema,
   SourceSnapshotSchema,
@@ -591,7 +591,7 @@ export async function seedDatabase(clientUri?: string) {
   console.log(
     `[Seed] Seeding multi-year surveillance across all 25 districts (${ALL_SURVEILLANCE_WEEKS.length} weeks, 2023–2026)...`
   );
-  const dengueOps: any[] = [];
+  const dengueOps: AnyBulkWriteOperation[] = [];
   for (const district of DISTRICTS) {
     const base = DISTRICT_BASE_CASES[district.areaId] ?? 20;
     const status = DISTRICT_STATUS[district.areaId];
@@ -631,7 +631,7 @@ export async function seedDatabase(clientUri?: string) {
   console.log(
     '[Seed] Seeding multi-year climate reanalysis (temperature, precipitation, humidity)...'
   );
-  const weatherOps: any[] = [];
+  const weatherOps: AnyBulkWriteOperation[] = [];
   for (const district of DISTRICTS) {
     for (const wk of ALL_SURVEILLANCE_WEEKS) {
       const weather = getSeasonalWeather(wk.week);

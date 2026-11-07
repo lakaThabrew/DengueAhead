@@ -48,18 +48,18 @@ Normalized weekly case counts published by the National Dengue Control Unit (NDC
   - `{ areaId: 1, weekStart: 1 }` (Compound query index)
   - `{ weekStart: -1 }` (Temporal query index)
 
-| Field              | Type                   | Required | Nullable | Description                                                                          |
-| :----------------- | :--------------------- | :------: | :------: | :----------------------------------------------------------------------------------- |
+| Field              | Type                   | Required | Nullable | Description                                                                                                                                                                                 |
+| :----------------- | :--------------------- | :------: | :------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `areaId`           | `string`               |    ✅    |    ❌    | District identifier matching `areas.areaId` (`LK-11` to `LK-92`). Peripheral health divisions (e.g. Kalmunai RDHS) are canonically aggregated into their administrative district (`LK-52`). |
-| `weekStart`        | `string` (YYYY-MM-DD)  |    ✅    |    ❌    | Monday start date of the epidemiological reporting week.                             |
-| `weekEnd`          | `string` (YYYY-MM-DD)  |    ✅    |    ❌    | Sunday end date of the epidemiological reporting week.                               |
-| `reportingWeek`    | `number` (int 1–53)    |    ✅    |    ❌    | ISO 8601 calendar epidemiological week number.                                       |
-| `reportingYear`    | `number` (int)         |    ✅    |    ❌    | Four-digit calendar reporting year.                                                  |
-| `cases`            | `number` (int $\ge 0$) |    ✅    |    ❌    | Formally notified clinical dengue cases.                                             |
-| `sourceSnapshotId` | `string` (64 hex)      |    ✅    |    ❌    | SHA-256 hash of the raw `sources` snapshot document.                                 |
-| `reportedAt`       | `string` (ISO 8601)    |    ✅    |    ❌    | Timestamp when the bulletin was officially recorded.                                 |
-| `revision`         | `number` (int $\ge 0$) |    ✅    |    ❌    | Revision counter. Defaults to `0`; incremented for official retrospective revisions. |
-| `qualityFlags`     | `string[]`             |    ✅    |    ❌    | Diagnostic quality flags (e.g., `['UNMATCHED_AREA']`, `['DATA_DELAYED']`).           |
+| `weekStart`        | `string` (YYYY-MM-DD)  |    ✅    |    ❌    | Monday start date of the epidemiological reporting week.                                                                                                                                    |
+| `weekEnd`          | `string` (YYYY-MM-DD)  |    ✅    |    ❌    | Sunday end date of the epidemiological reporting week.                                                                                                                                      |
+| `reportingWeek`    | `number` (int 1–53)    |    ✅    |    ❌    | ISO 8601 calendar epidemiological week number.                                                                                                                                              |
+| `reportingYear`    | `number` (int)         |    ✅    |    ❌    | Four-digit calendar reporting year.                                                                                                                                                         |
+| `cases`            | `number` (int $\ge 0$) |    ✅    |    ❌    | Formally notified clinical dengue cases.                                                                                                                                                    |
+| `sourceSnapshotId` | `string` (64 hex)      |    ✅    |    ❌    | SHA-256 hash of the raw `sources` snapshot document.                                                                                                                                        |
+| `reportedAt`       | `string` (ISO 8601)    |    ✅    |    ❌    | Timestamp when the bulletin was officially recorded.                                                                                                                                        |
+| `revision`         | `number` (int $\ge 0$) |    ✅    |    ❌    | Revision counter. Defaults to `0`; incremented for official retrospective revisions.                                                                                                        |
+| `qualityFlags`     | `string[]`             |    ✅    |    ❌    | Diagnostic quality flags (e.g., `['UNMATCHED_AREA']`, `['DATA_DELAYED']`).                                                                                                                  |
 
 ---
 
@@ -118,23 +118,23 @@ Audit trail of model training, validation, and evaluation runs.
 
 - **Index:** `{ modelVersion: 1 }` (Unique)
 
-| Field                     | Type                     | Required | Nullable | Description                                                              |
-| :------------------------ | :----------------------- | :------: | :------: | :----------------------------------------------------------------------- |
-| `modelVersion`            | `string`                 |    ✅    |    ❌    | Unique version string (e.g., `"dengueahead-hgb-v1"`).                    |
-| `modelName`               | `string`                 |    ✅    |    ❌    | Descriptive name of the model architecture.                              |
-| `trainedAt`               | `string` (ISO 8601)      |    ✅    |    ❌    | Timestamp when model fitting completed.                                  |
-| `trainRange`              | `object`                 |    ✅    |    ❌    | `{ startWeek: YYYY-MM-DD, endWeek: YYYY-MM-DD }`.                        |
-| `testRange`               | `object`                 |    ✅    |    ❌    | `{ startWeek: YYYY-MM-DD, endWeek: YYYY-MM-DD }`.                        |
-| `totalEvaluatedInstances` | `number` (int)           |    ✅    |    ❌    | Total district-week samples in evaluation split.                         |
-| `mae`                     | `number` (float $\ge 0$) |    ✅    |    ❌    | Mean Absolute Error across continuous evaluation targets.                |
-| `topKRecall`              | `number` (float 0–1)     |    ✅    |    ❌    | Fraction of true high-burden districts captured in Top-K.                |
-| `precision`               | `number` (float 0–1)     |    ✅    |    ❌    | Hotspot classification precision.                                        |
-| `recall`                  | `number` (float 0–1)     |    ✅    |    ❌    | Hotspot classification recall.                                           |
-| `brierScore`              | `number` (float 0–1)     |    ❌    |    ✅    | Brier score of calibrated probabilities.                                 |
-| `baselines`               | `object[]`               |    ✅    |    ❌    | Array of benchmark baseline metric objects.                              |
-| `outperformsBaseline`     | `boolean`                |    ✅    |    ❌    | Whether model outperformed the best baseline on pre-registered criteria. |
+| Field                     | Type                     | Required | Nullable | Description                                                                        |
+| :------------------------ | :----------------------- | :------: | :------: | :--------------------------------------------------------------------------------- |
+| `modelVersion`            | `string`                 |    ✅    |    ❌    | Unique version string (e.g., `"dengueahead-hgb-v1"`).                              |
+| `modelName`               | `string`                 |    ✅    |    ❌    | Descriptive name of the model architecture.                                        |
+| `trainedAt`               | `string` (ISO 8601)      |    ✅    |    ❌    | Timestamp when model fitting completed.                                            |
+| `trainRange`              | `object`                 |    ✅    |    ❌    | `{ startWeek: YYYY-MM-DD, endWeek: YYYY-MM-DD }`.                                  |
+| `testRange`               | `object`                 |    ✅    |    ❌    | `{ startWeek: YYYY-MM-DD, endWeek: YYYY-MM-DD }`.                                  |
+| `totalEvaluatedInstances` | `number` (int)           |    ✅    |    ❌    | Total district-week samples in evaluation split.                                   |
+| `mae`                     | `number` (float $\ge 0$) |    ✅    |    ❌    | Mean Absolute Error across continuous evaluation targets.                          |
+| `topKRecall`              | `number` (float 0–1)     |    ✅    |    ❌    | Fraction of true high-burden districts captured in Top-K.                          |
+| `precision`               | `number` (float 0–1)     |    ✅    |    ❌    | Hotspot classification precision.                                                  |
+| `recall`                  | `number` (float 0–1)     |    ✅    |    ❌    | Hotspot classification recall.                                                     |
+| `brierScore`              | `number` (float 0–1)     |    ❌    |    ✅    | Brier score of calibrated probabilities.                                           |
+| `baselines`               | `object[]`               |    ✅    |    ❌    | Array of benchmark baseline metric objects.                                        |
+| `outperformsBaseline`     | `boolean`                |    ✅    |    ❌    | Whether model outperformed the best baseline on pre-registered criteria.           |
 | `sampleWeighting`         | `string`                 |    ❌    |    ✅    | Description of sample weighting scheme (e.g., `"exponential_decay_half_life_8w"`). |
-| `notes`                   | `string`                 |    ❌    |    ❌    | Additional contextual or limitation notes.                               |
+| `notes`                   | `string`                 |    ❌    |    ❌    | Additional contextual or limitation notes.                                         |
 
 ---
 

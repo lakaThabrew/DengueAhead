@@ -150,7 +150,6 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
         mapRef.current = null;
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ── Place / refresh markers whenever map is ready or data/selection changes ─

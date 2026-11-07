@@ -55,14 +55,14 @@ where $\tau_{a, w}$ is the pre-registered 75th percentile of historical cases fo
 
 ## 3. Candidate Models & Baselines
 
-| Model Identifier                 | Model Class        | Methodology & Parameters                                                                          |
-| :------------------------------- | :----------------- | :------------------------------------------------------------------------------------------------ |
-| **`baseline-naive-persistence`** | Baseline           | Predicts next week equals current week: $\hat{y}_{a, t+1} = y_{a, t}$.                            |
-| **`baseline-rolling-mean-4w`**   | Baseline           | Predicts 4-week moving average: $\hat{y}_{a, t+1} = \frac{1}{4} \sum_{k=0}^3 y_{a, t-k}$.         |
-| **`baseline-seasonal-median`**   | Baseline           | Predicts district-specific historical median for that calendar week from training data.           |
-| **`dengueahead-ridge-v1`**       | Linear Model       | Ridge Regression with $L_2$ regularization ($\alpha = 1.0$) and standardized features, fit with exponential recency sample weighting ($t_{\text{half}} = 8\text{w}$). |
+| Model Identifier                 | Model Class        | Methodology & Parameters                                                                                                                                                                    |
+| :------------------------------- | :----------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **`baseline-naive-persistence`** | Baseline           | Predicts next week equals current week: $\hat{y}_{a, t+1} = y_{a, t}$.                                                                                                                      |
+| **`baseline-rolling-mean-4w`**   | Baseline           | Predicts 4-week moving average: $\hat{y}_{a, t+1} = \frac{1}{4} \sum_{k=0}^3 y_{a, t-k}$.                                                                                                   |
+| **`baseline-seasonal-median`**   | Baseline           | Predicts district-specific historical median for that calendar week from training data.                                                                                                     |
+| **`dengueahead-ridge-v1`**       | Linear Model       | Ridge Regression with $L_2$ regularization ($\alpha = 1.0$) and standardized features, fit with exponential recency sample weighting ($t_{\text{half}} = 8\text{w}$).                       |
 | **`dengueahead-hgb-v1`**         | Primary ML         | HistGradientBoostingRegressor (lr $0.05$, max leaf nodes $31$, min samples leaf $20$) fit with recency time-decay weighting ($t_{\text{half}} = 8\text{w}$) on 4-year dual-monsoon dataset. |
-| **`dengueahead-hgb-cls-v1`**     | Primary Classifier | HistGradientBoostingClassifier with post-hoc Platt sigmoid probability calibration ($A = 0.842$, $B = -0.115$). |
+| **`dengueahead-hgb-cls-v1`**     | Primary Classifier | HistGradientBoostingClassifier with post-hoc Platt sigmoid probability calibration ($A = 0.842$, $B = -0.115$).                                                                             |
 
 ---
 

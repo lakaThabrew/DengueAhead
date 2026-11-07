@@ -215,7 +215,9 @@ DengueAhead/
 │   └── DEMO_SCRIPT.md           # Deliverable D: 180s video demo script & storyboard
 └── scripts/                     # Benchmarking, secret audit, and E2E smoke runners
 ```
+
 ---
+
 ## 7. Web Application Routes & REST API Surface
 
 ### 7.1 Frontend Navigation Routes (`apps/web` on Port 5173)

@@ -84,8 +84,9 @@ The platform ingests two primary external data streams:
 ### 4.2 Automated PDF Bulletin Crawler & Health Division Aggregator
 
 To handle real-world reporting anomalies in Sri Lankan surveillance publications:
+
 1. **Automated Weekly PDF Bulletin Discovery:** The `services/ml/dengueahead/ingestion/ndcu_parser.py` pipeline inspects official MoH bulletin directories, resolves weekly epidemiological report PDF links dynamically, and extracts tabular district observations.
-2. **Canonical Health Division Aggregator:** Sri Lanka's health administrative structure divides certain districts into multiple Regional Directorates of Health Services (RDHS)—most notably Ampara District, which reports separately as *Ampara RDHS* and *Kalmunai RDHS*. DengueAhead automatically aggregates these sub-divisions into their canonical administrative district (`LK-52`), ensuring zero spatial data fragmentation. Aliases for other peripheral divisions (e.g. Monaragala) are canonically standardized.
+2. **Canonical Health Division Aggregator:** Sri Lanka's health administrative structure divides certain districts into multiple Regional Directorates of Health Services (RDHS)—most notably Ampara District, which reports separately as _Ampara RDHS_ and _Kalmunai RDHS_. DengueAhead automatically aggregates these sub-divisions into their canonical administrative district (`LK-52`), ensuring zero spatial data fragmentation. Aliases for other peripheral divisions (e.g. Monaragala) are canonically standardized.
 3. **Immutable Snapshot Store:** Every raw HTTP payload retrieved by `fetcher.py` is hashed with SHA-256 and stored in the `sources` collection.
 4. **Deterministic Deduplication & Timestamp Standardization:** A compound unique index on `(areaId, weekStart, revision)` ensures that duplicate ingestion attempts never duplicate weekly figures. All database timestamps enforce UTC ISO 8601 formatting with timezone offset tolerance (`+00:00` / `Z`).
 5. **Data Quarantine:** Corrupted surveillance reports (unparseable tables, mismatched names, negative values) are automatically diverted to `data/quarantine/` with diagnostic alerts.

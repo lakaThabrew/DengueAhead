@@ -269,7 +269,10 @@ function supportsRefraction() {
   return (
     /Chrome\/|Chromium\/|Edg\//.test(ua) &&
     !/Firefox\//.test(ua) &&
-    !!(CSS as any).supports?.('backdrop-filter', 'url(#a)')
+    !!(CSS as unknown as { supports?: (k: string, v: string) => boolean }).supports?.(
+      'backdrop-filter',
+      'url(#a)'
+    )
   );
 }
 
@@ -564,7 +567,10 @@ export function LiquidNavbar({
   const plip = () => {
     if (!sound) return;
     try {
-      const AC = window.AudioContext || (window as any).webkitAudioContext;
+      const AC =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+      if (!AC) return;
       const ctx = (audio.current ||= new AC());
       const t = ctx.currentTime;
       const o = ctx.createOscillator();
@@ -616,7 +622,7 @@ export function LiquidNavbar({
 
   return (
     <nav
-      ref={navRef as any}
+      ref={navRef as unknown as React.Ref<HTMLElement>}
       className={['nimbus-nav', className].filter(Boolean).join(' ')}
       data-tone={tone}
       data-gl={gl}
@@ -701,7 +707,7 @@ export function LiquidNavbar({
         return it.href ? (
           <a
             key={it.label + i}
-            {...(props as any)}
+            {...(props as unknown as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
             href={it.href}
             aria-label={it.label}
             title={it.label}
@@ -711,7 +717,7 @@ export function LiquidNavbar({
         ) : (
           <button
             key={it.label + i}
-            {...(props as any)}
+            {...(props as unknown as React.ButtonHTMLAttributes<HTMLButtonElement>)}
             type="button"
             aria-label={it.label}
             title={it.label}

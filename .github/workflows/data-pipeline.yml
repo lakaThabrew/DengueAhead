@@ -100,4 +100,3 @@ jobs:
           echo "2. NDCU Weekly PDF Bulletin discovery, extraction, and Kalmunai aggregation (`ingest`)" >> $GITHUB_STEP_SUMMARY
           echo "3. 18 temporal lag feature matrix compilation (`build-features`)" >> $GITHUB_STEP_SUMMARY
           echo "4. Next-week risk prediction publishing to MongoDB (`predict`)" >> $GITHUB_STEP_SUMMARY
-
